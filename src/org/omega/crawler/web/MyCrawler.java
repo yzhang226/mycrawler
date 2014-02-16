@@ -115,13 +115,7 @@ public class MyCrawler extends WebCrawler {
 				}
 			}
 			
-			
-//			List<WebURL> links = htmlParseData.getOutgoingUrls();
-
 			System.out.println("\ttitle: " + htmlParseData.getTitle());
-//			System.out.println("\tText length: " + text.length());
-//			System.out.println("\tHtml length: " + html.length());
-//			System.out.println("\tNumber of outgoing links: " + links.size());
 		}
 	}
 
