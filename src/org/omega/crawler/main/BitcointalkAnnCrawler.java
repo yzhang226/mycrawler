@@ -18,6 +18,38 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 public class BitcointalkAnnCrawler {
 
 	public static void main(String[] args) throws Exception {
+        
+        BitcointalkAnnCrawler annCrawler = new BitcointalkAnnCrawler();
+        annCrawler.fectchAnnCoins();
+        
+        Collections.sort(MyCrawler.annCoins);
+        
+        StringBuilder coinsHtml = new StringBuilder();
+        
+        for (AnnCoinBean coin : MyCrawler.annCoins) {
+        	coinsHtml.append(coin.toHtml());
+        }
+        
+        File templateFile = new File(BitcointalkAnnCrawler.class.getResource("/ann-coins.html").getPath());
+		BufferedReader br = new BufferedReader(new FileReader(templateFile));
+		
+		StringBuilder templateBuilder = new StringBuilder();
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			templateBuilder.append(line).append("\n");
+		}
+		br.close();
+		
+		String res = templateBuilder.toString().replace("${content}", coinsHtml.toString());
+        
+        RandomAccessFile raf = new RandomAccessFile("D:/storage/ann-coins.html", "rw");
+        raf.seek(0);
+        
+        raf.write(res.getBytes());
+        raf.close();
+	}
+	
+	public void fectchAnnCoins() throws Exception {
 		String crawlStorageFolder = "/storage/crawler4j";
         int numberOfCrawlers = 1;
 
@@ -38,34 +70,6 @@ public class BitcointalkAnnCrawler {
        
 
         controller.start(MyCrawler.class, numberOfCrawlers);
-        
-        Collections.sort(MyCrawler.annCoins);
-        
-        
-        StringBuilder coinsHtml = new StringBuilder();
-        
-        for (AnnCoinBean coin : MyCrawler.annCoins) {
-        	coinsHtml.append(coin.toHtml());
-        }
-        
-        File templateFile = new File("ann-coins.html");
-		BufferedReader br = new BufferedReader(new FileReader(templateFile));
-		
-		StringBuilder templateBuilder = new StringBuilder();
-		String line = null;
-		while ((line = br.readLine()) != null) {
-			templateBuilder.append(line).append("\n");
-		}
-		br.close();
-		
-		String res = templateBuilder.toString().replace("${content}", coinsHtml.toString());
-        
-        RandomAccessFile raf = new RandomAccessFile("/work/ann-coins.html", "rw");
-        raf.seek(0);
-        
-        raf.write(res.getBytes());
-        raf.close();
-        
         
 	}
 	
