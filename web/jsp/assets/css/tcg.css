@@ -1,0 +1,144 @@
+
+	.drop-selected {
+		line-height: 20px;
+		font-size: 14px; 
+		padding: 7px 14px; 
+		vertical-align: middle; 
+		font-family: 'Segoe UI',Helvetica,Arial,sans-serif;
+	}
+	
+	.expired-date {
+		color: red;
+		font-style: italic;
+		font-weight: bold;
+	}
+	
+	/* 	dashed */
+	.little-img {
+	     max-width:30px;height:auto;cursor:pointer;
+	     border:1px  #4E6973;padding: 0px;
+	     zoom:expression( function(elm) {
+	         if (elm.width>30) {
+	             var oldVW = elm.width; elm.width=30;
+	             elm.height = elm.height*(40 /oldVW);
+	         }
+	         elm.style.zoom = '1';
+	     }(this));
+	}
+	
+	.no-data {
+		font: italic bold;
+	}
+	
+	form label.error {
+		margin-left: 10px;
+		width: auto;
+		display: inline;
+		color: red;
+	}
+	
+	/* HOVER STYLES */
+	div#pop-up {
+		display: none;
+		position: absolute;
+		width: 120px;
+		padding: 10px;
+		background: #F0F0F0;
+		color: #000000;
+		border: 1px solid #99BCE8;
+		font-size: 90%;
+		z-index: 1;
+	}
+	
+	div#__columns {
+		display: none;
+		position: absolute;
+	
+		padding: 10px;
+		background: #F0F0F0;
+		color: #000000;
+		border: 1px solid #99BCE8;
+		font-size: 90%;
+		z-index: 1;
+	}
+	
+	.icon-sort-asc {
+		height: 14px;
+	  	width: 14px;
+    	background-image: url('../img/hmenu-asc.gif');
+    }
+    
+    .icon-sort-desc {
+    	background-image: url('../img/hmenu-desc.gif'); 
+    }
+    
+    .icon-columns {
+  		background-image: url('../img/columns.gif'); 
+  	}
+    
+    .icon-page-next {
+  		background-image: url('../img/page-next.gif') !important; 
+  	}
+  	
+  	.popup-left {
+	  	overflow: hidden; 
+	  	float: left; 
+/* 	  	width: 20%;  */
+/* 	  	max-width: 20%;  */
+	  	height: 100%; 
+	  	position: relative;
+  	}
+  	
+  	.popup-right {
+  		overflow: hidden; 
+  		float: right; 
+  		margin-left: 4px
+/*   		border: solid 1px #FFFFFF;  */
+/*   		width: 75%;  */
+/*   		max-width: 75%;  */
+  		height: 100%; 
+  		position: relative;
+  	}
+	
+	/*
+	.icon-checkbox {
+	  height: 14px;
+	  width: 14px;
+	  line-height: 0;
+	  background-image: url('../img/checked.gif');
+	  background-position: -1px -1px;
+	  background-repeat: no-repeat;
+	  background-color: transparent; 
+	}
+	
+	.icon-checkbox {
+	  height: 14px;
+	  width: 14px;
+	  line-height: 0;
+	  background-image: url('../img/unchecked.gif');
+	  background-position: -1px -1px;
+	  background-repeat: no-repeat;
+	  background-color: transparent; 
+	}
+	
+	.icon-checkbox {
+ 	 display: block;
+  	 margin: 0 5px; 
+  	}
+  	
+  	.icon-uncheckbox {
+	  height: 14px;
+	  width: 14px;
+	  line-height: 0;
+	  background-image: url('../img/unchecked.gif');
+	  background-position: -1px -1px;
+	  background-repeat: no-repeat;
+	  background-color: transparent; 
+	}
+	
+	.icon-uncheckbox {
+ 	 display: block;
+  	 margin: 0 5px; 
+  	}
+	*/
+	
