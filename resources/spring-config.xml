@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Repository and Service layers
+-->
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+ 
+    <!-- Configurer that replaces ${...} placeholders with values from a properties file -->
+    <!-- (in this case, JDBC-related settings for the dataSource definition below) -->
+    <context:property-placeholder location="classpath:data-access.properties" system-properties-mode="OVERRIDE"/>
+
+
+    <!-- BoneCP configuration -->
+	<bean id="dataSource4tcgcallmgt" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+	   <property name="driverClass" value="${jdbc.driverClass}" />
+	   
+	   <property name="jdbcUrl" value="${jdbc.url}" />
+	   <property name="username" value="${jdbc.username}"/>
+	   <property name="password" value="${jdbc.password}"/>
+	   
+	   <property name="idleConnectionTestPeriodInMinutes" value="240"/>
+	   <property name="idleMaxAgeInMinutes" value="60"/>
+	   <property name="maxConnectionsPerPartition" value="30"/>
+	   <property name="minConnectionsPerPartition" value="2"/>
+	   <property name="partitionCount" value="2"/>
+	   <property name="acquireIncrement" value="1"/>
+	   <property name="statementsCacheSize" value="30"/>
+	   <property name="releaseHelperThreads" value="3"/>
+	</bean>
+	
+	<!-- Hibernate sessionFactory configuration -->
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource4tcgcallmgt" />
+<!--  		<property name="namingStrategy"> -->
+<!-- 			<bean class="org.hibernate.cfg.ImprovedNamingStrategy" /> -->
+<!-- 		</property> -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+<!-- 				<prop key="hibernate.cache.provider_class">org.hibernate.cache.HashtableCacheProvider</prop> -->
+				
+				<!-- <prop key="hibernate.query.substitutions">true 1, false 0</prop> -->
+				
+<!-- 				<prop key="hibernate.jdbc.fetch_size">50</prop> -->
+<!-- 				<prop key="hibernate.jdbc.batch_size">30</prop> -->
+				<!-- 
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.use_structured_entries">true</prop>
+				<prop key="hibernate.cache.use_minimal_puts">true</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				 -->
+<!-- 				<prop key="hibernate.cache.provider_class">net.sf.ehcache.hibernate.EhCacheProvider</prop> -->
+<!-- 				<prop key="hibernate.transaction.flush_before_completion">true</prop> -->
+				
+<!-- 				<prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop> -->
+				
+			</props>
+		</property>
+<!--		<property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration" />-->
+<!--		<property name="configLocation" value="classpath:postgres.cfg.xml" />-->
+		<property name="mappingLocations">
+            <list>
+				<value>classpath*:org/omega/crawler/bean/hbm/*.hbm.xml</value>
+            </list>
+        </property>
+	</bean>
+	
+	<!-- hibernate transaction manager -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- annotation -->
+	<context:annotation-config/>
+
+	<context:mbean-export/>
+
+	<aop:config proxy-target-class="true">
+		<aop:advisor pointcut="execution(* org.omega.crawler.service.*Service.*(..))" advice-ref="txAdvice"/>
+	</aop:config>
+
+	<tx:advice id="txAdvice"> 
+		<tx:attributes>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="query*" read-only="true"/>
+<!--             <tx:method name="find*" read-only="true"/> -->
+            <tx:method name="load*" read-only="true"/>
+            <tx:method name="save*" read-only="false"/>
+            <tx:method name="update*" read-only="false"/>
+            <tx:method name="*" />
+        </tx:attributes>
+    </tx:advice>
+    
+    <!-- auto load the calsses -->
+ 	<context:component-scan base-package="org.omega.crawler">
+    	<context:include-filter type="regex" expression=".*Service"/>
+	</context:component-scan>
+
+     <!-- enables scanning for @Transactional annotations -->
+<!--     <tx:annotation-driven /> -->
+
+	
+    
+    
+ 
+	
+</beans>

@@ -18,29 +18,11 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 public class BitcointalkAnnCrawler {
 
 	public static void main(String[] args) throws Exception {
-		String crawlStorageFolder = "/storage/crawler4j";
-        int numberOfCrawlers = 1;
-
-        CrawlConfig config = new CrawlConfig();
-        config.setCrawlStorageFolder(crawlStorageFolder);
-        config.setIncludeHttpsPages(true);
-        config.setMaxDepthOfCrawling(0);
-
-        PageFetcher pageFetcher = new PageFetcher(config);
-        RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
-        RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
-        CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
-
-        controller.addSeed("https://bitcointalk.org/index.php?board=159.0");
-//        for (int i=0; i<1500; i=i+40) {
-//        	controller.addSeed("https://bitcointalk.org/index.php?board=159."+i);
-//        }
-       
-
-        controller.start(MyCrawler.class, numberOfCrawlers);
+        
+        BitcointalkAnnCrawler annCrawler = new BitcointalkAnnCrawler();
+        annCrawler.fectchAnnCoins();
         
         Collections.sort(MyCrawler.annCoins);
-        
         
         StringBuilder coinsHtml = new StringBuilder();
         
@@ -65,7 +47,29 @@ public class BitcointalkAnnCrawler {
         
         raf.write(res.getBytes());
         raf.close();
-        
+	}
+	
+	public void fectchAnnCoins() throws Exception {
+		String crawlStorageFolder = "/storage/crawler4j";
+        int numberOfCrawlers = 1;
+
+        CrawlConfig config = new CrawlConfig();
+        config.setCrawlStorageFolder(crawlStorageFolder);
+        config.setIncludeHttpsPages(true);
+        config.setMaxDepthOfCrawling(0);
+
+        PageFetcher pageFetcher = new PageFetcher(config);
+        RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
+        RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
+        CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
+
+        controller.addSeed("https://bitcointalk.org/index.php?board=159.0");
+//        for (int i=0; i<1500; i=i+40) {
+//        	controller.addSeed("https://bitcointalk.org/index.php?board=159."+i);
+//        }
+       
+
+        controller.start(MyCrawler.class, numberOfCrawlers);
         
 	}
 	
