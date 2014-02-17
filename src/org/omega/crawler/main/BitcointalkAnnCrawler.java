@@ -48,7 +48,7 @@ public class BitcointalkAnnCrawler {
         	coinsHtml.append(coin.toHtml());
         }
         
-        File templateFile = new File("ann-coins.html");
+        File templateFile = new File(BitcointalkAnnCrawler.class.getResource("/ann-coins.html").getPath());
 		BufferedReader br = new BufferedReader(new FileReader(templateFile));
 		
 		StringBuilder templateBuilder = new StringBuilder();
@@ -60,7 +60,7 @@ public class BitcointalkAnnCrawler {
 		
 		String res = templateBuilder.toString().replace("${content}", coinsHtml.toString());
         
-        RandomAccessFile raf = new RandomAccessFile("/work/ann-coins.html", "rw");
+        RandomAccessFile raf = new RandomAccessFile("D:/storage/ann-coins.html", "rw");
         raf.seek(0);
         
         raf.write(res.getBytes());
