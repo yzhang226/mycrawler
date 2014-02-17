@@ -1,5 +1,9 @@
 package org.omega.crawler.common;
 
-public class Utils {
+public final class Utils {
 
+	public static boolean isNotEmpty(String str) {
+		return str != null && str.trim().length() > 0;
+	}
+	
 }

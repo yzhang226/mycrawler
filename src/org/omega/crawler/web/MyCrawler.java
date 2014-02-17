@@ -1,7 +1,12 @@
 package org.omega.crawler.web;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.swing.text.html.parser.TagElement;
@@ -9,6 +14,8 @@ import javax.swing.text.html.parser.TagElement;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
+import org.omega.crawler.bean.AnnCoinBean;
+import org.omega.crawler.common.Utils;
 
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -17,23 +24,16 @@ import edu.uci.ics.crawler4j.url.WebURL;
 
 public class MyCrawler extends WebCrawler {
 
-	private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|bmp|gif|jpe?g" 
-														+ "|png|tiff?|mid|mp2|mp3|mp4"
-														+ "|wav|avi|mov|mpeg|ram|m4v|pdf"
-														+ "|rm|smil|wmv|swf|wma|zip|rar|gz))$");
+	public final static List<AnnCoinBean> annCoins = new ArrayList<AnnCoinBean>();
+	
 	// https://bitcointalk.org/index.php?topic=454848.0
 	private final static Pattern TALK_PATTER = Pattern.compile("^https.+bitcointalk.org.index.php.topic.\\d+.\\d$");
 
-	/**
-	 * You should implement this function to specify whether the given url
-	 * should be crawled or not (based on your crawling logic).
-	 */
 	@Override
 	public boolean shouldVisit(WebURL url) {
 		String href = url.getURL().toLowerCase();
 		
 		return TALK_PATTER.matcher(href).matches();
-//		return !FILTERS.matcher(href).matches() && href.startsWith("http://www.ics.uci.edu/");
 	}
 
 	/**
@@ -48,18 +48,14 @@ public class MyCrawler extends WebCrawler {
 
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
-//			String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
 			
 			HtmlCleaner cleaner = new HtmlCleaner();
 
 			TagNode node = cleaner.clean(html);
 			
-			// /html/body/div[2]/div[2]/table/tbody/tr[2]
-			
 			Object[] ns = null;
 			try {
-				// /html/body/div[2]/div[2]/table/tbody/tr
 				ns = node.evaluateXPath("//body/div[2]/div[2]/table/tbody/tr");
 			} catch (XPatherException e) {
 				e.printStackTrace();
@@ -72,7 +68,6 @@ public class MyCrawler extends WebCrawler {
 					List<TagNode> cr = n.getChildTagList();
 					
 					
-					// /html/body/div[2]/div[2]/table/tbody/tr[4]/td[3]/b/span/a
 					TagNode topicNode = null;
 					try {
 						Object[] ns2 = cr.get(2).evaluateXPath("//span/a");
@@ -84,31 +79,44 @@ public class MyCrawler extends WebCrawler {
 					}
 					
 					if (topicNode != null) {
-						System.out.print("Title: " + topicNode.getText().toString().trim() + ",\t");
-						
 						String link = topicNode.getAttributeByName("href");
-						System.out.print("Link: " + link + ",\t"); 
 						
+						AnnCoinBean anncoin = new AnnCoinBean();
+						
+						anncoin.setTitle(topicNode.getText().toString().trim());
+						anncoin.setLink(topicNode.getAttributeByName("href"));
 						
 						TopicPage cp = new TopicPage(link);
-						System.out.print("Public Date: " + cp.getPublishDate() + ",\t");
+						String date = cp.getPublishDate();
+						if (Utils.isNotEmpty(date)) {
+							// January 21, 2014, 09:01:57 PM
+							// MMMMM dd, yyyy, KK:mm:ss a
+							SimpleDateFormat sdf = new SimpleDateFormat("MMMMM dd, yyyy, KK:mm:ss a");
+							Date d;
+							try {
+								d = sdf.parse(date);
+								anncoin.setPublishDate(d);
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+							
+							anncoin.setPublishContent(cp.getSubjectContentHtml());
+						}
 						
-						System.out.print("Topic Id: " + link.substring(link.indexOf('=') + 1) + ",\t");
+						anncoin.setTopicid(Integer.valueOf(link.substring(link.indexOf('=') + 1, link.lastIndexOf('.'))));
 						
 						TagNode authorNode = (TagNode) cr.get(3).getChildTagList().get(0);
-						System.out.print("Author: " + authorNode.getText().toString().trim() + ",\t"); 
+						anncoin.setAuthor(authorNode.getText().toString().trim());
 						
 						String replies = cr.get(4).getText().toString().trim();
-						System.out.print("Replies: " + replies + ",\t"); 
+						if (Utils.isNotEmpty(replies)) anncoin.setReplies(Integer.valueOf(replies));
 						
 						if (cr.size() > 5)  {
 							String views = cr.get(5).getText().toString().trim();
-							System.out.print("Views: " + views + ",\t"); 
+							if (Utils.isNotEmpty(views)) anncoin.setViews(Integer.valueOf(views));
 						}
 						
-//						if (cr.size() > 6) System.out.print("Last post: " + cr.get(6).getText() + ",\t"); 
-						
-						System.out.println();
+						annCoins.add(anncoin);
 					}
 					
 					
