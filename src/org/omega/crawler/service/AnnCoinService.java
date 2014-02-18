@@ -1,5 +1,6 @@
 package org.omega.crawler.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -18,7 +19,6 @@ public class AnnCoinService extends SimpleHibernateTemplate<AnnCoinBean, Integer
 	}
 	
 	public List<AnnCoinBean> findAnnCoins(Page<AnnCoinBean> page) {
-		
 		String hql = "from AnnCoinBean ann";
 		
 		hql = Utils.getOrderHql(page, hql, "ann");
@@ -27,6 +27,23 @@ public class AnnCoinService extends SimpleHibernateTemplate<AnnCoinBean, Integer
 		
 		return page.getResult();
 	}
+	
+	public List<Integer> findParsedTopicids() {
+//		String hql = " select new AnnCoinBean(ann.topicid) from AnnCoinBean ann where ann.isParsed is true";
+		String hql = " from AnnCoinBean ann where ann.isParsed is true";
+		List<AnnCoinBean> parsedAnns = find(hql);
+		
+		List<Integer> topicids = new ArrayList<>();
+		for (AnnCoinBean ann : parsedAnns) {
+			if (ann.getPublishDate() != null) {
+				topicids.add(ann.getTopicid());
+			}
+		}
+		
+		return topicids;
+	}
+	
+	
 	
 	
 }

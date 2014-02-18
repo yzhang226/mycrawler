@@ -1,7 +1,5 @@
 package org.omega.crawler.web;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.htmlcleaner.HtmlCleaner;
@@ -31,6 +29,21 @@ public class TopicPage {
 		Object[] ns = null;
 		try {
 			ns = page.evaluateXPath("//body/div[2]/form/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td[2]/table/tbody/tr/td[2]/div[2]/span");
+			if (ns == null || ns.length == 0) {
+				ns = page.evaluateXPath("//body/div[2]/form/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td[2]/table/tbody/tr/td[2]/div[2]");
+				
+				
+				System.out.print("\t\tsecond date time is ");
+				if (ns != null && ns.length > 0) {
+					TagNode n = (TagNode) ns[0];
+					System.out.print(n.getText().toString() + ".");
+				} else {
+					System.out.print(", url is " + url);
+				}
+				
+				System.out.println();
+				
+			}
 		} catch (XPatherException e) {
 			e.printStackTrace();
 		}
@@ -38,7 +51,7 @@ public class TopicPage {
 		String cont = "";
 		if (ns != null && ns.length > 0) {
 			TagNode n = (TagNode) ns[0];
-			cont = cleaner.getInnerHtml(n);
+			cont = n.getText().toString();
 		}
 		
 		return cont;

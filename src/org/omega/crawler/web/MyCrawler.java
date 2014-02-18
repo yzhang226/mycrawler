@@ -86,22 +86,23 @@ public class MyCrawler extends WebCrawler {
 						anncoin.setTitle(topicNode.getText().toString().trim());
 						anncoin.setLink(topicNode.getAttributeByName("href"));
 						
-						TopicPage cp = new TopicPage(link);
-						String date = cp.getPublishDate();
-						if (Utils.isNotEmpty(date)) {
-							// January 21, 2014, 09:01:57 PM
-							// MMMMM dd, yyyy, KK:mm:ss a
-							SimpleDateFormat sdf = new SimpleDateFormat("MMMMM dd, yyyy, KK:mm:ss a");
-							Date d;
-							try {
-								d = sdf.parse(date);
-								anncoin.setPublishDate(d);
-							} catch (ParseException e) {
-								e.printStackTrace();
-							}
-							
-							anncoin.setPublishContent(cp.getSubjectContentHtml());
-						}
+//						TopicPage cp = new TopicPage(link);
+//						
+//						String date = cp.getPublishDate();
+//						if (Utils.isNotEmpty(date)) {
+//							// January 21, 2014, 09:01:57 PM
+//							// MMMMM dd, yyyy, KK:mm:ss a
+//							SimpleDateFormat sdf = new SimpleDateFormat("MMMMM dd, yyyy, KK:mm:ss a");
+//							Date d;
+//							try {
+//								d = sdf.parse(date);
+//								anncoin.setPublishDate(d);
+//							} catch (ParseException e) {
+//								e.printStackTrace();
+//							}
+//							
+//							anncoin.setPublishContent(cp.getSubjectContentHtml());
+//						}
 						
 						anncoin.setTopicid(Integer.valueOf(link.substring(link.indexOf('=') + 1, link.lastIndexOf('.'))));
 						

@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class BaseAnnCoinBean implements Comparable<BaseAnnCoinBean>, Serializable {
+public class BaseAnnCoinBean implements Serializable {
 	
 	private static final long serialVersionUID = -5430310744786224042L;
 	
@@ -100,21 +100,21 @@ public class BaseAnnCoinBean implements Comparable<BaseAnnCoinBean>, Serializabl
 		return sb.toString();
 	}
 	
-	@Override
-	public int compareTo(BaseAnnCoinBean o) {
-		if (this == o) {
-			return 0;
-		}
-		
-		if (o == null || o.getPublishDate() == null) {
-			return 1;
-		}
-		
-		if (this.getPublishDate() == null && o.getPublishDate() != null) {
-			return -1;
-		}
-		
-		return (int) (this.getPublishDate().getTime() - o.getPublishDate().getTime());
-	}
+//	@Override
+//	public int compareTo(BaseAnnCoinBean o) {
+//		if (this == o) {
+//			return 0;
+//		}
+//		
+//		if (o == null || o.getPublishDate() == null) {
+//			return 1;
+//		}
+//		
+//		if (this.getPublishDate() == null && o.getPublishDate() != null) {
+//			return -1;
+//		}
+//		
+//		return (int) (this.getPublishDate().getTime() - o.getPublishDate().getTime());
+//	}
 	
 }

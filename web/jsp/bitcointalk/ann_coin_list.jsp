@@ -124,13 +124,13 @@
 										<c:forEach var="ann" items="${anns }">
 											<tr class="odd gradeX">
 	                                         	<td>${ann.publishDate }</td>
-	                                         	<td>${ann.title }</td>
+	                                         	<td> <a href="${ann.link }" target="_blank"> ${ann.title } </a> </td>
 	                                         	<td>${ann.author }</td>
 												<td>${ann.replies }</td>
 												<td>${ann.views }</td>
 											</tr>
 										</c:forEach>
-										<c:if test="${empty sips }">
+										<c:if test="${empty anns }">
 											<tr>
 												<td colspan="5" class="no-data">No Data</td>
 											</tr>

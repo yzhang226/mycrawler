@@ -7,6 +7,10 @@ public class AnnCoinBean extends BaseAnnCoinBean {
 
 	private static final long serialVersionUID = 1L;
 	
+	public AnnCoinBean() { }
 	
+	public AnnCoinBean(Integer topicid) {
+		setTopicid(topicid);
+	}
 	
 }

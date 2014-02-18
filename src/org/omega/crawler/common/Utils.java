@@ -8,12 +8,17 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class Utils {
 
 	private static final String HEX_ALPH = "0123456789ABCDEF";
 	private static String WEB_DEPLOY_PATH = null;
 	private static String CARD_IMAGE_PATH = null;
+	
+	private static final Pattern TODAY_DATE_PATTERN = Pattern.compile("(\\d{2}+):(\\d{2}+):(\\d{2}+) (\\w{2}+)");
+	
 	
 	public static boolean isEmpty(String text) {
 		return text == null || text.trim().length() == 0;
@@ -41,6 +46,34 @@ public final class Utils {
 		}
 		return contained;
 	}
+	
+	public static Date parseTodayText(String dateText) {
+		Date today = new Date(System.currentTimeMillis());
+		Calendar cal = Calendar.getInstance();
+		cal.clear();
+		cal.setTime(today);
+		
+		Matcher m = TODAY_DATE_PATTERN.matcher(dateText);
+		
+		Date postDate = null;
+		if (m.find()) {
+			int hh = Integer.valueOf(m.group(1));
+			int mm = Integer.valueOf(m.group(2));
+			int ss = Integer.valueOf(m.group(3));
+			
+			String amorpm = m.group(4);
+			if (amorpm.equalsIgnoreCase("PM")) { hh = hh + 12; }
+			
+			cal.set(Calendar.HOUR_OF_DAY, hh);
+			cal.set(Calendar.MINUTE, mm);
+			cal.set(Calendar.SECOND, ss);
+			
+			postDate = cal.getTime();
+		}
+		
+		return postDate;
+	}
+	
 	
 	public static String convertToString(List<Integer> list) {
 		StringBuilder sb = new StringBuilder();

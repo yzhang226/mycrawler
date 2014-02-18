@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="org.omega.crawler.bean.AnnCoinBean" table="ann_coin">
+    <class name="org.omega.crawler.bean.AnnCoinBean" table="ann_coin" dynamic-insert="true" dynamic-update="true">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />
@@ -15,7 +15,7 @@
             <column name="author" length="60" />
         </property>
         <property name="title" type="string">
-            <column name="title" length="180" />
+            <column name="title" length="255" />
         </property>
         <property name="link" type="string">
             <column name="link" length="180" />

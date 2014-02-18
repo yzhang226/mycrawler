@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.RandomAccessFile;
 import java.util.Collections;
+import java.util.List;
 
 import org.omega.crawler.bean.AnnCoinBean;
 import org.omega.crawler.web.MyCrawler;
@@ -22,7 +23,7 @@ public class BitcointalkAnnCrawler {
         BitcointalkAnnCrawler annCrawler = new BitcointalkAnnCrawler();
         annCrawler.fectchAnnCoins();
         
-        Collections.sort(MyCrawler.annCoins);
+//        Collections.sort(MyCrawler.annCoins);
         
         StringBuilder coinsHtml = new StringBuilder();
         
@@ -49,9 +50,9 @@ public class BitcointalkAnnCrawler {
         raf.close();
 	}
 	
-	public void fectchAnnCoins() throws Exception {
+	public List<AnnCoinBean> fectchAnnCoins() throws Exception {
 		String crawlStorageFolder = "/storage/crawler4j";
-        int numberOfCrawlers = 1;
+        int numberOfCrawlers = 8;
 
         CrawlConfig config = new CrawlConfig();
         config.setCrawlStorageFolder(crawlStorageFolder);
@@ -64,13 +65,20 @@ public class BitcointalkAnnCrawler {
         CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
         controller.addSeed("https://bitcointalk.org/index.php?board=159.0");
-//        for (int i=0; i<1500; i=i+40) {
-//        	controller.addSeed("https://bitcointalk.org/index.php?board=159."+i);
-//        }
+        // https://bitcointalk.org/index.php?board=159.0
+        // 39
+        int gap = 10, group = 3;
+        int start = 0; // gap * 0;
+        int end = 40; // gap * (group + 1);
+        for (int i=start; i<end; i++) {
+        	int sub = i * 40;
+        	controller.addSeed("https://bitcointalk.org/index.php?board=159."+sub);
+        }
        
 
         controller.start(MyCrawler.class, numberOfCrawlers);
         
+        return MyCrawler.annCoins;
 	}
 	
 }
