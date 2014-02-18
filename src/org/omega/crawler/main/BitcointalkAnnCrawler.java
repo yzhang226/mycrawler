@@ -21,7 +21,7 @@ public class BitcointalkAnnCrawler {
 	public static void main(String[] args) throws Exception {
         
         BitcointalkAnnCrawler annCrawler = new BitcointalkAnnCrawler();
-        annCrawler.fectchAnnCoins();
+        annCrawler.fectchAnnCoins(0);
         
 //        Collections.sort(MyCrawler.annCoins);
         
@@ -50,7 +50,7 @@ public class BitcointalkAnnCrawler {
         raf.close();
 	}
 	
-	public List<AnnCoinBean> fectchAnnCoins() throws Exception {
+	public List<AnnCoinBean> fectchAnnCoins(int group) throws Exception {
 		String crawlStorageFolder = "/storage/crawler4j";
         int numberOfCrawlers = 8;
 
@@ -64,15 +64,15 @@ public class BitcointalkAnnCrawler {
         RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
         CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
-        controller.addSeed("https://bitcointalk.org/index.php?board=159.0");
+//        controller.addSeed("https://bitcointalk.org/index.php?board=159.0");
         // https://bitcointalk.org/index.php?board=159.0
         // 39
-        int gap = 10, group = 3;
-        int start = 0; // gap * 0;
-        int end = 40; // gap * (group + 1);
+        int gap = 10;
+        int start = gap * group;
+        int end = gap * (group + 1);
         for (int i=start; i<end; i++) {
         	int sub = i * 40;
-        	controller.addSeed("https://bitcointalk.org/index.php?board=159."+sub);
+        	controller.addSeed("https://bitcointalk.org/index.php?board=67."+sub);
         }
        
 

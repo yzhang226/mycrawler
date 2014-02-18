@@ -40,27 +40,34 @@ public class BitcointalkController {
 		boolean success = true;
 		try {
 			BitcointalkAnnCrawler annCrawler = new BitcointalkAnnCrawler();
-			List<AnnCoinBean> anns = annCrawler.fectchAnnCoins();
 			
-			List<Integer> parsedTopicids = annCoinService.findParsedTopicids();
-			
-			List<AnnCoinBean> undbAnns = new ArrayList<>();
-			for (AnnCoinBean ann : anns) {
-				if (!parsedTopicids.contains(ann.getTopicid())) {
-					undbAnns.add(ann);
+			for (int i=0; i<5; i++) {
+				List<AnnCoinBean> anns = annCrawler.fectchAnnCoins(i);
+				
+				List<Integer> parsedTopicids = annCoinService.findParsedTopicids();
+				
+				List<AnnCoinBean> undbAnns = new ArrayList<>();
+				for (AnnCoinBean ann : anns) {
+					if (!parsedTopicids.contains(ann.getTopicid())) {
+						undbAnns.add(ann);
+					}
 				}
+				
+				CountDownLatch counter = new CountDownLatch(1);
+				new FetchAllAnnCoinsThread(undbAnns, counter).start();
+				counter.await();
+				
+				for (AnnCoinBean ann : undbAnns) {
+					if (ann.getPublishDate() != null) {
+						ann.setIsParsed(Boolean.TRUE);
+						annCoinService.saveOrUpdate(ann);
+					}
+				}
+				
+				Thread.sleep(30 * 1000);
 			}
 			
-			CountDownLatch counter = new CountDownLatch(1);
-			new FetchAllAnnCoinsThread(undbAnns, counter).start();
-			counter.await();
 			
-			for (AnnCoinBean ann : undbAnns) {
-				if (ann.getPublishDate() != null) {
-					ann.setIsParsed(Boolean.TRUE);
-					annCoinService.saveOrUpdate(ann);
-				}
-			}
 			
 		} catch (Throwable e) {
 			log.error("Init Ann Board error.", e);

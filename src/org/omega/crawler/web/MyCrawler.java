@@ -44,7 +44,7 @@ public class MyCrawler extends WebCrawler {
 	public void visit(Page page) {
 		
 		String url = page.getWebURL().getURL();
-		System.out.println("URL: " + url);
+		System.out.print("URL: " + url);
 
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
@@ -62,11 +62,10 @@ public class MyCrawler extends WebCrawler {
 			}
 			
 			if (ns != null && ns.length > 0) {
-				System.out.println("ns is " + ns + ", length is " + ns.length);
+//				System.out.println("ns is " + ns + ", length is " + ns.length);
 				for (Object obj : ns) {
 					TagNode n = (TagNode) obj;
 					List<TagNode> cr = n.getChildTagList();
-					
 					
 					TagNode topicNode = null;
 					try {
@@ -79,45 +78,33 @@ public class MyCrawler extends WebCrawler {
 					}
 					
 					if (topicNode != null) {
-						String link = topicNode.getAttributeByName("href");
+						String topicTitle = topicNode.getText().toString().trim();
 						
-						AnnCoinBean anncoin = new AnnCoinBean();
-						
-						anncoin.setTitle(topicNode.getText().toString().trim());
-						anncoin.setLink(topicNode.getAttributeByName("href"));
-						
-//						TopicPage cp = new TopicPage(link);
-//						
-//						String date = cp.getPublishDate();
-//						if (Utils.isNotEmpty(date)) {
-//							// January 21, 2014, 09:01:57 PM
-//							// MMMMM dd, yyyy, KK:mm:ss a
-//							SimpleDateFormat sdf = new SimpleDateFormat("MMMMM dd, yyyy, KK:mm:ss a");
-//							Date d;
-//							try {
-//								d = sdf.parse(date);
-//								anncoin.setPublishDate(d);
-//							} catch (ParseException e) {
-//								e.printStackTrace();
-//							}
-//							
-//							anncoin.setPublishContent(cp.getSubjectContentHtml());
-//						}
-						
-						anncoin.setTopicid(Integer.valueOf(link.substring(link.indexOf('=') + 1, link.lastIndexOf('.'))));
-						
-						TagNode authorNode = (TagNode) cr.get(3).getChildTagList().get(0);
-						anncoin.setAuthor(authorNode.getText().toString().trim());
-						
-						String replies = cr.get(4).getText().toString().trim();
-						if (Utils.isNotEmpty(replies)) anncoin.setReplies(Integer.valueOf(replies));
-						
-						if (cr.size() > 5)  {
-							String views = cr.get(5).getText().toString().trim();
-							if (Utils.isNotEmpty(views)) anncoin.setViews(Integer.valueOf(views));
+						if (topicTitle.toLowerCase().contains("ann]")) {
+							String link = topicNode.getAttributeByName("href");
+							
+							AnnCoinBean anncoin = new AnnCoinBean();
+							
+							anncoin.setTitle(topicTitle);
+							anncoin.setLink(topicNode.getAttributeByName("href"));
+							
+							anncoin.setTopicid(Integer.valueOf(link.substring(link.indexOf('=') + 1, link.lastIndexOf('.'))));
+							
+							TagNode authorNode = (TagNode) cr.get(3).getChildTagList().get(0);
+							anncoin.setAuthor(authorNode.getText().toString().trim());
+							
+							String replies = cr.get(4).getText().toString().trim();
+							if (Utils.isNotEmpty(replies)) anncoin.setReplies(Integer.valueOf(replies));
+							
+							if (cr.size() > 5)  {
+								String views = cr.get(5).getText().toString().trim();
+								if (Utils.isNotEmpty(views)) anncoin.setViews(Integer.valueOf(views));
+							}
+							
+							annCoins.add(anncoin);
 						}
 						
-						annCoins.add(anncoin);
+						
 					}
 					
 					

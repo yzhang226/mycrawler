@@ -55,12 +55,7 @@ public class FetchAnnCoinThread extends Thread {
 					if (date.toLowerCase().contains("today")) {// Today at 12:39:37 AM
 						postDate = Utils.parseTodayText(date);
 					} else {
-						SimpleDateFormat sdf = new SimpleDateFormat("MMMMM dd, yyyy, hh:mm:ss aaa");
-						try {
-							postDate = sdf.parse(date);
-						} catch (ParseException e) {
-							e.printStackTrace();
-						}
+						postDate = Utils.parseDateText(date);
 					}
 					
 					ann.setPublishDate(postDate);

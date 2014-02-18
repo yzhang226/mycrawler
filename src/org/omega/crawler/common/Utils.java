@@ -3,11 +3,13 @@ package org.omega.crawler.common;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +19,7 @@ public final class Utils {
 	private static String WEB_DEPLOY_PATH = null;
 	private static String CARD_IMAGE_PATH = null;
 	
+	private static final Locale LOCALE_US = Locale.US;
 	private static final Pattern TODAY_DATE_PATTERN = Pattern.compile("(\\d{2}+):(\\d{2}+):(\\d{2}+) (\\w{2}+)");
 	
 	
@@ -45,6 +48,18 @@ public final class Utils {
 			}
 		}
 		return contained;
+	}
+	
+	public static Date parseDateText(String dateText) {
+		Date postDate = null;
+		SimpleDateFormat sdf = new SimpleDateFormat("MMMMM dd, yyyy, hh:mm:ss aaa", LOCALE_US);
+		try {
+			postDate = sdf.parse(dateText);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		return postDate;
 	}
 	
 	public static Date parseTodayText(String dateText) {
@@ -222,6 +237,9 @@ public final class Utils {
 	
 	public static void main(String[] args) {
 		System.out.println(encryptWithMd5("ubi6La5z"));
+		String text = "February 17, 2014, 06:16:06 PM";
+		
+		System.out.println(Utils.parseDateText(text));
 	}
 	
 }
