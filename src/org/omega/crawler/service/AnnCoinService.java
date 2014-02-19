@@ -28,6 +28,19 @@ public class AnnCoinService extends SimpleHibernateTemplate<AnnCoinBean, Integer
 		return page.getResult();
 	}
 	
+	public List<AnnCoinBean> searchAnnCoins(Page<AnnCoinBean> page, String searchField, String searchValue) {
+		String hql = "from AnnCoinBean ann ";
+		
+		String sqlValue = Utils.convertToSqlMatchChars(searchValue);
+		
+		hql = hql + "where ann." + searchField + " like '" + sqlValue + "'";
+		hql = Utils.getOrderHql(page, hql, "ann");
+		
+		find(page, hql);
+		
+		return page.getResult();
+	}
+	
 	public List<Integer> findParsedTopicids() {
 //		String hql = " select new AnnCoinBean(ann.topicid) from AnnCoinBean ann where ann.isParsed is true";
 		String hql = " from AnnCoinBean ann where ann.isParsed is true";

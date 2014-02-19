@@ -1,9 +1,6 @@
 package org.omega.crawler.bitcointalk;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -17,11 +14,11 @@ import org.omega.crawler.common.Utils;
 import org.omega.crawler.main.BitcointalkAnnCrawler;
 import org.omega.crawler.service.AnnCoinService;
 import org.omega.crawler.web.FetchAllAnnCoinsThread;
-import org.omega.crawler.web.TopicPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -35,14 +32,16 @@ public class BitcointalkController {
 	
 	@RequestMapping("/initannboard.do")
 	@ResponseBody
-	public String initAnnBoard(Model model, HttpServletRequest request) {
+	public String initAnnBoard(Model model, HttpServletRequest request, 
+								@RequestParam String baseSeedUrl, 
+								@RequestParam int groups ) {
 		String resp = null;
 		boolean success = true;
 		try {
 			BitcointalkAnnCrawler annCrawler = new BitcointalkAnnCrawler();
 			
-			for (int i=0; i<5; i++) {
-				List<AnnCoinBean> anns = annCrawler.fectchAnnCoins(i);
+			for (int i=0; i<groups; i++) {
+				List<AnnCoinBean> anns = annCrawler.fectchAnnCoins(baseSeedUrl, i);
 				
 				List<Integer> parsedTopicids = annCoinService.findParsedTopicids();
 				
@@ -81,7 +80,9 @@ public class BitcointalkController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/showanncoins.do")
-	public String toAnnBoard(Model model, HttpServletRequest request) {
+	public String toAnnBoard(Model model, HttpServletRequest request, 
+							@RequestParam(required=false) String searchField, 
+							@RequestParam(required=false) String searchValue ) {
 		String jsp = "bitcointalk/ann_coin_list";
 		
 		Page<AnnCoinBean> params = (Page<AnnCoinBean>) request.getAttribute("params");
@@ -91,7 +92,12 @@ public class BitcointalkController {
 			params.setOrder(Page.DESC);
 		}
 		
-		List<AnnCoinBean> anns = annCoinService.findAnnCoins(params);
+		List<AnnCoinBean> anns = null;
+		if (Utils.isNotEmpty(searchField) && Utils.isNotEmpty(searchValue)) {
+			anns = annCoinService.searchAnnCoins(params, searchField, searchValue.trim());
+		} else {
+			anns = annCoinService.findAnnCoins(params);
+		}
 		
 		model.addAttribute("anns", anns);
 		model.addAttribute("params", params);

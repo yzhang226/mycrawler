@@ -50,6 +50,23 @@ public final class Utils {
 		return contained;
 	}
 	
+	public static String convertToSqlMatchChars(String searchValue) {
+		String xchar = searchValue;
+		if (xchar.contains("*")) {
+			while (xchar.startsWith("*")) {
+				xchar = xchar.substring(1);
+			}
+			while (xchar.endsWith("*")) {
+				xchar = xchar.substring(0, xchar.length() - 1);
+			}
+			xchar = xchar.replaceAll("\\*", "%");
+		}
+		
+		xchar = "%" + xchar + "%";
+		
+		return xchar;
+	}
+	
 	public static Date parseDateText(String dateText) {
 		Date postDate = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("MMMMM dd, yyyy, hh:mm:ss aaa", LOCALE_US);

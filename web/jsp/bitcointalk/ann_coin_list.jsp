@@ -22,10 +22,26 @@
 		
 	});
 	
+	function searchByField() {
+		var searchValue = $('#searchValue').val();
+		
+		if (isNullOrUndefined(searchValue) || searchValue.trim() == '') {
+			// alert('Please input search value!');
+		}
+		var url = combineFullUrlDefault(null);
+		
+		window.location.href = url;
+	}
+	
 	function reInitAnnCoins() {
 		
 		var url = getFullUrl("/jsp/bitcointalk/initannboard.do");
+		var baseSeedUrl = "https://bitcointalk.org/index.php?board=67.";
+		var groups = 4;
 		
+		url = url + "?baseSeedUrl=" + baseSeedUrl + "&groups=" + groups;
+		
+		alert('url is ' + url);
 		$.ajax({
 				url : url,
 				success : function(data) {
@@ -34,7 +50,6 @@
 					
 					if (resp.success == 'true') {
 						
-						// var url = getFullUrl('/jsp/cards/showByNotStatus.do?statusId=' + statusId + '&targetPage=' + targetPage + '&pageNo=' + $('#pageNo').val());
 						var url = combineFullUrlDefault(null);
 						window.location.href=url;
 					}
@@ -48,7 +63,7 @@
 </head>
 
 <body class="page-header-fixed">
-		<input type="hidden" id="_required_params_" value="showSeqText,callingDate">
+		<input type="hidden" id="_required_params_" value="searchField,searchValue">
 		
 		<!-- BEGIN PAGE -->
 		<div class="page-content">
@@ -90,11 +105,23 @@
 							<div class="portlet-body">
 							<div class="clearfix">
 								
-					           <div class="btn-group caption" style="vertical-align: top;">
+					           <div class="btn-group pull-right" style="vertical-align: top;">
 									<div class="controls">
 					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="reInitAnnCoins();">ReInit AnnCoins</button>
 				                  	</div>
-					            </div>								
+					           </div>
+					           
+					           <div class="control-group">
+									<div class="controls" >
+						                <select id="searchField" name="searchField" class="span5 m-wrap" data-placeholder="Choose a Category"  style="width: 190px" tabindex="1">
+											<option value="title" ${searchField == 'title' ? "selected" : "" }>Title</option>
+									  	</select>
+									  	<span style="font-size: 16px;"> : </span>
+									  	<input type="text" id="searchValue" name="searchValue" value="${searchValue }" class="span5 m-wrap medium" style="width: 100px" title="CAN use asterisk(*) match any chars "  />
+									  	&nbsp; &nbsp;
+									  	<button type="button" onclick="searchByField();" style="width: 70px; vertical-align: top;" class="btn blue m-wrap">Search</button>
+				                  	</div>
+				           		</div>							
 								
 								
 							</div>

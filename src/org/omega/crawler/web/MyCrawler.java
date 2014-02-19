@@ -1,16 +1,11 @@
 package org.omega.crawler.web;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
-import javax.swing.text.html.parser.TagElement;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
@@ -23,7 +18,9 @@ import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
 
 public class MyCrawler extends WebCrawler {
-
+	
+	private static final Log log = LogFactory.getLog(MyCrawler.class);
+	
 	public final static List<AnnCoinBean> annCoins = new ArrayList<AnnCoinBean>();
 	
 	// https://bitcointalk.org/index.php?topic=454848.0
@@ -44,7 +41,7 @@ public class MyCrawler extends WebCrawler {
 	public void visit(Page page) {
 		
 		String url = page.getWebURL().getURL();
-		System.out.print("URL: " + url);
+		System.out.println("Visit page url: " + url);
 
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
@@ -62,8 +59,9 @@ public class MyCrawler extends WebCrawler {
 			}
 			
 			if (ns != null && ns.length > 0) {
-//				System.out.println("ns is " + ns + ", length is " + ns.length);
+				
 				for (Object obj : ns) {
+					try {
 					TagNode n = (TagNode) obj;
 					List<TagNode> cr = n.getChildTagList();
 					
@@ -106,12 +104,14 @@ public class MyCrawler extends WebCrawler {
 						
 						
 					}
-					
+					} catch (Exception e) {
+						log.error("extract topic node error.", e);
+					}
 					
 				}
 			}
 			
-			System.out.println("\ttitle: " + htmlParseData.getTitle());
+//			System.out.println("\ttitle: " + htmlParseData.getTitle());
 		}
 	}
 
