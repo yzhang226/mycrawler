@@ -38,7 +38,7 @@
 			<ul class="page-sidebar-menu">
 				
 				<li class="">
-					<a href="<%=request.getContextPath() %>/jsp/route/show.do" target="rightFrame"> <i class="icon-globe"></i> <span class="title">Route Management</span> <span class="arrow "></span> </a>
+					<a href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" target="rightFrame"> <i class="icon-globe"></i> <span class="title">Ann Management</span> <span class="arrow "></span> </a>
 					<ul class="sub-menu">
 						<li>
 							<a href="<%=request.getContextPath() %>/jsp/route/toAddRoutePage.do" target="rightFrame"> <i class="icon-plus"></i> Add New Route</a>
@@ -58,7 +58,7 @@
 					</ul>
 				</li>
 				<li class="">
-					<a href="<%=request.getContextPath() %>/jsp/cdr/show.do?order=desc&orderBy=callDate" target="rightFrame"> <i class="icon-bell"></i> <span class="title">CDR Management</span> <span class="arrow "></span> </a>
+					<a href="<%=request.getContextPath() %>//jsp/bitcointalk/showtalktopics.do" target="rightFrame"> <i class="icon-bell"></i> <span class="title">Talk Management</span> <span class="arrow "></span> </a>
 					<ul class="sub-menu">
 						<li >
 							<a href="<%=request.getContextPath() %>/jsp/cdr/showByDay.do" target="rightFrame"> <i class="icon-bullhorn"></i> Calls Made per Day </a>

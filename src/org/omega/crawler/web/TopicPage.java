@@ -32,8 +32,6 @@ public class TopicPage {
 			if (ns == null || ns.length == 0) {
 				ns = page.evaluateXPath("//body/div[2]/form/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td[2]/table/tbody/tr/td[2]/div[2]");
 				
-				
-				System.out.print("\t\tsecond date time is ");
 				if (ns != null && ns.length > 0) {
 					TagNode n = (TagNode) ns[0];
 					System.out.print(n.getText().toString() + ".");
@@ -60,7 +58,7 @@ public class TopicPage {
 	public String getSubjectContentHtml() {
 		Object[] ns = null;
 		try {
-			ns = page.evaluateXPath("body/div[2]/form/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td[2]/div[@class='post']");
+			ns = page.evaluateXPath("//body/div[2]/form/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td[2]/div[@class='post']");
 		} catch (XPatherException e) {
 			e.printStackTrace();
 		}

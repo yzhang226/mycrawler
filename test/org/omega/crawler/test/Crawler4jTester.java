@@ -1,6 +1,6 @@
 package org.omega.crawler.test;
 
-import org.omega.crawler.web.MyCrawler;
+import org.omega.crawler.spider.AnnTopicSpider;
 
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
@@ -42,7 +42,7 @@ public class Crawler4jTester {
          * Start the crawl. This is a blocking operation, meaning that your code
          * will reach the line after this only when crawling is finished.
          */
-        controller.start(MyCrawler.class, numberOfCrawlers);    
+        controller.start(AnnTopicSpider.class, numberOfCrawlers);    
 }
 
 	

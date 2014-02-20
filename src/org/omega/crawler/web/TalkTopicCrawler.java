@@ -17,9 +17,9 @@ import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
 
-public class MyCrawler extends WebCrawler {
+public class TalkTopicCrawler extends WebCrawler {
 	
-	private static final Log log = LogFactory.getLog(MyCrawler.class);
+	private static final Log log = LogFactory.getLog(TalkTopicCrawler.class);
 	
 	public final static List<AnnCoinBean> annCoins = new ArrayList<AnnCoinBean>();
 	
@@ -78,29 +78,27 @@ public class MyCrawler extends WebCrawler {
 					if (topicNode != null) {
 						String topicTitle = topicNode.getText().toString().trim();
 						
-						if (topicTitle.toLowerCase().contains("ann]")) {
-							String link = topicNode.getAttributeByName("href");
-							
-							AnnCoinBean anncoin = new AnnCoinBean();
-							
-							anncoin.setTitle(topicTitle);
-							anncoin.setLink(topicNode.getAttributeByName("href"));
-							
-							anncoin.setTopicid(Integer.valueOf(link.substring(link.indexOf('=') + 1, link.lastIndexOf('.'))));
-							
-							TagNode authorNode = (TagNode) cr.get(3).getChildTagList().get(0);
-							anncoin.setAuthor(authorNode.getText().toString().trim());
-							
-							String replies = cr.get(4).getText().toString().trim();
-							if (Utils.isNotEmpty(replies)) anncoin.setReplies(Integer.valueOf(replies));
-							
-							if (cr.size() > 5)  {
-								String views = cr.get(5).getText().toString().trim();
-								if (Utils.isNotEmpty(views)) anncoin.setViews(Integer.valueOf(views));
-							}
-							
-							annCoins.add(anncoin);
+						String link = topicNode.getAttributeByName("href");
+						
+						AnnCoinBean anncoin = new AnnCoinBean();
+						
+						anncoin.setTitle(topicTitle);
+						anncoin.setLink(topicNode.getAttributeByName("href"));
+						
+						anncoin.setTopicid(Integer.valueOf(link.substring(link.indexOf('=') + 1, link.lastIndexOf('.'))));
+						
+						TagNode authorNode = (TagNode) cr.get(3).getChildTagList().get(0);
+						anncoin.setAuthor(authorNode.getText().toString().trim());
+						
+						String replies = cr.get(4).getText().toString().trim();
+						if (Utils.isNotEmpty(replies)) anncoin.setReplies(Integer.valueOf(replies));
+						
+						if (cr.size() > 5)  {
+							String views = cr.get(5).getText().toString().trim();
+							if (Utils.isNotEmpty(views)) anncoin.setViews(Integer.valueOf(views));
 						}
+						
+						annCoins.add(anncoin);
 						
 						
 					}

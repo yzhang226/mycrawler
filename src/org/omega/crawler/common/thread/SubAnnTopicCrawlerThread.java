@@ -1,4 +1,4 @@
-package org.omega.crawler.web;
+package org.omega.crawler.common.thread;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,20 +12,23 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.omega.crawler.bean.AnnCoinBean;
 import org.omega.crawler.common.Utils;
+import org.omega.crawler.web.TopicPage;
 
-public class FetchAnnCoinThread extends Thread {
+public class SubAnnTopicCrawlerThread extends Thread {
 
-	private static final Log log = LogFactory.getLog(FetchAnnCoinThread.class);
+	private static final Log log = LogFactory.getLog(SubAnnTopicCrawlerThread.class);
 	
 	
 	
 	private int no;
 	private AnnCoinBean ann;
+	private boolean isNeedContent;
 	private CountDownLatch latch;
 	
-	public FetchAnnCoinThread(int no, AnnCoinBean ann, CountDownLatch latch) {
+	public SubAnnTopicCrawlerThread(int no, AnnCoinBean ann, boolean isNeedContent, CountDownLatch latch) {
 		this.no = no;
 		this.ann = ann;
+		this.isNeedContent = isNeedContent;
 		this.latch = latch;
 	}
 	
@@ -59,7 +62,7 @@ public class FetchAnnCoinThread extends Thread {
 					}
 					
 					ann.setPublishDate(postDate);
-					ann.setPublishContent(cp.getSubjectContentHtml());
+					if (isNeedContent) ann.setPublishContent(cp.getSubjectContentHtml());
 				}
 			}
 			
