@@ -66,8 +66,6 @@ public class BitcointalkController {
 				Thread.sleep(30 * 1000);
 			}
 			
-			
-			
 		} catch (Throwable e) {
 			log.error("Init Ann Board error.", e);
 			
@@ -84,6 +82,35 @@ public class BitcointalkController {
 							@RequestParam(required=false) String searchField, 
 							@RequestParam(required=false) String searchValue ) {
 		String jsp = "bitcointalk/ann_coin_list";
+		
+		Page<AnnCoinBean> params = (Page<AnnCoinBean>) request.getAttribute("params");
+		
+		if (Utils.isEmpty(params.getOrderBy())) {
+			params.setOrderBy("publishDate");
+			params.setOrder(Page.DESC);
+		}
+		
+		List<AnnCoinBean> anns = null;
+		if (Utils.isNotEmpty(searchField) && Utils.isNotEmpty(searchValue)) {
+			anns = annCoinService.searchAnnCoins(params, searchField, searchValue.trim());
+		} else {
+			anns = annCoinService.findAnnCoins(params);
+		}
+		
+		model.addAttribute("anns", anns);
+		model.addAttribute("params", params);
+		model.addAttribute("searchField", searchField);
+		model.addAttribute("searchValue", searchValue);
+		
+		return jsp;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/showtalktopics.do")
+	public String showTalkTopics(Model model, HttpServletRequest request, 
+							@RequestParam(required=false) String searchField, 
+							@RequestParam(required=false) String searchValue ) {
+		String jsp = "bitcointalk/talk_topic_list";
 		
 		Page<AnnCoinBean> params = (Page<AnnCoinBean>) request.getAttribute("params");
 		

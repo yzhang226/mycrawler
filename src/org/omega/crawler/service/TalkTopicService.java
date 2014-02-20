@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
-import org.omega.crawler.bean.AnnCoinBean;
+import org.omega.crawler.bean.TalkTopicBean;
 import org.omega.crawler.common.Page;
 import org.omega.crawler.common.SimpleHibernateTemplate;
 import org.omega.crawler.common.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class AnnCoinService extends SimpleHibernateTemplate<AnnCoinBean, Integer> {
+public class TalkTopicService extends SimpleHibernateTemplate<TalkTopicBean, Integer> {
 
 	@Autowired
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-		this.entityClass = AnnCoinBean.class;
+		this.entityClass = TalkTopicBean.class;
 	}
 	
-	public List<AnnCoinBean> findAnnCoins(Page<AnnCoinBean> page) {
-		String hql = "from AnnCoinBean ann";
+	public List<TalkTopicBean> findTalkTopics(Page<TalkTopicBean> page) {
+		String hql = "from TalkTopicBean ann";
 		
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
@@ -28,13 +28,12 @@ public class AnnCoinService extends SimpleHibernateTemplate<AnnCoinBean, Integer
 		return page.getResult();
 	}
 	
-	public List<AnnCoinBean> searchAnnCoins(Page<AnnCoinBean> page, String searchField, String searchValue) {
+	public List<TalkTopicBean> searchTalkTopics(Page<TalkTopicBean> page, String searchField, String searchValue) {
 		String hql = "from AnnCoinBean ann ";
 		
 		String sqlValue = Utils.convertToSqlMatchChars(searchValue);
-		sqlValue = sqlValue.toLowerCase();
 		
-		hql = hql + "where lower(ann." + searchField + ") like '" + sqlValue + "'";
+		hql = hql + "where ann." + searchField + " like '" + sqlValue + "'";
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
 		find(page, hql);
@@ -43,15 +42,12 @@ public class AnnCoinService extends SimpleHibernateTemplate<AnnCoinBean, Integer
 	}
 	
 	public List<Integer> findParsedTopicids() {
-//		String hql = " select new AnnCoinBean(ann.topicid) from AnnCoinBean ann where ann.isParsed is true";
-		String hql = " from AnnCoinBean ann where ann.isParsed is true";
-		List<AnnCoinBean> parsedAnns = find(hql);
+		String hql = "select tt.topicid from TalkTopicBean tt where tt.isParsed is true";
+		List<Integer> parsedTopicids = find(hql);
 		
 		List<Integer> topicids = new ArrayList<>();
-		for (AnnCoinBean ann : parsedAnns) {
-			if (ann.getPublishDate() != null) {
-				topicids.add(ann.getTopicid());
-			}
+		for (Integer i : parsedTopicids) {
+			topicids.add(i);
 		}
 		
 		return topicids;

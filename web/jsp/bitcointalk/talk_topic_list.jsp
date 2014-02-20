@@ -117,7 +117,6 @@
 									<div class="controls" >
 						                <select id="searchField" name="searchField" class="span5 m-wrap" data-placeholder="Choose a Category"  style="width: 190px" tabindex="1">
 											<option value="title" ${searchField == 'title' ? "selected" : "" }>Title</option>
-											<option value="publishContent" ${searchField == 'publishContent' ? "selected" : "" }>Content</option>
 									  	</select>
 									  	<span style="font-size: 16px;"> : </span>
 									  	<input type="text" id="searchValue" name="searchValue" value="${searchValue }" class="span5 m-wrap medium" style="width: 100px" title="CAN use asterisk(*) match any chars "  />
