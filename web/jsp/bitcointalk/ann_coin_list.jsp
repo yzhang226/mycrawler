@@ -39,9 +39,10 @@
 		
 		var baseSeedUrl = "https://bitcointalk.org/index.php?board=159.";
 		// var baseSeedUrl = "https://bitcointalk.org/index.php?board=67.";
-		var groups = 4;
+		var startgroup = 0;
+		var endgroup = 2;
 		
-		url = url + "?baseSeedUrl=" + baseSeedUrl + "&groups=" + groups;
+		url = url + "?baseSeedUrl=" + baseSeedUrl + "&startgroup=" + startgroup + "&endgroup=" + endgroup;
 		
 		alert('url is ' + url);
 		$.ajax({

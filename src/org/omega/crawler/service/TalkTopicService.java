@@ -29,7 +29,7 @@ public class TalkTopicService extends SimpleHibernateTemplate<TalkTopicBean, Int
 	}
 	
 	public List<TalkTopicBean> searchTalkTopics(Page<TalkTopicBean> page, String searchField, String searchValue) {
-		String hql = "from AnnCoinBean ann ";
+		String hql = "from TalkTopicBean ann ";
 		
 		String sqlValue = Utils.convertToSqlMatchChars(searchValue);
 		

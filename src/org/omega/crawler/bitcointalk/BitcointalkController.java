@@ -40,13 +40,14 @@ public class BitcointalkController {
 	@ResponseBody
 	public String initAnnBoard(Model model, HttpServletRequest request, 
 								@RequestParam String baseSeedUrl, 
-								@RequestParam int groups ) {
+								@RequestParam int startgroup,
+								@RequestParam int endgroup ) {
 		String resp = null;
 		boolean success = true;
 		try {
 			BitcointalkCrawler annCrawler = new BitcointalkCrawler();
 			
-			for (int i=0; i<groups; i++) {
+			for (int i=startgroup; i<endgroup; i++) {
 				List<AnnCoinBean> anns = annCrawler.fectchAnnTopics(baseSeedUrl, i);
 				
 				List<Integer> parsedTopicids = annCoinService.findParsedTopicids();

@@ -27,7 +27,7 @@ public class BitcointalkCrawler {
 		RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
 		CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
-		int gap = 10;
+		int gap = 20;
 		int start = gap * group;
 		int end = gap * (group + 1);
 		for (int i = start; i < end; i++) {

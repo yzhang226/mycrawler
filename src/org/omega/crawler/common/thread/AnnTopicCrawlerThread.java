@@ -30,7 +30,7 @@ public class AnnTopicCrawlerThread extends Thread {
 		log.info("Start Fectch All Anns. Total Anns' number is " + undbAnns.size() + ".");
 		
 		try {
-			int gap = 10;
+			int gap = 20;
 			int groups = undbAnns.size() / gap;
 			
 			int end, start;
