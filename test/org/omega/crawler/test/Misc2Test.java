@@ -14,6 +14,9 @@ public class Misc2Test {
 		
 		System.out.println(Utils.parseTodayText(text));
 		
+		System.out.println(Integer.MAX_VALUE);
+		System.out.println(Long.MAX_VALUE);
+		
 	}
 	
 }
