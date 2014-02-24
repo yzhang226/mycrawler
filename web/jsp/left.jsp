@@ -22,8 +22,13 @@
 		   	// initiate layout and plugins
 		  	App.init();
 		   	
-		   	var sipTopLink = $('#sipTopLink');
-		   	sipTopLink.click();
+		   	// var sipTopLink = $('#sipTopLink');
+		   	// sipTopLink.click();
+		   	
+// 		   	$('#bread').unbind('click').click(function() {
+// 				$('#bread').attr('class', '');
+// 				$(this).attr('class', 'active');
+// 			});
 		   	
 		});
 		
@@ -33,63 +38,12 @@
 	<title>Mobius | TCG</title>
 </head>
 <body>
-	<div class="page-container row-fluid">
-		<div class="page-sidebar ">
-			<ul class="page-sidebar-menu">
-				
-				<li class="">
-					<a href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" target="rightFrame"> <i class="icon-globe"></i> <span class="title">Ann Management</span> <span class="arrow "></span> </a>
-					<ul class="sub-menu">
-						<li>
-							<a href="<%=request.getContextPath() %>/jsp/route/toAddRoutePage.do" target="rightFrame"> <i class="icon-plus"></i> Add New Route</a>
-						</li>
-						<li>
-							<a href="<%=request.getContextPath() %>/jsp/route/toEditRouteListPage.do" target="rightFrame"> <i class="icon-edit"></i> Edit Routes</a>
-						</li>
-						<li>
-							<a href="<%=request.getContextPath() %>/jsp/route/showByNotStatus.do?statusId=1&targetPage=activate_routes_list" target="rightFrame"> <i class="icon-key"></i> Activate Routes</a>
-						</li>
-						<li>
-							<a href="<%=request.getContextPath() %>/jsp/route/showByNotStatus.do?statusId=2&targetPage=deactivate_routes_list" target="rightFrame"> <i class="icon-lock"></i>  Deactivate Routes</a>
-						</li>
-						<li>
-							<a href="<%=request.getContextPath() %>/jsp/route/showByNotStatus.do?statusId=3&targetPage=archive_routes_list" target="rightFrame"> <i class="icon-tag"></i> Archive Routes</a>
-						</li>
-					</ul>
-				</li>
-				<li class="">
-					<a href="<%=request.getContextPath() %>//jsp/bitcointalk/showtalktopics.do" target="rightFrame"> <i class="icon-bell"></i> <span class="title">Talk Management</span> <span class="arrow "></span> </a>
-					<ul class="sub-menu">
-						<li >
-							<a href="<%=request.getContextPath() %>/jsp/cdr/showByDay.do" target="rightFrame"> <i class="icon-bullhorn"></i> Calls Made per Day </a>
-						</li>
-						<li >
-							<a href="<%=request.getContextPath() %>/jsp/cdr/showCallCtrls.do" target="rightFrame"> <i class="icon-leaf"></i> Call Manager Control </a>
-						</li>
-					</ul>
-				</li>
-				<li class="">
-					<a href="<%=request.getContextPath() %>/jsp/resutil/tosiputil.do" target="rightFrame"> <i class="icon-cloud"></i> <span class="title"> Resource Utilization </span> <span class="arrow "></span> </a>
-					<ul class="sub-menu">
-						<li >
-							<a href="<%=request.getContextPath() %>/jsp/resutil/tosiputil.do" target="rightFrame"> <i class="icon-bullhorn"></i> SIP Utilization </a>
-						</li>
-						<%-- 
-						<li >
-							<a href="" target="rightFrame"> <i class="icon-leaf"></i> Calling Card Utilization </a>
-						</li> --%>
-					</ul>
-				</li>
-				
-				<li class="">
-					<a href="<%=request.getContextPath() %>/jsp/account/toSettingPage.do" target="rightFrame"> <i class="icon-asterisk"></i> <span class="title">TCG Setting</span> </a>
-					<ul class="sub-menu">
-						
-					</ul>
-				</li>
-				
-			</ul>
-		</div>
-	</div>
-	</body>
+	<%-- 
+	<ol class="breadcrumb">
+		<li><a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" class="active">Alt Coins</a></li>
+		<li><a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showtalktopics.do">Alt Coins Topic</a></li>
+	</ol>
+ 	--%>
+	
+</body>
 </html>

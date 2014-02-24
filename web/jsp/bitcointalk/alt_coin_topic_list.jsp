@@ -77,20 +77,14 @@
 					<div class="span12">
 				  
 						<!-- BEGIN PAGE TITLE & BREADCRUMB-->
-						<h3 class="page-title">
-							<img src="../assets/img/logo_admin.png">
-						</h3>
+<!-- 						<h3 class="page-title"> -->
+<!-- 							<img src="../assets/img/logo_admin.png"> -->
+<!-- 						</h3> -->
 							<ul class="breadcrumb">
-							<li>
-								<i class="icon-home"></i>
-								<a href="<%=request.getContextPath() %>/jsp/route/show.do">Home</a> 
-								<span class="icon-angle-right"></span>
-						    </li>
-							<li>
-								<a href="<%=request.getContextPath() %>/jsp/resutil/tosiputil.do">SIP Utilization</a>
-							</li>
-					  </ul>
-						<!-- END PAGE TITLE & BREADCRUMB-->
+								<li><i class="icon-home"></i> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" class="active">Alt Coins</a> / </li>
+								<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showtalktopics.do">Alt Coins Topic</a> </li>
+							</ul>
+					<!-- END PAGE TITLE & BREADCRUMB-->
 					</div>
 				</div>
 				<!-- END PAGE HEADER-->

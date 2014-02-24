@@ -395,7 +395,7 @@ var selectedObjIds = new Array();
 				if (boxValue == 0) {// 
 					box.attr('class', 'icon-check');
 					box.attr('value', 1);
-					var uncheckeds = tcgtableObj().children('tbody').find('i[class="icon-check-empty"]');
+					var uncheckeds = tcgtableObj().children('tbody').find('i[head="1"][class="icon-check-empty"]');
 					for (var i=0; i<uncheckeds.length; i++) {
 						var un = $(uncheckeds[i]);
 						un.attr('class', 'icon-check');
@@ -405,7 +405,7 @@ var selectedObjIds = new Array();
 				} else {
 					box.attr('class', 'icon-check-empty');
 					box.attr('value', 0);
-					var checkeds = tcgtableObj().children('tbody').find('i[class="icon-check"]');
+					var checkeds = tcgtableObj().children('tbody').find('i[head="1"][class="icon-check"]');
 					for (var i=0; i<checkeds.length; i++) {
 						var un = $(checkeds[i]);
 						un.attr('class', 'icon-check-empty');
@@ -422,7 +422,7 @@ var selectedObjIds = new Array();
 		
 		function createRowCheckbox() {
 			// <i class='${card.rechargeSupported ? "icon-check" : "icon-check-empty" }'>
-			var td = $('<td></td>').append($('<i></i>', {'class': 'icon-check-empty', value: 0}));
+			var td = $('<td></td>').append($('<i></i>', {'class': 'icon-check-empty', value: 0, head: 1}));
 			td.unbind('click').click(function() {
 				var box = $($(this).children()[0]);
 				var boxValue = box.attr('value');

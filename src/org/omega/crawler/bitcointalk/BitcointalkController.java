@@ -94,32 +94,45 @@ public class BitcointalkController {
 		try {
 			String[] ids = altIds.split(",");
 			String[] values = altValues.split(",");
+			String va = "";
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			for (int i=0; i<ids.length; i++) {
 				String id = ids[i];
-				int sIndex = i*9;
+				int sIndex = i*18;
 				AltCoinBean alt = altCoinService.get(Integer.valueOf(id));
 		    	
 				alt.setAlgo(values[sIndex]);
-				if (Utils.isNotEmpty(values[sIndex+1])) {
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					alt.setCountDown(sdf.parse(values[sIndex+1]));
-				}
-				alt.setName(values[sIndex+2]);
-				alt.setAbbrName(values[sIndex+3]);
+				if (Utils.isNotEmpty(va = values[sIndex+1])) alt.setCountDown(sdf.parse(va)); else alt.setCountDown(null);
+				if (Utils.isNotEmpty(va = values[sIndex+2])) alt.setName(va.trim()); else alt.setName(null); 
+				if (Utils.isNotEmpty((va = values[sIndex+3]))) alt.setAbbrName(va.trim().toUpperCase()); else alt.setAbbrName(null);
 				alt.setInterestLevel(Integer.valueOf(values[sIndex+4]));
 				
 				alt.setProof(values[sIndex+5]);
-				if (1 == Integer.valueOf(values[sIndex+6])) alt.setCpuMinable(Boolean.TRUE);
-				if (1 == Integer.valueOf(values[sIndex+7])) alt.setGpuMinable(Boolean.TRUE);
-				if (1 == Integer.valueOf(values[sIndex+8])) alt.setAsicMinable(Boolean.TRUE);
+				if (1 == Integer.valueOf(values[sIndex+6])) alt.setCpuMinable(Boolean.TRUE); else alt.setCpuMinable(Boolean.FALSE); 
+				if (1 == Integer.valueOf(values[sIndex+7])) alt.setGpuMinable(Boolean.TRUE); else alt.setGpuMinable(Boolean.FALSE); 
+				if (1 == Integer.valueOf(values[sIndex+8])) alt.setAsicMinable(Boolean.TRUE); else alt.setAsicMinable(Boolean.FALSE); 
+				
+				if (Utils.isNotEmpty(va = values[sIndex+9])) alt.setTotalAmount(Long.valueOf(va)); else alt.setTotalAmount(null);
+				if (Utils.isNotEmpty(va = values[sIndex+10])) alt.setBlockTime(Integer.valueOf(va)); else alt.setBlockTime(null);
+				if (Utils.isNotEmpty(va = values[sIndex+11])) alt.setHalfBlocks(Integer.valueOf(va)); else alt.setHalfBlocks(null);
+				if (Utils.isNotEmpty(va = values[sIndex+12])) alt.setHalfDays(Integer.valueOf(va)); else alt.setHalfDays(null);
+				if (Utils.isNotEmpty(va = values[sIndex+13])) alt.setBlockReward(Integer.valueOf(va)); else alt.setBlockReward(null);
+				if (Utils.isNotEmpty(va = values[sIndex+14])) alt.setDifficultyAdjust(values[sIndex+14]); else alt.setDifficultyAdjust(null);
+				
+				if (1 == Integer.valueOf(values[sIndex+15])) alt.setIsShow(Boolean.TRUE); else alt.setIsShow(Boolean.FALSE); 
+				
+				if (Utils.isNotEmpty(va = values[sIndex+16])) alt.setPreMined(Long.valueOf(va)); else alt.setPreMined(null);
+				if (Utils.isNotEmpty(va = values[sIndex+17])) alt.setMinedPercentage(Double.valueOf(va)); else alt.setMinedPercentage(null); 
 				
 				altCoinService.saveOrUpdate(alt);
 			}
+			
+			resp = "Success!";
 		} catch (Throwable e) {
-			log.error("Init Ann Board error.", e);
+			log.error("Update Alt Coin Info error.", e);
 			
 			success = false;
-			resp = "Init Ann Board error!";
+			resp = "Update Alt Coin Info error!";
 		}
 		
 		return Utils.getJsonMessage(success, resp);
@@ -191,8 +204,6 @@ public class BitcointalkController {
 		if (editable == null) {
 			editable = Boolean.FALSE;
 		}
-		
-//		editable = Boolean.TRUE;
 		
 		List<AltCoinBean> anns = null;
 		if (Utils.isNotEmpty(searchField) && Utils.isNotEmpty(searchValue)) {

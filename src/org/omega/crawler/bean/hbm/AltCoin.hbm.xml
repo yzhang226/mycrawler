@@ -65,5 +65,34 @@
             <column name="asic_minable" />
         </property>
         
+        <property name="totalAmount" type="java.lang.Long">
+            <column name="total_amount" />
+        </property>
+        <property name="blockTime" type="java.lang.Integer">
+            <column name="block_time" />
+        </property>
+        <property name="halfBlocks" type="java.lang.Integer">
+            <column name="half_blocks" />
+        </property>
+        <property name="halfDays" type="java.lang.Integer">
+            <column name="half_days" />
+        </property>
+        <property name="blockReward" type="java.lang.Integer">
+            <column name="block_reward" />
+        </property>
+        <property name="difficultyAdjust" type="string">
+            <column name="difficulty_adjust" length="45" />
+        </property>
+        <property name="isShow" type="java.lang.Boolean">
+            <column name="is_show" />
+        </property>
+        
+        <property name="preMined" type="java.lang.Long">
+            <column name="pre_mined" />
+        </property>
+        <property name="minedPercentage" type="java.lang.Double">
+            <column name="mined_percentage" />
+        </property>
+        
     </class>
 </hibernate-mapping>

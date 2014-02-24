@@ -31,6 +31,18 @@ public class BaseAltCoinBean implements Serializable {
 	private Boolean gpuMinable;
 	private Boolean asicMinable;
 	
+	private Long totalAmount;
+	private Integer blockTime;
+	private Integer halfBlocks;
+	private Integer halfDays;
+	private Integer blockReward;
+	private String difficultyAdjust;
+	
+	private Boolean isShow;
+	
+	private Long preMined;
+	private Double minedPercentage;
+	
 	
 	public Integer getId() {
 		return id;
@@ -147,6 +159,63 @@ public class BaseAltCoinBean implements Serializable {
 	}
 	public void setAsicMinable(Boolean asicMinable) {
 		this.asicMinable = asicMinable;
+	}
+	
+	public Long getTotalAmount() {
+		return totalAmount;
+	}
+	public void setTotalAmount(Long totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+	public Integer getBlockTime() {
+		return blockTime;
+	}
+	public void setBlockTime(Integer blockTime) {
+		this.blockTime = blockTime;
+	}
+	public Integer getHalfBlocks() {
+		return halfBlocks;
+	}
+	public void setHalfBlocks(Integer halfBlocks) {
+		this.halfBlocks = halfBlocks;
+	}
+	public Integer getHalfDays() {
+		return halfDays;
+	}
+	public void setHalfDays(Integer halfDays) {
+		this.halfDays = halfDays;
+	}
+	public Integer getBlockReward() {
+		return blockReward;
+	}
+	public void setBlockReward(Integer blockReward) {
+		this.blockReward = blockReward;
+	}
+	public String getDifficultyAdjust() {
+		return difficultyAdjust;
+	}
+	public void setDifficultyAdjust(String difficultyAdjust) {
+		this.difficultyAdjust = difficultyAdjust;
+	}
+	
+	public Boolean getIsShow() {
+		return isShow;
+	}
+	public void setIsShow(Boolean isShow) {
+		this.isShow = isShow;
+	}
+	
+	public Long getPreMined() {
+		return preMined;
+	}
+	public void setPreMined(Long preMined) {
+		this.preMined = preMined;
+	}
+	public Double getMinedPercentage() {
+		return minedPercentage;
+	}
+	public void setMinedPercentage(Double minedPercentage) {
+		this.minedPercentage = minedPercentage;
 	}
 	public String toHtml() {
 		/*

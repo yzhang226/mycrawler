@@ -39,6 +39,29 @@ public final class Utils {
 		return !isEmpty(list);
 	}
 	
+	public static String formatNumber(Number n) {
+		if (n == null) {
+			return null;
+		}
+		String txt = "";
+		double a = n.doubleValue();
+		// String.format("%1$.2f",dd)
+		if (a > 1000000000) {
+			double b = a/1000000000.0;
+			txt = b + "B";
+		} else if (a > 1000000) {
+			double b = a/1000000.0;
+			txt = b + "M";
+		} else if (a > 1000) {
+			double b = a/1000.0;
+			txt = b + "K";
+		} else {
+			txt = n.toString();
+		}
+		
+		return txt;
+	}
+	
 	public static boolean containsChar(String str) {
 		if (isEmpty(str)) return false;
 		boolean contained = false;
@@ -257,6 +280,11 @@ public final class Utils {
 		String text = "February 17, 2014, 06:16:06 PM";
 		
 		System.out.println(Utils.parseDateText(text));
+		
+		System.out.println(formatNumber(1344L));
+		System.out.println(formatNumber(134400000L));
+		System.out.println(formatNumber(134400000000L));
+		
 	}
 	
 }

@@ -21,6 +21,7 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 	public List<AltCoinBean> findAnnCoins(Page<AltCoinBean> page) {
 		String hql = "from AltCoinBean ann";
 		
+		hql = hql + " where ann.isShow is true";
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
 		find(page, hql);
@@ -35,6 +36,7 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 		sqlValue = sqlValue.toLowerCase();
 		
 		hql = hql + "where lower(ann." + searchField + ") like '" + sqlValue + "'";
+		hql = hql + " and ann.isShow is true";
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
 		find(page, hql);

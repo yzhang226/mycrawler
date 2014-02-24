@@ -47,11 +47,17 @@
 		//  : "icon-check-empty]'
 		// var ms = $("td[minable='1']");
 		
-		 $("td[minable='1']").unbind('click').click(function() {
-			// alert("test" + $(this).children()[0]);
+		$("td[minable='1']").unbind('click').click(function() {
 			var min = $($(this).children()[0]);
 			checkMinable(min.attr('id'), min.attr('value'));
 		});
+		
+		$("td[isShow='1']").unbind('click').click(function() {
+			var min = $($(this).children()[0]);
+			checkMinable(min.attr('id'), min.attr('value'));
+		});
+		 
+		 
 		
 	});
 	
@@ -66,6 +72,10 @@
 		window.location.href = url;
 	}
 	
+	var fields = new Array("countDown","cpuMinable","gpuMinable","asicMinable","interestLevel","isShow","algo",
+						   "proof","name","abbrName","totalAmount","blockReward","blockTime","halfBlocks","halfDays",
+						   "difficultyAdjust","preMined","minedPercentage");
+	var formatedFields = new Array("totalAmount","blockReward","halfBlocks","preMined");
 	function updateSelecedtInfo() {
     	var ids = $('#clickedObjId').val();
 		
@@ -75,30 +85,33 @@
 		}
 		
 		var idsArr = ids.split(',');
-		alert(ids + "    -----   " + idsArr);
+		// alert(ids + "    -----   " + idsArr);
 		var sIds = new Array();
 		var sValues = new Array();
-		
+		var f, fv;
 		for (var i=0; i < idsArr.length ; i++) {
 			var id = idsArr[i];
 			if (!isNullOrUndefined(id)) {
 				sIds.push(id);
-				sValues.push($('#'+id+"_algo").val());
-				sValues.push($('#'+id+"_countDown").val());
-				sValues.push($('#'+id+"_name").val());
-				sValues.push($('#'+id+"_abbrName").val());
-				sValues.push($('#'+id+"_interestLevel").val());
 				
-				sValues.push($('#'+id+"_proof").val());
-				sValues.push($('#'+id+"_cpuMinable").attr('value'));
-				sValues.push($('#'+id+"_gpuMinable").attr('value'));
-				sValues.push($('#'+id+"_asicMinable").attr('value'));
+				for (var j=0; j<fields.length; j++) {
+					f = $('#'+id+"_" + fields[j]);
+					fv = f.attr('value');
+					if (isNullOrUndefined(fv)) {
+						fv = f.val();
+					}
+					if (formatedFields.contains(fields[j])) {
+						fv = formatNumber(fv);
+					}
+					
+					sValues.push(fv);
+				}
 			}
 		}
 		
 		var url = getFullUrl('/jsp/bitcointalk/updatealtcoins.do?altIds=' + sIds.join() + '&altValues=' + sValues.join());
 		
-		alert("updateSelecedtInfo url is " + url)
+		// alert("updateSelecedtInfo url is " + url)
 		
 		$.ajax({
 				url : url,
@@ -116,6 +129,30 @@
 				}
 		});
 		
+	}
+	
+	function formatNumber(num) {
+		var n = null;
+		if (!isNullOrUndefined(num) && num.trim() != '') {
+			num = num.toLowerCase();
+			var regex = /(\d+)\s*([k|m|b])/g;
+			var matched = regex.exec(num);
+			n = matched != null ? matched[1] * getTimes(matched[2]) : num;
+		}
+		return n;
+	}
+	
+	function getTimes(c) {
+		var times = 1;
+		if (c == "k") {
+			times = 1000;
+		} else if (c == "m") {
+			times = 1000000;
+		} else if (c == "b") {
+			times = 1000000000;
+		}
+		
+		return times;
 	}
 	
 	function changeEditable(curr) {
@@ -139,6 +176,18 @@
 			box.attr('value', 1);
 		}
 	}
+	
+	function checkIsShow(id, curr) {
+		var box = $('#' + id);
+		if (curr == 1) {
+			box.attr('class', 'icon-check-empty');
+			box.attr('value', 0);
+		} else if (curr == 0) {
+			box.attr('class', 'icon-check');
+			box.attr('value', 1);
+		}
+	}
+	
 	
 	function reInitAnnCoins() {
 		var url = getFullUrl("/jsp/bitcointalk/initannboard.do");
@@ -181,28 +230,22 @@
 				<!-- BEGIN PAGE HEADER-->
 				<div class="row-fluid">
 					<div class="span12">
-						<h3 class="page-title">
-							<img src="../assets/img/logo_admin.png">
-						</h3>
-							<ul class="breadcrumb">
-							<li>
-								<i class="icon-home"></i>
-								<a href="<%=request.getContextPath() %>/jsp/route/show.do">Home</a> 
-								<span class="icon-angle-right"></span>
-						    </li>
-							<li>
-								<a href="<%=request.getContextPath() %>/jsp/resutil/tosiputil.do">SIP Utilization</a>
-							</li>
-					  </ul>
-					</div>
+<!-- 						<h3 class="page-title"> -->
+<!-- 							<img src="../assets/img/logo_admin.png"> -->
+<!-- 						</h3> -->
+						<ul class="breadcrumb">
+							<li><i class="icon-home"></i> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" class="active">Alt Coins</a> / </li>
+							<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showtalktopics.do">Alt Coins Topic</a> </li>
+						</ul>
+				</div>
 				</div>
 				<div class="row-fluid">
 					<div class="span12">
 						<div class="portlet box blue">
 							<div class="portlet-title">
 								<div class="caption"><i class="icon-phone"></i> View SIP Statistics </div>
-								<div class="tools">
-									<a href="#" onclick="changeEditable(${ editable ? 1 : 0 }); "> 
+								<div class="tools" style="font-size: 16px">
+									<a class="icon-edit" href="#" onclick="changeEditable(${ editable ? 1 : 0 }); "> 
 										<c:if test="${editable }">ReadOnly</c:if>
 										<c:if test="${!editable }">Editable</c:if>
 									 </a>
@@ -210,6 +253,22 @@
 							</div>
 							<div class="portlet-body">
 							<div class="clearfix">
+								 <div class="btn-group caption">
+									<div class="controls" style="font-family: 'Segoe UI',Helvetica,Arial,sans-serif;line-height: 20px;font-size: 14px;  margin-bottom: 0px;">
+									
+									
+						                <select id="searchField" name="searchField" class="span5 m-wrap" data-placeholder="Choose a Category"  style="width: 190px;vertical-align: middle; margin-bottom: 0px;" tabindex="1">
+											<option value="title" ${searchField == 'title' ? "selected" : "" }>Title</option>
+											<option value="publishContent" ${searchField == 'publishContent' ? "selected" : "" }>Content</option>
+									  	</select>
+									  	<span style="font-size: 16px;vertical-align: middle; margin-bottom: 0px;"> : </span>
+									  	<input type="text" id="searchValue" name="searchValue" value="${searchValue }" class="span5 m-wrap medium" style="width: 100px;vertical-align: middle; margin-bottom: 0px;" title="CAN use asterisk(*) match any chars "  />
+									  	&nbsp; &nbsp;
+									  	<button type="button" onclick="searchByField();" style="width: 70px; vertical-align: top;vertical-align: middle; margin-bottom: 0px;" class="btn blue m-wrap">Search</button>
+				                  	</div>
+				           		</div>			
+				           		
+								
 								
 					           <div class="btn-group pull-right" style="vertical-align: top;">
 									<div class="controls">
@@ -217,19 +276,13 @@
 				                  	</div>
 					           </div>
 					           
-					           <div class="control-group">
-									<div class="controls" >
-						                <select id="searchField" name="searchField" class="span5 m-wrap" data-placeholder="Choose a Category"  style="width: 190px" tabindex="1">
-											<option value="title" ${searchField == 'title' ? "selected" : "" }>Title</option>
-											<option value="publishContent" ${searchField == 'publishContent' ? "selected" : "" }>Content</option>
-									  	</select>
-									  	<span style="font-size: 16px;"> : </span>
-									  	<input type="text" id="searchValue" name="searchValue" value="${searchValue }" class="span5 m-wrap medium" style="width: 100px" title="CAN use asterisk(*) match any chars "  />
-									  	&nbsp; &nbsp;
-									  	<button type="button" onclick="searchByField();" style="width: 70px; vertical-align: top;" class="btn blue m-wrap">Search</button>
-				                  	</div>
-				           		</div>							
-								
+								<div class="btn-group pull-right ">
+									<div class="controls" style="font-family: 'Segoe UI',Helvetica,Arial,sans-serif;">
+										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
+										<button type="button" onclick="updateSelecedtInfo();" class="btn blue" style="vertical-align: top;" >Update Info</button>
+										</span>
+									</div>
+								</div>
 								
 							</div>
 
@@ -245,9 +298,23 @@
 											<th >Abbr</th>
 											<th >Interest</th>
 											<th >Proof</th>
-											<th >CPU Minable</th>
-											<th >GPU Minable</th>
-											<th >ASIC Minable</th>
+											<th >CPU</th>
+											<th >GPU</th>
+											<th >ASIC</th>
+											
+											<th >Total</th>
+											<th >BTime</th>
+											<th >HBlocks</th>
+											<th >HDays</th>
+											<th >BReward</th>
+											<th >DAdjust</th>
+											<c:if test="${editable }">
+												<th >Is Show</th>
+											</c:if>
+											
+											<th >Pre Mined</th>
+											<th >Percentage</th>
+											
 											
 											<th>Title</th>
 											<th>Author</th>
@@ -269,6 +336,19 @@
 											<th >gpuMinable</th>
 											<th >asicMinable</th>
 											
+											<th >totalAmount</th>
+											<th >blockTime</th>
+											<th >halfBlocks</th>
+											<th >halfDays</th>
+											<th >blockReward</th>
+											<th >difficultyAdjust</th>
+											<c:if test="${editable }">
+												<th >isShow</th>
+											</c:if>
+											
+											<th >preMined</th>
+											<th >minedPercentage</th>
+											
 											<th >title</th>
 											<th >author</th>
 											<%-- 
@@ -285,49 +365,65 @@
 	                                         	
 	                                         	<c:if test="${editable }">
 	                                         		<td>
-		                                         		<select id="${ann.id }_algo" style="width: 90px" class="span5 m-wrap" data-placeholder="Choose a Category" tabindex="1">
-		                                         			<option value="scrypt" ${ann.algo == 'scrypt' ? "selected" : "" }>scrypt</option>
-		                                         			<option value="sha256" ${ann.algo == 'sha256' ? "selected" : "" }>sha-256</option>
-		                                         			<option value="sha3" ${ann.algo == 'sha3' ? "selected" : "" }>sha-3</option>
-		                                         			<option value="blake256" ${ann.algo == 'sha3' ? "selected" : "" }>blake-256</option>
-		                                         		</select> 
-	                                         		</td>
-													<td>
 														<div style="width: 100px;">
 															<div id="date_picker" style="vertical-align: middle; margin-bottom: 0px; width: 90px;">
 																<input type="text" id="${ann.id }_countDown"  value="${ann.countDown }" style="width: 90px" /> 
 															</div>
 														</div>
 													</td>
-													<td> 
-														<input type="text" id="${ann.id }_name" value="${ann.name }" maxlength="15" style="width: 65px" > 
+													<td minable='1'>
+														<i id="${ann.id }_cpuMinable" class='${ann.cpuMinable ? "icon-check" : "icon-check-empty" }' value='${ann.cpuMinable ? 1 : 0 }'></i>
 													</td>
-													<td> <input type="text" id="${ann.id }_abbrName" value="${ann.abbrName }" maxlength="5" style="width: 25px"> </td>
-													<td> 
+													<td minable='1'>
+														<i id="${ann.id }_gpuMinable" class='${ann.gpuMinable ? "icon-check" : "icon-check-empty" }' value='${ann.gpuMinable ? 1 : 0 }'></i>
+													</td>
+													<td minable='1'>
+														<i id="${ann.id }_asicMinable" class='${ann.asicMinable ? "icon-check" : "icon-check-empty" }' value='${ann.asicMinable ? 1 : 0 }'></i>
+													</td>
+													
+	                                         		<td> 
 														<select id="${ann.id }_interestLevel" style="width: 50px" class="span5 m-wrap" data-placeholder="Choose a Category" tabindex="1">
-														<c:forEach begin="1" end="10" var="i">
+														<c:forEach begin="0" end="10" var="i">
 															<option value="${i }" ${i == ann.interestLevel ? "selected" : "" }>${i }</option>
 														</c:forEach>
 		                                         		</select> 
 													</td>
+													<td isShow='1'>
+														<i id="${ann.id }_isShow" class='${ann.isShow ? "icon-check" : "icon-check-empty" }' value='${ann.isShow ? 1 : 0 }'></i>
+													</td>
 													
-													<td> 
+	                                         		<td>
+		                                         		<select id="${ann.id }_algo" style="width: 90px" class="span5 m-wrap" data-placeholder="Choose a Category" tabindex="1">
+		                                         			<option value="" ></option>
+		                                         			<option value="scrypt" ${ann.algo == 'scrypt' ? "selected" : "" }>scrypt</option>
+		                                         			<option value="scryptNFactor" ${ann.algo == 'scrypt' ? "selected" : "" }>Scrypt-NFactor</option>
+		                                         			<option value="sha256" ${ann.algo == 'sha256' ? "selected" : "" }>sha-256</option>
+		                                         			<option value="sha3" ${ann.algo == 'sha3' ? "selected" : "" }>sha-3</option>
+		                                         			<option value="blake256" ${ann.algo == 'sha3' ? "selected" : "" }>blake-256</option>
+		                                         			<option value="ScyptSHA256DQubitSkeinGroestl" ${ann.algo == 'ScyptSHA256DQubitSkeinGroestl' ? "selected" : "" }>Scypt/SHA256D/Qubit/Skein/Groestl</option>
+		                                         			
+		                                         		</select> 
+	                                         		</td>
+	                                         		<td> 
 														<select id="${ann.id }_proof" style="width: 90px" class="span5 m-wrap" data-placeholder="Choose a Category" tabindex="1">
+															<option value=""></option>
 															<option value="PoW" ${"PoW" == ann.proof ? "selected" : "" }>PoW</option>
 															<option value="PoS" ${"PoS" == ann.proof ? "selected" : "" }>PoS</option>
 															<option value="PoWPoS" ${"PoWPoS" == ann.proof ? "selected" : "" }>PoW/PoS</option>
 		                                         		</select> 
 													</td>
 													
-													<td onclick="checkMinable(${ann.cpuMinable ? 1 : 0 });" minable='1'>
-														<i id="${ann.id }_cpuMinable" class='${ann.cpuMinable ? "icon-check" : "icon-check-empty" }' value='${ann.cpuMinable ? 1 : 0 }'></i>
-													</td>
-													<td onclick="checkMinable(${ann.gpuMinable ? 1 : 0 });" minable='1'>
-														<i id="${ann.id }_gpuMinable" class='${ann.gpuMinable ? "icon-check" : "icon-check-empty" }' value='${ann.gpuMinable ? 1 : 0 }'></i>
-													</td>
-													<td onclick="checkMinable(${ann.asicMinable ? 1 : 0 });" minable='1'>
-														<i id="${ann.id }_asicMinable" class='${ann.asicMinable ? "icon-check" : "icon-check-empty" }' value='${ann.asicMinable ? 1 : 0 }'></i>
-													</td>
+													<td> <input type="text" id="${ann.id }_name" value="${ann.name }" maxlength="15" style="width: 65px" > </td>
+													<td> <input type="text" id="${ann.id }_abbrName" value="${ann.abbrName }" maxlength="5" style="width: 25px"> </td>
+													
+													<td> <input type="text" id="${ann.id }_totalAmount" value="${ann.totalAmountTxt }" style="width: 65px" > </td>
+													<td> <input type="text" id="${ann.id }_blockReward" value="${ann.blockRewardTxt }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_blockTime" value="${ann.blockTime }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_halfBlocks" value="${ann.halfBlocksTxt }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_halfDays" value="${ann.halfDays }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_difficultyAdjust" value="${ann.difficultyAdjust }" style="width: 65px" > </td>
+													<td> <input type="text" id="${ann.id }_preMined" value="${ann.preMinedTxt }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_minedPercentage" value="${ann.minedPercentageTxt }" style="width: 45px" > </td>
 													
 	                                         	</c:if>
 	                                         	<c:if test="${!editable }">
@@ -341,6 +437,18 @@
 													<td><i class='${ann.cpuMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
 													<td><i class='${ann.gpuMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
 													<td><i class='${ann.asicMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
+													
+													<td>${ann.totalAmountTxt }</td>
+													<td>${ann.blockTime }</td>
+													<td>${ann.halfBlocksTxt }</td>
+													<td>${ann.halfDays }</td>
+													<td>${ann.blockRewardTxt }</td>
+													<td>${ann.difficultyAdjust }</td>
+													
+													<td>${ann.preMinedTxt }</td>
+													<td>${ann.minedPercentageTxt }</td>
+													
+<%-- 													<td><i class='${ann.isShow ? "icon-check" : "icon-check-empty" }' ></i></td> --%>
 	                                         	</c:if>
 	                                         	
 	                                         	<td> <a href="${ann.link }" target="_blank"> ${ann.title } </a> </td>
@@ -354,7 +462,7 @@
 										</c:forEach>
 										<c:if test="${empty anns }">
 											<tr>
-												<td colspan="12" class="no-data">No Data</td>
+												<td colspan="19" class="no-data">No Data</td>
 											</tr>
 										</c:if>
 									</tbody>
@@ -383,9 +491,7 @@
 									</ul>
 								</div>
 								
-								<div class="form-actions">
-									<button type="button" onclick="updateSelecedtInfo();" class="btn blue">Update Info</button>
-								</div>
+								
                                 
 							</div>
 						</div>
