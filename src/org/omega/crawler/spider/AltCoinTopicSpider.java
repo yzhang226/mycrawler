@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
-import org.omega.crawler.bean.TalkTopicBean;
+import org.omega.crawler.bean.AltCoinTopicBean;
 import org.omega.crawler.common.Utils;
 
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -17,11 +17,11 @@ import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
 
-public class TalkTopicSpider extends WebCrawler {
+public class AltCoinTopicSpider extends WebCrawler {
 
-	private static final Log log = LogFactory.getLog(TalkTopicSpider.class);
+	private static final Log log = LogFactory.getLog(AltCoinTopicSpider.class);
 
-	public final static List<TalkTopicBean> beans = new ArrayList<TalkTopicBean>();
+	public final static List<AltCoinTopicBean> beans = new ArrayList<AltCoinTopicBean>();
 
 	private final static Pattern TALK_PATTER = Pattern.compile("^https.+bitcointalk.org.index.php.topic.\\d+.\\d$");
 
@@ -79,7 +79,7 @@ public class TalkTopicSpider extends WebCrawler {
 
 							String link = topicNode.getAttributeByName("href");
 
-							TalkTopicBean anncoin = new TalkTopicBean();
+							AltCoinTopicBean anncoin = new AltCoinTopicBean();
 
 							anncoin.setTitle(topicTitle);
 							anncoin.setLink(topicNode.getAttributeByName("href"));

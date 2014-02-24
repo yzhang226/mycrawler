@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class BaseAnnCoinBean implements Serializable {
+public class BaseAltCoinBean implements Serializable {
 	
 	private static final long serialVersionUID = -5430310744786224042L;
 	
@@ -19,6 +19,18 @@ public class BaseAnnCoinBean implements Serializable {
 	private Integer replies;
 	private Integer views;
 	private Boolean isParsed;
+	
+	private String algo;
+	private Date countDown;
+	private String name;
+	private String abbrName;
+	private Integer interestLevel;
+	
+	private String proof;
+	private Boolean cpuMinable;
+	private Boolean gpuMinable;
+	private Boolean asicMinable;
+	
 	
 	public Integer getId() {
 		return id;
@@ -81,6 +93,61 @@ public class BaseAnnCoinBean implements Serializable {
 		this.isParsed = isParsed;
 	}
 	
+	public String getAlgo() {
+		return algo;
+	}
+	public void setAlgo(String algo) {
+		this.algo = algo;
+	}
+	public Date getCountDown() {
+		return countDown;
+	}
+	public void setCountDown(Date countDown) {
+		this.countDown = countDown;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getAbbrName() {
+		return abbrName;
+	}
+	public void setAbbrName(String abbrName) {
+		this.abbrName = abbrName;
+	}
+	public Integer getInterestLevel() {
+		return interestLevel;
+	}
+	public void setInterestLevel(Integer interestLevel) {
+		this.interestLevel = interestLevel;
+	}
+	
+	public String getProof() {
+		return proof;
+	}
+	public void setProof(String proof) {
+		this.proof = proof;
+	}
+	public Boolean getCpuMinable() {
+		return cpuMinable;
+	}
+	public void setCpuMinable(Boolean cpuMinable) {
+		this.cpuMinable = cpuMinable;
+	}
+	public Boolean getGpuMinable() {
+		return gpuMinable;
+	}
+	public void setGpuMinable(Boolean gpuMinable) {
+		this.gpuMinable = gpuMinable;
+	}
+	public Boolean getAsicMinable() {
+		return asicMinable;
+	}
+	public void setAsicMinable(Boolean asicMinable) {
+		this.asicMinable = asicMinable;
+	}
 	public String toHtml() {
 		/*
 		 * <td>Publish Date</td>
@@ -99,22 +166,5 @@ public class BaseAnnCoinBean implements Serializable {
 		
 		return sb.toString();
 	}
-	
-//	@Override
-//	public int compareTo(BaseAnnCoinBean o) {
-//		if (this == o) {
-//			return 0;
-//		}
-//		
-//		if (o == null || o.getPublishDate() == null) {
-//			return 1;
-//		}
-//		
-//		if (this.getPublishDate() == null && o.getPublishDate() != null) {
-//			return -1;
-//		}
-//		
-//		return (int) (this.getPublishDate().getTime() - o.getPublishDate().getTime());
-//	}
 	
 }

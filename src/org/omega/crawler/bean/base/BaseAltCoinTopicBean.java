@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class BaseTalkTopicBean implements Serializable {
+public class BaseAltCoinTopicBean implements Serializable {
 	
 	private static final long serialVersionUID = -5430310744786224042L;
 	
@@ -101,7 +101,7 @@ public class BaseTalkTopicBean implements Serializable {
 	}
 	
 //	@Override
-//	public int compareTo(BaseAnnCoinBean o) {
+//	public int compareTo(BaseAltCoinBean o) {
 //		if (this == o) {
 //			return 0;
 //		}

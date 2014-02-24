@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
-import org.omega.crawler.bean.AnnCoinBean;
+import org.omega.crawler.bean.AltCoinBean;
 import org.omega.crawler.common.Utils;
 
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -17,11 +17,11 @@ import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
 import edu.uci.ics.crawler4j.url.WebURL;
 
-public class AnnTopicSpider extends WebCrawler {
+public class AltCoinSpider extends WebCrawler {
 
-	private static final Log log = LogFactory.getLog(AnnTopicSpider.class);
+	private static final Log log = LogFactory.getLog(AltCoinSpider.class);
 
-	public final static List<AnnCoinBean> beans = new ArrayList<AnnCoinBean>();
+	public final static List<AltCoinBean> beans = new ArrayList<AltCoinBean>();
 
 	private final static Pattern TALK_PATTER = Pattern.compile("^https.+bitcointalk.org.index.php.topic.\\d+.\\d$");
 
@@ -80,7 +80,7 @@ public class AnnTopicSpider extends WebCrawler {
 							if (topicTitle.toLowerCase().contains("ann]")) {
 								String link = topicNode.getAttributeByName("href");
 
-								AnnCoinBean anncoin = new AnnCoinBean();
+								AltCoinBean anncoin = new AltCoinBean();
 
 								anncoin.setTitle(topicTitle);
 								anncoin.setLink(topicNode.getAttributeByName("href"));

@@ -2,8 +2,8 @@ package org.omega.crawler.spider;
 
 import java.util.List;
 
-import org.omega.crawler.bean.AnnCoinBean;
-import org.omega.crawler.bean.TalkTopicBean;
+import org.omega.crawler.bean.AltCoinBean;
+import org.omega.crawler.bean.AltCoinTopicBean;
 
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
@@ -13,7 +13,7 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
 public class BitcointalkCrawler {
 
-	public List<AnnCoinBean> fectchAnnTopics(String baseSeedUrl, int group) throws Exception {
+	public List<AltCoinBean> fectchAnnTopics(String baseSeedUrl, int group) throws Exception {
 		String crawlStorageFolder = "/storage/crawler4j";
 		int numberOfCrawlers = 10;
 
@@ -35,14 +35,14 @@ public class BitcointalkCrawler {
 			controller.addSeed(baseSeedUrl + sub);
 		}
 		
-		System.out.println("\t\t AnnTopicSpider.beans is " + AnnTopicSpider.beans);
+		System.out.println("\t\t AnnTopicSpider.beans is " + AltCoinSpider.beans);
 		
-		controller.start(AnnTopicSpider.class, numberOfCrawlers);
+		controller.start(AltCoinSpider.class, numberOfCrawlers);
 
-		return AnnTopicSpider.beans;
+		return AltCoinSpider.beans;
 	}
 	
-	public List<TalkTopicBean> fectchTalkTopics(String baseSeedUrl, int group) throws Exception {
+	public List<AltCoinTopicBean> fectchTalkTopics(String baseSeedUrl, int group) throws Exception {
 		String crawlStorageFolder = "/storage/crawler4j";
 		int numberOfCrawlers = 10;
 
@@ -64,11 +64,11 @@ public class BitcointalkCrawler {
 			controller.addSeed(baseSeedUrl + sub);
 		}
 		
-		System.out.println("\t\t AnnTopicSpider.beans is " + TalkTopicSpider.beans);
+		System.out.println("\t\t AnnTopicSpider.beans is " + AltCoinTopicSpider.beans);
 		
-		controller.start(TalkTopicSpider.class, numberOfCrawlers);
+		controller.start(AltCoinTopicSpider.class, numberOfCrawlers);
 
-		return TalkTopicSpider.beans;
+		return AltCoinTopicSpider.beans;
 	}
 
 }

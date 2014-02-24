@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="org.omega.crawler.bean.AnnCoinBean" table="ann_coin" dynamic-insert="true" dynamic-update="true">
+    <class name="org.omega.crawler.bean.AltCoinBean" table="alt_coin" dynamic-insert="true" dynamic-update="true">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />
@@ -36,6 +36,34 @@
             <column name="is_parsed" />
         </property>
         
+        <property name="algo" type="string">
+            <column name="algo" length="45" />
+        </property>
+        <property name="countDown" type="date">
+            <column name="count_down" length="0"/>
+        </property>
+         <property name="name" type="string">
+            <column name="name" length="100" />
+        </property>
+         <property name="abbrName" type="string">
+            <column name="abbr_name" length="20" />
+        </property>
+        <property name="interestLevel" type="java.lang.Integer">
+            <column name="interest_level" />
+        </property>
+        
+        <property name="proof" type="string">
+            <column name="proof" length="45" />
+        </property>
+        <property name="cpuMinable" type="java.lang.Boolean">
+            <column name="cpu_minable" />
+        </property>
+        <property name="gpuMinable" type="java.lang.Boolean">
+            <column name="gpu_minable" />
+        </property>
+        <property name="asicMinable" type="java.lang.Boolean">
+            <column name="asic_minable" />
+        </property>
         
     </class>
 </hibernate-mapping>

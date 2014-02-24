@@ -5,17 +5,17 @@ import java.util.concurrent.CountDownLatch;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.omega.crawler.bean.AnnCoinBean;
+import org.omega.crawler.bean.AltCoinBean;
 
-public class AnnTopicCrawlerThread extends Thread {
+public class AltCoinCrawlerThread extends Thread {
 	
-	private static final Log log = LogFactory.getLog(AnnTopicCrawlerThread.class);
+	private static final Log log = LogFactory.getLog(AltCoinCrawlerThread.class);
 	
-	private List<AnnCoinBean> undbAnns;
+	private List<AltCoinBean> undbAnns;
 	private boolean isNeedContent;
 	private CountDownLatch counter;
 	
-	public AnnTopicCrawlerThread(List<AnnCoinBean> undbAnns, boolean isNeedContent, CountDownLatch counter) {
+	public AltCoinCrawlerThread(List<AltCoinBean> undbAnns, boolean isNeedContent, CountDownLatch counter) {
 		this.undbAnns = undbAnns;
 		this.isNeedContent = isNeedContent;
 		this.counter = counter;
@@ -42,7 +42,7 @@ public class AnnTopicCrawlerThread extends Thread {
 				
 				latch = new CountDownLatch(end - start);
 				for (int j=start; j<end; j++) {
-					new SubAnnTopicCrawlerThread(j, undbAnns.get(j), isNeedContent, latch).start();;
+					new SubAltCoinCrawlerThread(j, undbAnns.get(j), isNeedContent, latch).start();;
 				}
 				
 				try {

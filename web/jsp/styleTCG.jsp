@@ -15,6 +15,8 @@
 	
 	<link href="<%=request.getContextPath() %>/jsp/assets/plugins/jquery-ui/jquery-ui-1.10.1.custom.min.css" rel="stylesheet" type="text/css"/>
 	
+<%-- 	<link href="<%=request.getContextPath() %>/jsp/assets/plugins/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" type="text/css" /> --%>
+	
 	
 	<script src="<%=request.getContextPath() %>/jsp/assets/plugins/jquery-1.10.1.min.js" type="text/javascript"></script> 
 	<script src="<%=request.getContextPath() %>/jsp/assets/scripts/app.js"></script> 
@@ -25,6 +27,8 @@
 	<script src="<%=request.getContextPath() %>/jsp/assets/plugins/jquery-form/jquery.form.js" type="text/javascript"></script>
 	<script src="<%=request.getContextPath() %>/jsp/assets/plugins/jquery-validation/dist/jquery.validate.min.js" type="text/javascript"></script> 
 	<script src="<%=request.getContextPath() %>/jsp/assets/scripts/ui-jqueryui.js"></script>
+	
+<%-- 	<script src="<%=request.getContextPath() %>/jsp/assets/plugins/datetimepicker/jquery.datetimepicker.js"></script> --%>
 	
 	
 	<script src="<%=request.getContextPath() %>/jsp/assets/scripts/tcg-plugins.js"></script>

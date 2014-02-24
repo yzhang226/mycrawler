@@ -33,14 +33,14 @@
 		window.location.href = url;
 	}
 	
-	function reInitAnnCoins() {
+	function reInitTopics() {
 		
-		var url = getFullUrl("/jsp/bitcointalk/initannboard.do");
+		var url = getFullUrl("/jsp/bitcointalk/crawlertopicboard.do");
 		
-		var baseSeedUrl = "https://bitcointalk.org/index.php?board=159.";
-		// var baseSeedUrl = "https://bitcointalk.org/index.php?board=67.";
+		// var baseSeedUrl = "https://bitcointalk.org/index.php?board=159.";
+		var baseSeedUrl = "https://bitcointalk.org/index.php?board=67.";
 		var startgroup = 0;
-		var endgroup = 2;
+		var endgroup = 1;
 		
 		url = url + "?baseSeedUrl=" + baseSeedUrl + "&startgroup=" + startgroup + "&endgroup=" + endgroup;
 		
@@ -52,7 +52,6 @@
 					alert(resp.message);
 					
 					if (resp.success == 'true') {
-						
 						var url = combineFullUrlDefault(null);
 						window.location.href=url;
 					}
@@ -110,7 +109,7 @@
 								
 					           <div class="btn-group pull-right" style="vertical-align: top;">
 									<div class="controls">
-					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="reInitAnnCoins();">ReInit AnnCoins</button>
+					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="reInitTopics();">ReInit Topics</button>
 				                  	</div>
 					           </div>
 					           
@@ -118,7 +117,6 @@
 									<div class="controls" >
 						                <select id="searchField" name="searchField" class="span5 m-wrap" data-placeholder="Choose a Category"  style="width: 190px" tabindex="1">
 											<option value="title" ${searchField == 'title' ? "selected" : "" }>Title</option>
-											<option value="publishContent" ${searchField == 'publishContent' ? "selected" : "" }>Content</option>
 									  	</select>
 									  	<span style="font-size: 16px;"> : </span>
 									  	<input type="text" id="searchValue" name="searchValue" value="${searchValue }" class="span5 m-wrap medium" style="width: 100px" title="CAN use asterisk(*) match any chars "  />
@@ -152,16 +150,16 @@
 									</thead>
 									
 									<tbody>
-										<c:forEach var="ann" items="${anns }">
+										<c:forEach var="t" items="${topics }">
 											<tr class="odd gradeX">
-	                                         	<td>${ann.publishDate }</td>
-	                                         	<td> <a href="${ann.link }" target="_blank"> ${ann.title } </a> </td>
-	                                         	<td>${ann.author }</td>
-												<td>${ann.replies }</td>
-												<td>${ann.views }</td>
+	                                         	<td>${t.publishDate }</td>
+	                                         	<td> <a href="${t.link }" target="_blank"> ${t.title } </a> </td>
+	                                         	<td>${t.author }</td>
+												<td>${t.replies }</td>
+												<td>${t.views }</td>
 											</tr>
 										</c:forEach>
-										<c:if test="${empty anns }">
+										<c:if test="${empty topics }">
 											<tr>
 												<td colspan="5" class="no-data">No Data</td>
 											</tr>

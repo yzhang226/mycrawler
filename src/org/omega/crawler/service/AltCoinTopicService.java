@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
-import org.omega.crawler.bean.TalkTopicBean;
+import org.omega.crawler.bean.AltCoinTopicBean;
 import org.omega.crawler.common.Page;
 import org.omega.crawler.common.SimpleHibernateTemplate;
 import org.omega.crawler.common.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class TalkTopicService extends SimpleHibernateTemplate<TalkTopicBean, Integer> {
+public class AltCoinTopicService extends SimpleHibernateTemplate<AltCoinTopicBean, Integer> {
 
 	@Autowired
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-		this.entityClass = TalkTopicBean.class;
+		this.entityClass = AltCoinTopicBean.class;
 	}
 	
-	public List<TalkTopicBean> findTalkTopics(Page<TalkTopicBean> page) {
-		String hql = "from TalkTopicBean ann";
+	public List<AltCoinTopicBean> findTalkTopics(Page<AltCoinTopicBean> page) {
+		String hql = "from AltCoinTopicBean ann";
 		
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
@@ -28,8 +28,8 @@ public class TalkTopicService extends SimpleHibernateTemplate<TalkTopicBean, Int
 		return page.getResult();
 	}
 	
-	public List<TalkTopicBean> searchTalkTopics(Page<TalkTopicBean> page, String searchField, String searchValue) {
-		String hql = "from TalkTopicBean ann ";
+	public List<AltCoinTopicBean> searchTalkTopics(Page<AltCoinTopicBean> page, String searchField, String searchValue) {
+		String hql = "from AltCoinTopicBean ann ";
 		
 		String sqlValue = Utils.convertToSqlMatchChars(searchValue);
 		
@@ -42,7 +42,7 @@ public class TalkTopicService extends SimpleHibernateTemplate<TalkTopicBean, Int
 	}
 	
 	public List<Integer> findParsedTopicids() {
-		String hql = "select tt.topicid from TalkTopicBean tt where tt.isParsed is true";
+		String hql = "select tt.topicid from AltCoinTopicBean tt where tt.isParsed is true";
 		List<Integer> parsedTopicids = find(hql);
 		
 		List<Integer> topicids = new ArrayList<>();
