@@ -101,28 +101,35 @@ public class BitcointalkController {
 				int sIndex = i*18;
 				AltCoinBean alt = altCoinService.get(Integer.valueOf(id));
 		    	
-				alt.setAlgo(values[sIndex]);
-				if (Utils.isNotEmpty(va = values[sIndex+1])) alt.setCountDown(sdf.parse(va)); else alt.setCountDown(null);
-				if (Utils.isNotEmpty(va = values[sIndex+2])) alt.setName(va.trim()); else alt.setName(null); 
-				if (Utils.isNotEmpty((va = values[sIndex+3]))) alt.setAbbrName(va.trim().toUpperCase()); else alt.setAbbrName(null);
-				alt.setInterestLevel(Integer.valueOf(values[sIndex+4]));
+				/*
+				 * var fields = new Array("countDown","cpuMinable","gpuMinable","asicMinable","interestLevel","isShow","algo",
+						   "proof","name","abbrName","totalAmount","blockReward","blockTime","halfBlocks","halfDays",
+						   "difficultyAdjust","preMined","minedPercentage");
+				 */
+				if (Utils.isNotEmpty(va = values[sIndex])) alt.setCountDown(sdf.parse(va)); else alt.setCountDown(null);
+				if (1 == Integer.valueOf(values[sIndex+1])) alt.setCpuMinable(Boolean.TRUE); else alt.setCpuMinable(Boolean.FALSE); 
+				if (1 == Integer.valueOf(values[sIndex+2])) alt.setGpuMinable(Boolean.TRUE); else alt.setGpuMinable(Boolean.FALSE); 
+				if (1 == Integer.valueOf(values[sIndex+3])) alt.setAsicMinable(Boolean.TRUE); else alt.setAsicMinable(Boolean.FALSE); 
+				if (Utils.isNotEmpty(va = values[sIndex+4])) alt.setInterestLevel(Integer.valueOf(va.trim())); alt.setInterestLevel(null); 
+				if (1 == Integer.valueOf(values[sIndex+5])) alt.setIsShow(Boolean.TRUE); else alt.setIsShow(Boolean.FALSE); 
 				
-				alt.setProof(values[sIndex+5]);
-				if (1 == Integer.valueOf(values[sIndex+6])) alt.setCpuMinable(Boolean.TRUE); else alt.setCpuMinable(Boolean.FALSE); 
-				if (1 == Integer.valueOf(values[sIndex+7])) alt.setGpuMinable(Boolean.TRUE); else alt.setGpuMinable(Boolean.FALSE); 
-				if (1 == Integer.valueOf(values[sIndex+8])) alt.setAsicMinable(Boolean.TRUE); else alt.setAsicMinable(Boolean.FALSE); 
+				if (values.length > sIndex+6 && Utils.isNotEmpty(va = values[sIndex+6])) alt.setAlgo(va.trim()); else alt.setAlgo(null);
 				
-				if (Utils.isNotEmpty(va = values[sIndex+9])) alt.setTotalAmount(Long.valueOf(va)); else alt.setTotalAmount(null);
-				if (Utils.isNotEmpty(va = values[sIndex+10])) alt.setBlockTime(Integer.valueOf(va)); else alt.setBlockTime(null);
-				if (Utils.isNotEmpty(va = values[sIndex+11])) alt.setHalfBlocks(Integer.valueOf(va)); else alt.setHalfBlocks(null);
-				if (Utils.isNotEmpty(va = values[sIndex+12])) alt.setHalfDays(Integer.valueOf(va)); else alt.setHalfDays(null);
-				if (Utils.isNotEmpty(va = values[sIndex+13])) alt.setBlockReward(Integer.valueOf(va)); else alt.setBlockReward(null);
-				if (Utils.isNotEmpty(va = values[sIndex+14])) alt.setDifficultyAdjust(values[sIndex+14]); else alt.setDifficultyAdjust(null);
+				if (values.length > sIndex+7 && Utils.isNotEmpty(va = values[sIndex+7])) alt.setProof(va); else alt.setProof(null);
 				
-				if (1 == Integer.valueOf(values[sIndex+15])) alt.setIsShow(Boolean.TRUE); else alt.setIsShow(Boolean.FALSE); 
+				if (values.length > sIndex+8 && Utils.isNotEmpty(va = values[sIndex+8])) alt.setName(va.trim()); else alt.setName(null); 
+				if (values.length > sIndex+9 && Utils.isNotEmpty((va = values[sIndex+9]))) alt.setAbbrName(va.trim().toUpperCase()); else alt.setAbbrName(null);
 				
-				if (Utils.isNotEmpty(va = values[sIndex+16])) alt.setPreMined(Long.valueOf(va)); else alt.setPreMined(null);
-				if (Utils.isNotEmpty(va = values[sIndex+17])) alt.setMinedPercentage(Double.valueOf(va)); else alt.setMinedPercentage(null); 
+				if (values.length > sIndex+10 && Utils.isNotEmpty(va = values[sIndex+10])) alt.setTotalAmount(Long.valueOf(va)); else alt.setTotalAmount(null);
+				if (values.length > sIndex+11 && Utils.isNotEmpty(va = values[sIndex+11])) alt.setBlockReward(Integer.valueOf(va)); else alt.setBlockReward(null);
+				
+				if (values.length > sIndex+12 && Utils.isNotEmpty(va = values[sIndex+12])) alt.setBlockTime(Integer.valueOf(va)); else alt.setBlockTime(null);
+				if (values.length > sIndex+13 && Utils.isNotEmpty(va = values[sIndex+13])) alt.setHalfBlocks(Integer.valueOf(va)); else alt.setHalfBlocks(null);
+				if (values.length > sIndex+14 && Utils.isNotEmpty(va = values[sIndex+14])) alt.setHalfDays(Integer.valueOf(va)); else alt.setHalfDays(null);
+				if (values.length > sIndex+15 && Utils.isNotEmpty(va = values[sIndex+15])) alt.setDifficultyAdjust(va); else alt.setDifficultyAdjust(null);
+				
+				if (values.length > sIndex+16 && Utils.isNotEmpty(va = values[sIndex+16])) alt.setPreMined(Long.valueOf(va)); else alt.setPreMined(null);
+				if (values.length > sIndex+17 && Utils.isNotEmpty(va = values[sIndex+17])) alt.setMinedPercentage(Double.valueOf(va)); else alt.setMinedPercentage(null); 
 				
 				altCoinService.saveOrUpdate(alt);
 			}

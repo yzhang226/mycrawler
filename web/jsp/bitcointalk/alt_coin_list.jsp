@@ -111,7 +111,7 @@
 		
 		var url = getFullUrl('/jsp/bitcointalk/updatealtcoins.do?altIds=' + sIds.join() + '&altValues=' + sValues.join());
 		
-		// alert("updateSelecedtInfo url is " + url)
+		alert("updateSelecedtInfo url is " + url)
 		
 		$.ajax({
 				url : url,
@@ -292,25 +292,27 @@
 										<tr id="_table_head_">
 											<th>Publish Date</th>
 											
-											<th >Algo</th>
 											<th >Count Down</th>
-											<th >Name</th>
-											<th >Abbr</th>
-											<th >Interest</th>
-											<th >Proof</th>
 											<th >CPU</th>
 											<th >GPU</th>
 											<th >ASIC</th>
-											
-											<th >Total</th>
-											<th >BTime</th>
-											<th >HBlocks</th>
-											<th >HDays</th>
-											<th >BReward</th>
-											<th >DAdjust</th>
+											<th >Interest</th>
 											<c:if test="${editable }">
 												<th >Is Show</th>
 											</c:if>
+											
+											<th >Algo</th>
+											<th >Proof</th>
+											<th >Name</th>
+											<th >Abbr</th>
+											
+											<th >Total</th>
+											<th >BReward</th>
+											<th >BTime</th>
+											<th >HBlocks</th>
+											<th >HDays</th>
+											
+											<th >DAdjust</th>
 											
 											<th >Pre Mined</th>
 											<th >Percentage</th>
@@ -323,29 +325,31 @@
 											<th>Views</th>
 											 --%>
 										</tr>
+										
 										<tr id="_head_fields_" style="display: none;">
 											<th >publishDate</th>
 											
-											<th >algo</th>
 											<th >countDown</th>
-											<th >name</th>
-											<th >abbrName</th>
-											<th >interestLevel</th>
-											<th >proof</th>
 											<th >cpuMinable</th>
 											<th >gpuMinable</th>
 											<th >asicMinable</th>
-											
-											<th >totalAmount</th>
-											<th >blockTime</th>
-											<th >halfBlocks</th>
-											<th >halfDays</th>
-											<th >blockReward</th>
-											<th >difficultyAdjust</th>
+											<th >interestLevel</th>
 											<c:if test="${editable }">
 												<th >isShow</th>
 											</c:if>
 											
+											<th >algo</th>
+											<th >proof</th>
+											<th >name</th>
+											<th >abbrName</th>
+											
+											<th >totalAmount</th>
+											<th >blockReward</th>
+											<th >blockTime</th>
+											<th >halfBlocks</th>
+											<th >halfDays</th>
+											
+											<th >difficultyAdjust</th>
 											<th >preMined</th>
 											<th >minedPercentage</th>
 											
@@ -396,10 +400,11 @@
 		                                         		<select id="${ann.id }_algo" style="width: 90px" class="span5 m-wrap" data-placeholder="Choose a Category" tabindex="1">
 		                                         			<option value="" ></option>
 		                                         			<option value="scrypt" ${ann.algo == 'scrypt' ? "selected" : "" }>scrypt</option>
-		                                         			<option value="scryptNFactor" ${ann.algo == 'scrypt' ? "selected" : "" }>Scrypt-NFactor</option>
+		                                         			<option value="scryptNFactor" ${ann.algo == 'scryptNFactor' ? "selected" : "" }>Scrypt-NFactor</option>
 		                                         			<option value="sha256" ${ann.algo == 'sha256' ? "selected" : "" }>sha-256</option>
 		                                         			<option value="sha3" ${ann.algo == 'sha3' ? "selected" : "" }>sha-3</option>
-		                                         			<option value="blake256" ${ann.algo == 'sha3' ? "selected" : "" }>blake-256</option>
+		                                         			<option value="blake256" ${ann.algo == 'blake256' ? "selected" : "" }>blake-256</option>
+		                                         			<option value="qubit" ${ann.algo == 'qubit' ? "selected" : "" }>Qubit</option>
 		                                         			<option value="ScyptSHA256DQubitSkeinGroestl" ${ann.algo == 'ScyptSHA256DQubitSkeinGroestl' ? "selected" : "" }>Scypt/SHA256D/Qubit/Skein/Groestl</option>
 		                                         			
 		                                         		</select> 
@@ -427,22 +432,29 @@
 													
 	                                         	</c:if>
 	                                         	<c:if test="${!editable }">
-		                                         	<td>${ann.algo }</td>
-													<td>${ann.countDown }</td>
-													<td>${ann.name }</td>
-													<td>${ann.abbrName }</td>
-													<td>${ann.interestLevel }</td>
-													<td>${ann.proof }</td>
+	                                         	
+										<%-- 
+									var fields = new Array("countDown","cpuMinable","gpuMinable","asicMinable","interestLevel","isShow","algo",
+						   "proof","name","abbrName","totalAmount","blockReward","blockTime","halfBlocks","halfDays",
+						   "difficultyAdjust","preMined","minedPercentage");
+									 --%>
 													
+													<td>${ann.countDown }</td>
 													<td><i class='${ann.cpuMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
 													<td><i class='${ann.gpuMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
 													<td><i class='${ann.asicMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
+													<td>${ann.interestLevel }</td>
+													
+		                                         	<td>${ann.algo }</td>
+													<td>${ann.proof }</td>
+													<td>${ann.name }</td>
+													<td>${ann.abbrName }</td>
 													
 													<td>${ann.totalAmountTxt }</td>
+													<td>${ann.blockRewardTxt }</td>
 													<td>${ann.blockTime }</td>
 													<td>${ann.halfBlocksTxt }</td>
 													<td>${ann.halfDays }</td>
-													<td>${ann.blockRewardTxt }</td>
 													<td>${ann.difficultyAdjust }</td>
 													
 													<td>${ann.preMinedTxt }</td>
