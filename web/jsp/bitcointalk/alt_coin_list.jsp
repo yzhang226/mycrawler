@@ -49,12 +49,12 @@
 		
 		$("td[minable='1']").unbind('click').click(function() {
 			var min = $($(this).children()[0]);
-			checkMinable(min.attr('id'), min.attr('value'));
+			checkMinable(min.attr('id'), min.attr('tvalue'));
 		});
 		
 		$("td[isShow='1']").unbind('click').click(function() {
 			var min = $($(this).children()[0]);
-			checkMinable(min.attr('id'), min.attr('value'));
+			checkMinable(min.attr('id'), min.attr('tvalue'));
 		});
 		 
 		 
@@ -96,7 +96,7 @@
 				
 				for (var j=0; j<fields.length; j++) {
 					f = $('#'+id+"_" + fields[j]);
-					fv = f.attr('value');
+					fv = f.attr('tValue');
 					if (isNullOrUndefined(fv)) {
 						fv = f.val();
 					}
@@ -111,7 +111,7 @@
 		
 		var url = getFullUrl('/jsp/bitcointalk/updatealtcoins.do?altIds=' + sIds.join() + '&altValues=' + sValues.join());
 		
-		alert("updateSelecedtInfo url is " + url)
+		// alert("updateSelecedtInfo url is " + url)
 		
 		$.ajax({
 				url : url,
@@ -170,10 +170,10 @@
 		var box = $('#' + id);
 		if (curr == 1) {
 			box.attr('class', 'icon-check-empty');
-			box.attr('value', 0);
+			box.attr('tvalue', 0);
 		} else if (curr == 0) {
 			box.attr('class', 'icon-check');
-			box.attr('value', 1);
+			box.attr('tvalue', 1);
 		}
 	}
 	
@@ -181,10 +181,10 @@
 		var box = $('#' + id);
 		if (curr == 1) {
 			box.attr('class', 'icon-check-empty');
-			box.attr('value', 0);
+			box.attr('tvalue', 0);
 		} else if (curr == 0) {
 			box.attr('class', 'icon-check');
-			box.attr('value', 1);
+			box.attr('tvalue', 1);
 		}
 	}
 	
@@ -376,13 +376,13 @@
 														</div>
 													</td>
 													<td minable='1'>
-														<i id="${ann.id }_cpuMinable" class='${ann.cpuMinable ? "icon-check" : "icon-check-empty" }' value='${ann.cpuMinable ? 1 : 0 }'></i>
+														<i id="${ann.id }_cpuMinable" class='${ann.cpuMinable ? "icon-check" : "icon-check-empty" }' tValue='${ann.cpuMinable ? 1 : 0 }'></i>
 													</td>
 													<td minable='1'>
-														<i id="${ann.id }_gpuMinable" class='${ann.gpuMinable ? "icon-check" : "icon-check-empty" }' value='${ann.gpuMinable ? 1 : 0 }'></i>
+														<i id="${ann.id }_gpuMinable" class='${ann.gpuMinable ? "icon-check" : "icon-check-empty" }' tValue='${ann.gpuMinable ? 1 : 0 }'></i>
 													</td>
 													<td minable='1'>
-														<i id="${ann.id }_asicMinable" class='${ann.asicMinable ? "icon-check" : "icon-check-empty" }' value='${ann.asicMinable ? 1 : 0 }'></i>
+														<i id="${ann.id }_asicMinable" class='${ann.asicMinable ? "icon-check" : "icon-check-empty" }' tValue='${ann.asicMinable ? 1 : 0 }'></i>
 													</td>
 													
 	                                         		<td> 
@@ -393,7 +393,7 @@
 		                                         		</select> 
 													</td>
 													<td isShow='1'>
-														<i id="${ann.id }_isShow" class='${ann.isShow ? "icon-check" : "icon-check-empty" }' value='${ann.isShow ? 1 : 0 }'></i>
+														<i id="${ann.id }_isShow" class='${ann.isShow ? "icon-check" : "icon-check-empty" }' tValue='${ann.isShow ? 1 : 0 }'></i>
 													</td>
 													
 	                                         		<td>
@@ -415,6 +415,8 @@
 															<option value="PoW" ${"PoW" == ann.proof ? "selected" : "" }>PoW</option>
 															<option value="PoS" ${"PoS" == ann.proof ? "selected" : "" }>PoS</option>
 															<option value="PoWPoS" ${"PoWPoS" == ann.proof ? "selected" : "" }>PoW/PoS</option>
+															<option value="ProofofStorage" ${"ProofofStorage" == ann.proof ? "selected" : "" }>Proof-of-Storage</option>
+															
 		                                         		</select> 
 													</td>
 													

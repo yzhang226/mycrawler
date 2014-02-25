@@ -121,7 +121,7 @@ public class BitcointalkController {
 				if (values.length > sIndex+9 && Utils.isNotEmpty((va = values[sIndex+9]))) alt.setAbbrName(va.trim().toUpperCase()); else alt.setAbbrName(null);
 				
 				if (values.length > sIndex+10 && Utils.isNotEmpty(va = values[sIndex+10])) alt.setTotalAmount(Long.valueOf(va)); else alt.setTotalAmount(null);
-				if (values.length > sIndex+11 && Utils.isNotEmpty(va = values[sIndex+11])) alt.setBlockReward(Integer.valueOf(va)); else alt.setBlockReward(null);
+				if (values.length > sIndex+11 && Utils.isNotEmpty(va = values[sIndex+11])) alt.setBlockReward(Long.valueOf(va)); else alt.setBlockReward(null);
 				
 				if (values.length > sIndex+12 && Utils.isNotEmpty(va = values[sIndex+12])) alt.setBlockTime(Integer.valueOf(va)); else alt.setBlockTime(null);
 				if (values.length > sIndex+13 && Utils.isNotEmpty(va = values[sIndex+13])) alt.setHalfBlocks(Integer.valueOf(va)); else alt.setHalfBlocks(null);

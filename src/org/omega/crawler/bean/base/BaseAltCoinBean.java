@@ -35,7 +35,7 @@ public class BaseAltCoinBean implements Serializable {
 	private Integer blockTime;
 	private Integer halfBlocks;
 	private Integer halfDays;
-	private Integer blockReward;
+	private Long blockReward;
 	private String difficultyAdjust;
 	
 	private Boolean isShow;
@@ -185,10 +185,10 @@ public class BaseAltCoinBean implements Serializable {
 	public void setHalfDays(Integer halfDays) {
 		this.halfDays = halfDays;
 	}
-	public Integer getBlockReward() {
+	public Long getBlockReward() {
 		return blockReward;
 	}
-	public void setBlockReward(Integer blockReward) {
+	public void setBlockReward(Long blockReward) {
 		this.blockReward = blockReward;
 	}
 	public String getDifficultyAdjust() {

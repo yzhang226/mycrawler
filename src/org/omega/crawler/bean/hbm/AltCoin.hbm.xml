@@ -77,7 +77,7 @@
         <property name="halfDays" type="java.lang.Integer">
             <column name="half_days" />
         </property>
-        <property name="blockReward" type="java.lang.Integer">
+        <property name="blockReward" type="java.lang.Long">
             <column name="block_reward" />
         </property>
         <property name="difficultyAdjust" type="string">
