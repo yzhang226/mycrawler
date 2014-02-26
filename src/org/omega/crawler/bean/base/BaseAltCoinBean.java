@@ -21,7 +21,7 @@ public class BaseAltCoinBean implements Serializable {
 	private Boolean isParsed;
 	
 	private String algo;
-	private Date countDown;
+	private Date launchTime;
 	private String name;
 	private String abbrName;
 	private Integer interestLevel;
@@ -35,7 +35,7 @@ public class BaseAltCoinBean implements Serializable {
 	private Integer blockTime;
 	private Integer halfBlocks;
 	private Integer halfDays;
-	private Long blockReward;
+	private Double blockReward;
 	private String difficultyAdjust;
 	
 	private Boolean isShow;
@@ -111,11 +111,11 @@ public class BaseAltCoinBean implements Serializable {
 	public void setAlgo(String algo) {
 		this.algo = algo;
 	}
-	public Date getCountDown() {
-		return countDown;
+	public Date getLaunchTime() {
+		return launchTime;
 	}
-	public void setCountDown(Date countDown) {
-		this.countDown = countDown;
+	public void setLaunchTime(Date launchTime) {
+		this.launchTime = launchTime;
 	}
 	public String getName() {
 		return name;
@@ -185,10 +185,10 @@ public class BaseAltCoinBean implements Serializable {
 	public void setHalfDays(Integer halfDays) {
 		this.halfDays = halfDays;
 	}
-	public Long getBlockReward() {
+	public Double getBlockReward() {
 		return blockReward;
 	}
-	public void setBlockReward(Long blockReward) {
+	public void setBlockReward(Double blockReward) {
 		this.blockReward = blockReward;
 	}
 	public String getDifficultyAdjust() {

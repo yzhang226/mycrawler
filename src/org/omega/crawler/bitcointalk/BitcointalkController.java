@@ -106,7 +106,7 @@ public class BitcointalkController {
 						   "proof","name","abbrName","totalAmount","blockReward","blockTime","halfBlocks","halfDays",
 						   "difficultyAdjust","preMined","minedPercentage");
 				 */
-				if (Utils.isNotEmpty(va = values[sIndex])) alt.setCountDown(sdf.parse(va)); else alt.setCountDown(null);
+				if (Utils.isNotEmpty(va = values[sIndex])) alt.setLaunchTime(sdf.parse(va)); else alt.setLaunchTime(null);
 				if (1 == Integer.valueOf(values[sIndex+1])) alt.setCpuMinable(Boolean.TRUE); else alt.setCpuMinable(Boolean.FALSE); 
 				if (1 == Integer.valueOf(values[sIndex+2])) alt.setGpuMinable(Boolean.TRUE); else alt.setGpuMinable(Boolean.FALSE); 
 				if (1 == Integer.valueOf(values[sIndex+3])) alt.setAsicMinable(Boolean.TRUE); else alt.setAsicMinable(Boolean.FALSE); 
@@ -121,7 +121,7 @@ public class BitcointalkController {
 				if (values.length > sIndex+9 && Utils.isNotEmpty((va = values[sIndex+9]))) alt.setAbbrName(va.trim().toUpperCase()); else alt.setAbbrName(null);
 				
 				if (values.length > sIndex+10 && Utils.isNotEmpty(va = values[sIndex+10])) alt.setTotalAmount(Long.valueOf(va)); else alt.setTotalAmount(null);
-				if (values.length > sIndex+11 && Utils.isNotEmpty(va = values[sIndex+11])) alt.setBlockReward(Long.valueOf(va)); else alt.setBlockReward(null);
+				if (values.length > sIndex+11 && Utils.isNotEmpty(va = values[sIndex+11])) alt.setBlockReward(Double.valueOf(va)); else alt.setBlockReward(null);
 				
 				if (values.length > sIndex+12 && Utils.isNotEmpty(va = values[sIndex+12])) alt.setBlockTime(Integer.valueOf(va)); else alt.setBlockTime(null);
 				if (values.length > sIndex+13 && Utils.isNotEmpty(va = values[sIndex+13])) alt.setHalfBlocks(Integer.valueOf(va)); else alt.setHalfBlocks(null);

@@ -72,7 +72,7 @@
 		window.location.href = url;
 	}
 	
-	var fields = new Array("countDown","cpuMinable","gpuMinable","asicMinable","interestLevel","isShow","algo",
+	var fields = new Array("launchTime","cpuMinable","gpuMinable","asicMinable","interestLevel","isShow","algo",
 						   "proof","name","abbrName","totalAmount","blockReward","blockTime","halfBlocks","halfDays",
 						   "difficultyAdjust","preMined","minedPercentage");
 	var formatedFields = new Array("totalAmount","blockReward","halfBlocks","preMined");
@@ -292,7 +292,7 @@
 										<tr id="_table_head_">
 											<th>Publish Date</th>
 											
-											<th >Count Down</th>
+											<th >Launch</th>
 											<th >CPU</th>
 											<th >GPU</th>
 											<th >ASIC</th>
@@ -329,7 +329,7 @@
 										<tr id="_head_fields_" style="display: none;">
 											<th >publishDate</th>
 											
-											<th >countDown</th>
+											<th >launchTime</th>
 											<th >cpuMinable</th>
 											<th >gpuMinable</th>
 											<th >asicMinable</th>
@@ -371,7 +371,7 @@
 	                                         		<td>
 														<div style="width: 100px;">
 															<div id="date_picker" style="vertical-align: middle; margin-bottom: 0px; width: 90px;">
-																<input type="text" id="${ann.id }_countDown"  value="${ann.countDown }" style="width: 90px" /> 
+																<input type="text" id="${ann.id }_launchTime"  value="${ann.launchTime }" style="width: 90px" /> 
 															</div>
 														</div>
 													</td>
@@ -401,10 +401,15 @@
 		                                         			<option value="" ></option>
 		                                         			<option value="scrypt" ${ann.algo == 'scrypt' ? "selected" : "" }>scrypt</option>
 		                                         			<option value="scryptNFactor" ${ann.algo == 'scryptNFactor' ? "selected" : "" }>Scrypt-NFactor</option>
+		                                         			
 		                                         			<option value="sha256" ${ann.algo == 'sha256' ? "selected" : "" }>sha-256</option>
 		                                         			<option value="sha3" ${ann.algo == 'sha3' ? "selected" : "" }>sha-3</option>
 		                                         			<option value="blake256" ${ann.algo == 'blake256' ? "selected" : "" }>blake-256</option>
+		                                         			<option value="Quark" ${ann.algo == 'Quark' ? "selected" : "" }>Quark</option>
 		                                         			<option value="qubit" ${ann.algo == 'qubit' ? "selected" : "" }>Qubit</option>
+		                                         			<option value="SHAvite3" ${ann.algo == 'SHAvite3' ? "selected" : "" }>SHAvite-3</option>
+		                                         			<option value="BlakeBmwGroestlJhKeccakSkein" ${ann.algo == 'BlakeBmwGroestlJhKeccakSkein' ? "selected" : "" }>Blake/Bmw/Groestl/Jh/Keccak/Skein</option>
+		                                         			
 		                                         			<option value="ScyptSHA256DQubitSkeinGroestl" ${ann.algo == 'ScyptSHA256DQubitSkeinGroestl' ? "selected" : "" }>Scypt/SHA256D/Qubit/Skein/Groestl</option>
 		                                         			
 		                                         		</select> 
@@ -441,7 +446,7 @@
 						   "difficultyAdjust","preMined","minedPercentage");
 									 --%>
 													
-													<td>${ann.countDown }</td>
+													<td>${ann.launchTime }</td>
 													<td><i class='${ann.cpuMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
 													<td><i class='${ann.gpuMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
 													<td><i class='${ann.asicMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
