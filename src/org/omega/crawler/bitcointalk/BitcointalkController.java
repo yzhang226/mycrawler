@@ -110,7 +110,7 @@ public class BitcointalkController {
 				if (1 == Integer.valueOf(values[sIndex+1])) alt.setCpuMinable(Boolean.TRUE); else alt.setCpuMinable(Boolean.FALSE); 
 				if (1 == Integer.valueOf(values[sIndex+2])) alt.setGpuMinable(Boolean.TRUE); else alt.setGpuMinable(Boolean.FALSE); 
 				if (1 == Integer.valueOf(values[sIndex+3])) alt.setAsicMinable(Boolean.TRUE); else alt.setAsicMinable(Boolean.FALSE); 
-				if (Utils.isNotEmpty(va = values[sIndex+4])) alt.setInterestLevel(Integer.valueOf(va.trim())); alt.setInterestLevel(null); 
+				if (Utils.isNotEmpty(va = values[sIndex+4])) alt.setInterestLevel(Integer.valueOf(va.trim())); else alt.setInterestLevel(null); 
 				if (1 == Integer.valueOf(values[sIndex+5])) alt.setIsShow(Boolean.TRUE); else alt.setIsShow(Boolean.FALSE); 
 				
 				if (values.length > sIndex+6 && Utils.isNotEmpty(va = values[sIndex+6])) alt.setAlgo(va.trim()); else alt.setAlgo(null);

@@ -34,4 +34,8 @@ public class AltCoinBean extends BaseAltCoinBean {
 		return getMinedPercentage() != null ? String.format("%1$.2f", getMinedPercentage()) : "";
 	}
 	
+	public String getHalfDaysTxt() {
+		return Utils.formatDay(getHalfDays());
+	}
+	
 }

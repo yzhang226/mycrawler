@@ -62,6 +62,29 @@ public final class Utils {
 		return txt;
 	}
 	
+	public static String formatDay(Number n) {
+		if (n == null) {
+			return null;
+		}
+		String txt = "";
+		double a = n.doubleValue();
+		
+		if (a > 365) {
+			double b = a/365.0;
+			txt = b + "y";
+		} else if (a > 30) {
+			double b = a/30.0;
+			txt = b + "m";
+		} else if (a > 7) {
+			double b = a/7.0;
+			txt = b + "w";
+		} else {
+			txt = n.toString();
+		}
+		
+		return txt;
+	}
+	
 	public static boolean containsChar(String str) {
 		if (isEmpty(str)) return false;
 		boolean contained = false;

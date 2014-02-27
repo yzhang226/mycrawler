@@ -28,6 +28,12 @@
 		
 		$('#__grid__').tcgtable({rowSelect : mode});
 		
+		var subCols = $('#__columns').children();
+		$(subCols[2]).children()[0].click();
+		$(subCols[3]).children()[0].click();
+		$(subCols[4]).children()[0].click();
+		$(subCols[5]).children()[0].click();
+		
 		$("#date_picker input").datepicker({
 		   beforeShow: function(input) {
 				AddClearButton(input);
@@ -76,6 +82,7 @@
 						   "proof","name","abbrName","totalAmount","blockReward","blockTime","halfBlocks","halfDays",
 						   "difficultyAdjust","preMined","minedPercentage");
 	var formatedFields = new Array("totalAmount","blockReward","halfBlocks","preMined");
+	var formatedDayFields = new Array("halfDays");
 	function updateSelecedtInfo() {
     	var ids = $('#clickedObjId').val();
 		
@@ -102,6 +109,8 @@
 					}
 					if (formatedFields.contains(fields[j])) {
 						fv = formatNumber(fv);
+					} else if (formatedDayFields.contains(fields[j])) {
+						fv = formateDay(fv);
 					}
 					
 					sValues.push(fv);
@@ -150,6 +159,30 @@
 			times = 1000000;
 		} else if (c == "b") {
 			times = 1000000000;
+		}
+		
+		return times;
+	}
+	
+	function formateDay(num) {
+		var n = null;
+		if (!isNullOrUndefined(num) && num.trim() != '') {
+			num = num.toLowerCase();
+			var regex = /(\d+)\s*([d|w|m|y])/g;
+			var matched = regex.exec(num);
+			n = matched != null ? matched[1] * getDayTimes(matched[2]) : num;
+		}
+		return n;
+	}
+	
+	function getDayTimes(c) {
+		var times = 1;
+		if (c == "w") {
+			times = 7;
+		} else if (c == "m") {
+			times = 30;
+		} else if (c == "y") {
+			times = 365;
 		}
 		
 		return times;
@@ -259,6 +292,10 @@
 									
 						                <select id="searchField" name="searchField" class="span5 m-wrap" data-placeholder="Choose a Category"  style="width: 190px;vertical-align: middle; margin-bottom: 0px;" tabindex="1">
 											<option value="title" ${searchField == 'title' ? "selected" : "" }>Title</option>
+											<option value="name" ${searchField == 'name' ? "selected" : "" }>Name</option>
+											<option value="abbrName" ${searchField == 'abbrName' ? "selected" : "" }>Abbr Name</option>
+											<option value="totalAmount" ${searchField == 'totalAmount' ? "selected" : "" }>Total Amount</option>
+											
 											<option value="publishContent" ${searchField == 'publishContent' ? "selected" : "" }>Content</option>
 									  	</select>
 									  	<span style="font-size: 16px;vertical-align: middle; margin-bottom: 0px;"> : </span>
@@ -408,7 +445,7 @@
 		                                         			<option value="Quark" ${ann.algo == 'Quark' ? "selected" : "" }>Quark</option>
 		                                         			<option value="qubit" ${ann.algo == 'qubit' ? "selected" : "" }>Qubit</option>
 		                                         			<option value="SHAvite3" ${ann.algo == 'SHAvite3' ? "selected" : "" }>SHAvite-3</option>
-		                                         			<option value="BlakeBmwGroestlJhKeccakSkein" ${ann.algo == 'BlakeBmwGroestlJhKeccakSkein' ? "selected" : "" }>Blake/Bmw/Groestl/Jh/Keccak/Skein</option>
+<%-- 		                                         			<option value="BlakeBmwGroestlJhKeccakSkein" ${ann.algo == 'BlakeBmwGroestlJhKeccakSkein' ? "selected" : "" }>Blake/Bmw/Groestl/Jh/Keccak/Skein</option> --%>
 		                                         			
 		                                         			<option value="ScyptSHA256DQubitSkeinGroestl" ${ann.algo == 'ScyptSHA256DQubitSkeinGroestl' ? "selected" : "" }>Scypt/SHA256D/Qubit/Skein/Groestl</option>
 		                                         			
@@ -420,6 +457,8 @@
 															<option value="PoW" ${"PoW" == ann.proof ? "selected" : "" }>PoW</option>
 															<option value="PoS" ${"PoS" == ann.proof ? "selected" : "" }>PoS</option>
 															<option value="PoWPoS" ${"PoWPoS" == ann.proof ? "selected" : "" }>PoW/PoS</option>
+															<option value="PoF" ${"PoF" == ann.proof ? "selected" : "" }>Proof Of Friction</option>
+															
 															<option value="ProofofStorage" ${"ProofofStorage" == ann.proof ? "selected" : "" }>Proof-of-Storage</option>
 															
 		                                         		</select> 
@@ -432,7 +471,7 @@
 													<td> <input type="text" id="${ann.id }_blockReward" value="${ann.blockRewardTxt }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_blockTime" value="${ann.blockTime }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_halfBlocks" value="${ann.halfBlocksTxt }" style="width: 45px" > </td>
-													<td> <input type="text" id="${ann.id }_halfDays" value="${ann.halfDays }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_halfDays" value="${ann.halfDaysTxt }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_difficultyAdjust" value="${ann.difficultyAdjust }" style="width: 65px" > </td>
 													<td> <input type="text" id="${ann.id }_preMined" value="${ann.preMinedTxt }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_minedPercentage" value="${ann.minedPercentageTxt }" style="width: 45px" > </td>
@@ -461,7 +500,7 @@
 													<td>${ann.blockRewardTxt }</td>
 													<td>${ann.blockTime }</td>
 													<td>${ann.halfBlocksTxt }</td>
-													<td>${ann.halfDays }</td>
+													<td>${ann.halfDaysTxt }</td>
 													<td>${ann.difficultyAdjust }</td>
 													
 													<td>${ann.preMinedTxt }</td>
