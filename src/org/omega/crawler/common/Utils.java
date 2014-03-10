@@ -46,13 +46,16 @@ public final class Utils {
 		String txt = "";
 		double a = n.doubleValue();
 		// String.format("%1$.2f",dd)
-		if (a > 1000000000) {
+		if (a >= 1000000000000l) {
+			double b = a/1000000000000.0;
+			txt = b + "T";
+		} else if (a >= 1000000000) {
 			double b = a/1000000000.0;
 			txt = b + "B";
-		} else if (a > 1000000) {
+		} else if (a >= 1000000) {
 			double b = a/1000000.0;
 			txt = b + "M";
-		} else if (a > 1000) {
+		} else if (a >= 1000) {
 			double b = a/1000.0;
 			txt = b + "K";
 		} else {
@@ -69,13 +72,13 @@ public final class Utils {
 		String txt = "";
 		double a = n.doubleValue();
 		
-		if (a > 365) {
+		if (a >= 365) {
 			double b = a/365.0;
 			txt = b + "y";
-		} else if (a > 30) {
+		} else if (a >= 30) {
 			double b = a/30.0;
 			txt = b + "m";
-		} else if (a > 7) {
+		} else if (a >= 7) {
 			double b = a/7.0;
 			txt = b + "w";
 		} else {

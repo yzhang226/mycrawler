@@ -30,16 +30,21 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 	}
 	
 	public List<AltCoinBean> searchAnnCoins(Page<AltCoinBean> page, String searchField, String searchValue) {
+		
+		page.setPageNo(0);
+		
 		String hql = "from AltCoinBean ann ";
 		
 		String sqlValue = Utils.convertToSqlMatchChars(searchValue);
-		sqlValue = sqlValue.toLowerCase();
+		sqlValue = sqlValue.toUpperCase();
 		
-		hql = hql + "where lower(ann." + searchField + ") like '" + sqlValue + "'";
-		hql = hql + " and ann.isShow is true";
+		hql = hql + " where upper(ann." + searchField + ") like '" + sqlValue + "'";
+		hql = hql + " and ann.isShow is true ";
+		
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
 		find(page, hql);
+		System.out.println("page.getTotalCount() is " + page.getTotalCount());
 		
 		return page.getResult();
 	}

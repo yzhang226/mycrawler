@@ -212,6 +212,8 @@ public class SimpleHibernateTemplate<E, PK extends Serializable> {
 			// logger.warn("now HQL not support to get total count automatic,we have to get by query. hql is{}", hql);
 			page.setTotalCount(getResultCount(hql, values));
 		}
+		
+		System.out.println("Simple Hiber page.getTotalCount() is " + page.getTotalCount());
 
 		Query q = createQuery(hql, values);
 		if (page.isFirstSetted()) {
@@ -393,7 +395,7 @@ public class SimpleHibernateTemplate<E, PK extends Serializable> {
 	public Query createQuery(final String queryString, final Object... values) {
 		Assert.hasText(queryString);
 		Query queryObject = getSession().createQuery(queryString);
-		queryObject.setCacheable(true);//enable query cache
+		queryObject.setCacheable(false);//enable query cache
 		if (values != null) {
 			for (int i = 0; i < values.length; i++) {
 				queryObject.setParameter(i, values[i]);

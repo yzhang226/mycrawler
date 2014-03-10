@@ -62,6 +62,11 @@
 <!-- 				<prop key="hibernate.transaction.flush_before_completion">true</prop> -->
 				
 <!-- 				<prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop> -->
+				<!-- org.hibernate.hql.classic.ClassicQueryTranslatorFactory -->
+				<!-- org.hibernate.hql.internal.classic.ClassicQueryTranslatorFactory  -->
+				<!-- org.hibernate.hql.ast.ASTQueryTranslatorFactory -->
+				<!-- org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory -->
+				<prop key="hibernate.query.factory_class">org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory</prop>
 				
 			</props>
 		</property>

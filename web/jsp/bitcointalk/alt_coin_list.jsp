@@ -144,7 +144,7 @@
 		var n = null;
 		if (!isNullOrUndefined(num) && num.trim() != '') {
 			num = num.toLowerCase();
-			var regex = /(\d+)\s*([k|m|b])/g;
+			var regex = /(\d+)\s*([k|m|b|t])/g;
 			var matched = regex.exec(num);
 			n = matched != null ? matched[1] * getTimes(matched[2]) : num;
 		}
@@ -159,7 +159,9 @@
 			times = 1000000;
 		} else if (c == "b") {
 			times = 1000000000;
-		}
+		} else if (c == "t") {
+			times = 1000000000000;
+		} 
 		
 		return times;
 	}
@@ -228,7 +230,7 @@
 		var baseSeedUrl = "https://bitcointalk.org/index.php?board=159.";
 		// var baseSeedUrl = "https://bitcointalk.org/index.php?board=67.";
 		var startgroup = 0;
-		var endgroup = 1;
+		var endgroup = 3;
 		
 		url = url + "?baseSeedUrl=" + baseSeedUrl + "&startgroup=" + startgroup + "&endgroup=" + endgroup;
 		
