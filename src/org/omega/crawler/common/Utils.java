@@ -116,6 +116,15 @@ public final class Utils {
 		return xchar;
 	}
 	
+	public static Date substractDays4Date(Date d, int days) {
+		Calendar res = Calendar.getInstance();
+		res.clear();
+		res.setTime(d);
+		res.set(Calendar.DAY_OF_MONTH, res.get(Calendar.DAY_OF_MONTH) - days);
+		
+		return res.getTime();
+	}
+	
 	public static Date parseDateText(String dateText) {
 		Date postDate = null;
 		SimpleDateFormat sdf = new SimpleDateFormat("MMMMM dd, yyyy, hh:mm:ss aaa", LOCALE_US);

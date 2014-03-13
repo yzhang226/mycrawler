@@ -20,7 +20,7 @@
         <property name="link" type="string">
             <column name="link" length="180" />
         </property>
-        <property name="publishDate" type="date">
+        <property name="publishDate" type="timestamp">
             <column name="publish_date" length="0"/>
         </property>
         <property name="replies" type="java.lang.Integer">
@@ -34,6 +34,10 @@
         </property>
 		<property name="isParsed" type="java.lang.Boolean">
             <column name="is_parsed" />
+        </property>
+        
+        <property name="createTime" type="timestamp">
+            <column name="create_time" length="0"/>
         </property>
         
         <property name="algo" type="string">

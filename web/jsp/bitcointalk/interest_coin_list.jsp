@@ -119,8 +119,6 @@
 			}
 		}
 		
-		alert("updateSelecedtInfo sValues is " + sValues);
-		
 		var url = getFullUrl('/jsp/bitcointalk/updatealtcoins.do?altIds=' + sIds.join() + '&altValues=' + sValues.join());
 		
 		// alert("updateSelecedtInfo url is " + url)
@@ -147,7 +145,7 @@
 		var n = null;
 		if (!isNullOrUndefined(num) && num.trim() != '') {
 			num = num.toLowerCase();
-			var regex = /(\d+\.*\d*)\s*([k|m|b|t])/g;
+			var regex = /(\d+)\s*([k|m|b|t])/g;
 			var matched = regex.exec(num);
 			n = matched != null ? matched[1] * getTimes(matched[2]) : num;
 		}
@@ -173,7 +171,7 @@
 		var n = null;
 		if (!isNullOrUndefined(num) && num.trim() != '') {
 			num = num.toLowerCase();
-			var regex = /(\d+\.*\d*)\s*([d|w|m|y])/g;
+			var regex = /(\d+)\s*([d|w|m|y])/g;
 			var matched = regex.exec(num);
 			n = matched != null ? matched[1] * getDayTimes(matched[2]) : num;
 		}
@@ -260,7 +258,7 @@
 
 <body class="page-header-fixed">
 		<input type="hidden" id="editable" name="editable" value=${editable }>
-		<input type="hidden" id="_required_params_" value="searchField,searchValue,editable">
+		<input type="hidden" id="_required_params_" value="searchField,searchValue,interest,editable">
 		
 		
 		<div class="page-content">
@@ -272,9 +270,9 @@
 <!-- 							<img src="../assets/img/logo_admin.png"> -->
 <!-- 						</h3> -->
 						<ul class="breadcrumb">
-							<li><i class="icon-home"></i> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showinterestcoins.do">Interest Coins</a> / </li>
-							<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" class="active">Alt Coins</a> / </li>
-							<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showtalktopics.do">Alt Coins Topic</a> </li>
+							<li><i class="icon-home"></i> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showinterestcoins.do" class="active">Interest Coins</a> / </li>
+								<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" >Alt Coins</a> / </li>
+								<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showtalktopics.do">Alt Coins Topic</a> </li>
 						</ul>
 				</div>
 				</div>
@@ -313,12 +311,6 @@
 				           		
 								
 								
-					           <div class="btn-group pull-right" style="vertical-align: top;">
-									<div class="controls">
-					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="reInitAnnCoins();">ReInit AnnCoins</button>
-				                  	</div>
-					           </div>
-					           
 								<div class="btn-group pull-right ">
 									<div class="controls" style="font-family: 'Segoe UI',Helvetica,Arial,sans-serif;">
 										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
@@ -327,6 +319,21 @@
 									</div>
 								</div>
 								
+								<div class="btn-group pull-right ">
+									<div class="controls" style="font-family: 'Segoe UI',Helvetica,Arial,sans-serif;line-height: 20px;font-size: 14px;  margin-bottom: 0px;">
+									
+						                
+									  	<span style="font-size: 16px;vertical-align: middle; margin-bottom: 0px;"> Interest : </span>
+									  	
+									  	<select id="interest" name=interest class="span5 m-wrap" data-placeholder="Choose a Category"  style="width: 190px;vertical-align: middle; margin-bottom: 0px;" tabindex="1">
+											<c:forEach begin="0" end="10" var="i">
+												<option value="${i }" ${i == interest ? "selected" : "" }>${i }</option>
+											</c:forEach>
+									  	</select>
+				                  	</div>
+								</div>
+								
+								
 							</div>
 
 							<div style="overflow:auto; scrollbar-base-color:#ff6600;">
@@ -334,9 +341,7 @@
 									<thead>
 										<tr id="_table_head_">
 											<th>Publish Date</th>
-<%-- 											<c:if test="${!editable }"> --%>
-												<th>Create Time</th>
-<%-- 											</c:if> --%>
+											<th>Create Time</th>
 											
 											<th >Launch</th>
 											<th >CPU</th>
@@ -374,10 +379,7 @@
 										
 										<tr id="_head_fields_" style="display: none;">
 											<th >publishDate</th>
-<%-- 											<c:if test="${!editable }"> --%>
-												<th >createTime</th>
-<%-- 											</c:if> --%>
-											
+											<th >createTime</th>
 											
 											<th >launchTime</th>
 											<th >cpuMinable</th>

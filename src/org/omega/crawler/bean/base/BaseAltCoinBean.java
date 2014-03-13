@@ -1,6 +1,7 @@
 package org.omega.crawler.bean.base;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,11 +15,13 @@ public class BaseAltCoinBean implements Serializable {
 	private String author;
 	private String title;
 	private String link;
-	private Date publishDate;
+	private Timestamp publishDate;
 	private String publishContent;
 	private Integer replies;
 	private Integer views;
 	private Boolean isParsed;
+	
+	private Timestamp createTime;
 	
 	private String algo;
 	private Date launchTime;
@@ -74,10 +77,10 @@ public class BaseAltCoinBean implements Serializable {
 	public void setLink(String link) {
 		this.link = link;
 	}
-	public Date getPublishDate() {
+	public Timestamp getPublishDate() {
 		return publishDate;
 	}
-	public void setPublishDate(Date publishDate) {
+	public void setPublishDate(Timestamp publishDate) {
 		this.publishDate = publishDate;
 	}
 	public String getPublishContent() {
@@ -104,7 +107,12 @@ public class BaseAltCoinBean implements Serializable {
 	public void setIsParsed(Boolean isParsed) {
 		this.isParsed = isParsed;
 	}
-	
+	public Timestamp getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(Timestamp createTime) {
+		this.createTime = createTime;
+	}
 	public String getAlgo() {
 		return algo;
 	}

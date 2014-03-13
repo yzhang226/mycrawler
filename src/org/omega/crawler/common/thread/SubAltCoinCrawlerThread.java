@@ -1,5 +1,6 @@
 package org.omega.crawler.common.thread;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -61,7 +62,7 @@ public class SubAltCoinCrawlerThread extends Thread {
 						postDate = Utils.parseDateText(date);
 					}
 					
-					ann.setPublishDate(postDate);
+					ann.setPublishDate(new Timestamp(postDate.getTime()));
 					if (isNeedContent) ann.setPublishContent(cp.getSubjectContentHtml());
 				}
 			}

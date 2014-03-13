@@ -15,7 +15,7 @@
 <!-- 	<frameset id="bottomframes" framespacing="0" cols="225,*" frameborder="0" scrolling="no"> -->
 		<frame noresize="noresize" name="left" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" src="<%=request.getContextPath() %>/jsp/left.jsp" >
 	
-		<frame noresize="noresize" id="rightFrame" name="rightFrame" frameborder="0"  src="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" >
+		<frame noresize="noresize" id="rightFrame" name="rightFrame" frameborder="0"  src="<%=request.getContextPath() %>/jsp/bitcointalk/showinterestcoins.do" >
 <!-- 	</frameset> -->
 
 </frameset>

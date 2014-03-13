@@ -1,6 +1,7 @@
 package org.omega.crawler.spider;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -81,6 +82,7 @@ public class AltCoinSpider extends WebCrawler {
 								String link = topicNode.getAttributeByName("href");
 
 								AltCoinBean anncoin = new AltCoinBean();
+								
 
 								anncoin.setTitle(topicTitle);
 								anncoin.setLink(topicNode.getAttributeByName("href"));

@@ -1,6 +1,8 @@
 package org.omega.crawler.service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -16,6 +18,17 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 		this.entityClass = AltCoinBean.class;
+	}
+	
+	public List<AltCoinBean> findInterestAnnCoins(Page<AltCoinBean> page, Integer interest) {
+		String hql = "from AltCoinBean ann";
+		
+		hql = hql + " where ann.isShow is true and (ann.interestLevel >= " + interest + " or ann.launchTime >= '" + getPreviousDate() + "')";
+		hql = Utils.getOrderHql(page, hql, "ann");
+		
+		find(page, hql);
+		
+		return page.getResult();
 	}
 	
 	public List<AltCoinBean> findAnnCoins(Page<AltCoinBean> page) {
@@ -47,6 +60,34 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 		System.out.println("page.getTotalCount() is " + page.getTotalCount());
 		
 		return page.getResult();
+	}
+	
+	public List<AltCoinBean> searchInterestAnnCoins(Page<AltCoinBean> page, String searchField, String searchValue, Integer interest) {
+		
+		page.setPageNo(0);
+		
+		String hql = "from AltCoinBean ann ";
+		
+		String sqlValue = Utils.convertToSqlMatchChars(searchValue);
+		sqlValue = sqlValue.toUpperCase();
+		
+		hql = hql + " where upper(ann." + searchField + ") like '" + sqlValue + "'";
+		hql = hql + " and ann.isShow is true and (ann.interestLevel >= " + interest + " or ann.launchTime >= '" + getPreviousDate() + "')";
+		
+		hql = Utils.getOrderHql(page, hql, "ann");
+		
+		find(page, hql);
+		
+		return page.getResult();
+	}
+	
+	private String getPreviousDate() {
+		Date now = new Date(System.currentTimeMillis());
+		
+		Date prev = Utils.substractDays4Date(now, 4);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String sqlText = sdf.format(prev);
+		return sqlText;
 	}
 	
 	public List<Integer> findParsedTopicids() {

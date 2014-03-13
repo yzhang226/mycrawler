@@ -1,7 +1,9 @@
 package org.omega.crawler.bitcointalk;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
@@ -67,6 +69,7 @@ public class BitcointalkController {
 				
 				for (AltCoinBean ann : undbAnns) {
 					if (ann.getPublishDate() != null) {
+						ann.setCreateTime(new Timestamp(System.currentTimeMillis()));
 						ann.setIsParsed(Boolean.TRUE);
 						altCoinService.saveOrUpdate(ann);
 					}
@@ -204,7 +207,7 @@ public class BitcointalkController {
 		Page<AltCoinBean> params = (Page<AltCoinBean>) request.getAttribute("params");
 		
 		if (Utils.isEmpty(params.getOrderBy())) {
-			params.setOrderBy("publishDate");
+			params.setOrderBy("publishDate, createTime");
 			params.setOrder(Page.DESC);
 		}
 		
@@ -223,6 +226,47 @@ public class BitcointalkController {
 		model.addAttribute("params", params);
 		model.addAttribute("searchField", searchField);
 		model.addAttribute("searchValue", searchValue);
+		model.addAttribute("editable", editable);
+		
+		return jsp;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/showinterestcoins.do")
+	public String showInterestAltCoins(Model model, HttpServletRequest request, 
+							@RequestParam(required=false) String searchField, 
+							@RequestParam(required=false) String searchValue,
+							@RequestParam(required=false) Integer interest,
+							@RequestParam(required=false) Boolean editable ) {
+		String jsp = "bitcointalk/interest_coin_list";
+		
+		Page<AltCoinBean> params = (Page<AltCoinBean>) request.getAttribute("params");
+		
+		if (Utils.isEmpty(params.getOrderBy())) {
+			params.setOrderBy("launchTime, interestLevel, publishDate, createTime");
+			params.setOrder(Page.DESC);
+		}
+		
+		if (editable == null) {
+			editable = Boolean.FALSE;
+		}
+		
+		if (interest == null) {
+			interest = 8;
+		}
+		
+		List<AltCoinBean> anns = null;
+		if (Utils.isNotEmpty(searchField) && Utils.isNotEmpty(searchValue)) {
+			anns = altCoinService.searchInterestAnnCoins(params, searchField, searchValue.trim(), interest);
+		} else {
+			anns = altCoinService.findInterestAnnCoins(params, interest);
+		}
+		
+		model.addAttribute("anns", anns);
+		model.addAttribute("params", params);
+		model.addAttribute("searchField", searchField);
+		model.addAttribute("searchValue", searchValue);
+		model.addAttribute("interest", interest);
 		model.addAttribute("editable", editable);
 		
 		return jsp;

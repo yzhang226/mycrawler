@@ -81,8 +81,9 @@
 <!-- 							<img src="../assets/img/logo_admin.png"> -->
 <!-- 						</h3> -->
 							<ul class="breadcrumb">
-								<li><i class="icon-home"></i> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" class="active">Alt Coins</a> / </li>
-								<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showtalktopics.do">Alt Coins Topic</a> </li>
+								<li><i class="icon-home"></i> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showinterestcoins.do">Interest Coins</a> / </li>
+								<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" >Alt Coins</a> / </li>
+								<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showtalktopics.do" class="active">Alt Coins Topic</a> </li>
 							</ul>
 					<!-- END PAGE TITLE & BREADCRUMB-->
 					</div>
