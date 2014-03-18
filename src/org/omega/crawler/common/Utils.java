@@ -73,16 +73,13 @@ public final class Utils {
 		double a = n.doubleValue();
 		
 		if (a >= 365) {
-			double b = a/365.0;
-			txt = b + "y";
+			txt = String.format("%1$.1fy", new Double(a/365.0));
 		} else if (a >= 30) {
-			double b = a/30.0;
-			txt = b + "m";
+			txt = String.format("%1$.1fm", new Double(a/30.0));
 		} else if (a >= 7) {
-			double b = a/7.0;
-			txt = b + "w";
+			txt = String.format("%1$.1fw", new Double(a/7.0));
 		} else {
-			txt = n.toString();
+			txt = String.format("%1$.1f", new Double(a));
 		}
 		
 		return txt;

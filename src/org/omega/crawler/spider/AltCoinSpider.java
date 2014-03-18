@@ -78,7 +78,7 @@ public class AltCoinSpider extends WebCrawler {
 						if (topicNode != null) {
 							String topicTitle = topicNode.getText().toString().trim();
 
-							if (topicTitle.toLowerCase().contains("ann]")) {
+							if (topicTitle.toLowerCase().contains("ann")) {
 								String link = topicNode.getAttributeByName("href");
 
 								AltCoinBean anncoin = new AltCoinBean();

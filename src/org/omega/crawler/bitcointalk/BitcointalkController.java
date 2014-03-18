@@ -33,6 +33,8 @@ public class BitcointalkController {
 	
 	private static final Log log = LogFactory.getLog(BitcointalkController.class);
 	
+	private static final long ONE_DAY_SECONDS = 24 * 60 * 60;
+	
 	@Autowired
 	private AltCoinService altCoinService;
 	
@@ -134,6 +136,15 @@ public class BitcointalkController {
 				if (values.length > sIndex+16 && Utils.isNotEmpty(va = values[sIndex+16])) alt.setPreMined(Long.valueOf(va)); else alt.setPreMined(null);
 				if (values.length > sIndex+17 && Utils.isNotEmpty(va = values[sIndex+17])) alt.setMinedPercentage(Double.valueOf(va)); else alt.setMinedPercentage(null); 
 				
+				
+				if (alt.getHalfDays() == null 
+						&& alt.getHalfBlocks() != null && alt.getHalfBlocks() > 0 
+						&& alt.getBlockTime() != null && alt.getBlockTime() > 0) {
+					long halftime = alt.getHalfBlocks().longValue() * alt.getBlockTime().longValue();
+					int halfDays = (int) (halftime > ONE_DAY_SECONDS ? halftime / ONE_DAY_SECONDS : 1);
+					alt.setHalfDays(halfDays);
+				}
+				
 				altCoinService.saveOrUpdate(alt);
 			}
 			
@@ -207,7 +218,7 @@ public class BitcointalkController {
 		Page<AltCoinBean> params = (Page<AltCoinBean>) request.getAttribute("params");
 		
 		if (Utils.isEmpty(params.getOrderBy())) {
-			params.setOrderBy("publishDate, createTime");
+			params.setOrderBy("createTime, publishDate");
 			params.setOrder(Page.DESC);
 		}
 		

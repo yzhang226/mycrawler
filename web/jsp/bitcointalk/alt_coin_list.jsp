@@ -119,7 +119,7 @@
 			}
 		}
 		
-		alert("updateSelecedtInfo sValues is " + sValues);
+		// alert("updateSelecedtInfo sValues is " + sValues);
 		
 		var url = getFullUrl('/jsp/bitcointalk/updatealtcoins.do?altIds=' + sIds.join() + '&altValues=' + sValues.join());
 		
