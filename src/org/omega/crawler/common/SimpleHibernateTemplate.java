@@ -213,7 +213,7 @@ public class SimpleHibernateTemplate<E, PK extends Serializable> {
 			page.setTotalCount(getResultCount(hql, values));
 		}
 		
-		System.out.println("Simple Hiber page.getTotalCount() is " + page.getTotalCount());
+//		System.out.println("Simple Hiber page.getTotalCount() is " + page.getTotalCount());
 
 		Query q = createQuery(hql, values);
 		if (page.isFirstSetted()) {

@@ -39,6 +39,10 @@ public final class Utils {
 		return !isEmpty(list);
 	}
 	
+	public static Integer getTopicIdByUrl(String link) {
+		return Integer.valueOf(link.substring(link.indexOf('=') + 1, link.lastIndexOf('.')));
+	}
+	
 	public static String formatNumber(Number n) {
 		if (n == null) {
 			return null;

@@ -6,6 +6,10 @@ import javax.servlet.http.HttpServlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+import org.omega.crawler.bitcointalk.BitcointalkController;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public class SystemWarmupServlet extends HttpServlet {
 
@@ -38,8 +42,17 @@ public class SystemWarmupServlet extends HttpServlet {
 		
 //		hibernateSession.close();
 		
+//		WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+//		BitcointalkController bitctrl = (BitcointalkController) context.getBean("bitcointalkController");
+//		String baseSeedUrl = "https://bitcointalk.org/index.php?board=159.";
+//		int startgroup = 0;
+//		int endgroup = 4;
+//		
+//		bitctrl.initAnnBoard(null, null, baseSeedUrl, startgroup, endgroup);
+		
 		Utils.setWebDeployPath(servletContext.getRealPath("/"));
 		servletContext.setAttribute("image_path",  Utils.getCardImagePath());
+		
 		
 	}
 	

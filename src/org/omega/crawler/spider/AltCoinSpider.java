@@ -24,13 +24,18 @@ public class AltCoinSpider extends WebCrawler {
 
 	public final static List<AltCoinBean> beans = new ArrayList<AltCoinBean>();
 
-	private final static Pattern TALK_PATTER = Pattern.compile("^https.+bitcointalk.org.index.php.topic.\\d+.\\d$");
+	private final static Pattern TALK_PATTER = Pattern.compile("^https.+bitcointalk.org.index.php.topic.\\d+\\..+$");
 
 	@Override
 	public boolean shouldVisit(WebURL url) {
 		String href = url.getURL().toLowerCase();
 
 		return TALK_PATTER.matcher(href).matches();
+	}
+	
+	@Override
+	public void onBeforeExit() {
+		
 	}
 
 	/**
@@ -41,7 +46,7 @@ public class AltCoinSpider extends WebCrawler {
 	public void visit(Page page) {
 
 		String url = page.getWebURL().getURL();
-		System.out.println("Visit page url: " + url);
+		log.info("Visit page url: " + url);
 
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
@@ -86,7 +91,7 @@ public class AltCoinSpider extends WebCrawler {
 
 								anncoin.setTitle(topicTitle);
 								anncoin.setLink(topicNode.getAttributeByName("href"));
-								anncoin.setTopicid(Integer.valueOf(link.substring(link.indexOf('=') + 1, link.lastIndexOf('.'))));
+								anncoin.setTopicid(Utils.getTopicIdByUrl(link));
 
 								TagNode authorNode = (TagNode) cr.get(3).getChildTagList().get(0);
 								anncoin.setAuthor(authorNode.getText().toString().trim());

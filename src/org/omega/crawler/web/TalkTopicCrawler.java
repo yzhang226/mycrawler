@@ -41,7 +41,7 @@ public class TalkTopicCrawler extends WebCrawler {
 	public void visit(Page page) {
 		
 		String url = page.getWebURL().getURL();
-		System.out.println("Visit page url: " + url);
+		System.out.println("TalkTopicCrawler Visit page url: " + url);
 
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();

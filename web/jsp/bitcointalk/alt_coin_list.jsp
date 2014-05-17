@@ -233,7 +233,7 @@
 		var baseSeedUrl = "https://bitcointalk.org/index.php?board=159.";
 		// var baseSeedUrl = "https://bitcointalk.org/index.php?board=67.";
 		var startgroup = 0;
-		var endgroup = 3;
+		var endgroup = 1;
 		
 		url = url + "?baseSeedUrl=" + baseSeedUrl + "&startgroup=" + startgroup + "&endgroup=" + endgroup;
 		
@@ -470,6 +470,7 @@
 															<option value=""></option>
 															<option value="PoW" ${"PoW" == ann.proof ? "selected" : "" }>PoW</option>
 															<option value="PoS" ${"PoS" == ann.proof ? "selected" : "" }>PoS</option>
+															<option value="ppws" ${"ppws" == ann.proof ? "selected" : "" }>PPWS</option>
 															<option value="PoWPoS" ${"PoWPoS" == ann.proof ? "selected" : "" }>PoW/PoS</option>
 															<option value="PoF" ${"PoF" == ann.proof ? "selected" : "" }>Proof Of Friction</option>
 															

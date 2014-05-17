@@ -4,7 +4,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,25 +67,38 @@ public class BitcointalkController {
 				}
 				anns.clear();
 				
-				CountDownLatch counter = new CountDownLatch(1);
-				new AltCoinCrawlerThread(undbAnns, true, counter).start();
-				counter.await();
+//				CountDownLatch counter = new CountDownLatch(1);
+//				new AltCoinCrawlerThread(undbAnns, false, counter).start();
+//				counter.await();
 				
-				for (AltCoinBean ann : undbAnns) {
-					if (ann.getPublishDate() != null) {
-						ann.setCreateTime(new Timestamp(System.currentTimeMillis()));
-						ann.setIsParsed(Boolean.TRUE);
-						altCoinService.saveOrUpdate(ann);
+//				for (AltCoinBean ann : undbAnns) {
+//					if (ann.getPublishDate() != null) {
+//						ann.setCreateTime(new Timestamp(System.currentTimeMillis()));
+//						ann.setIsParsed(Boolean.TRUE);
+//						altCoinService.saveOrUpdate(ann);
+//					}
+//				}
+				if (Utils.isNotEmpty(undbAnns)) {
+					Timestamp curr = new Timestamp(System.currentTimeMillis());
+					Map<Integer, Timestamp> topicIdTimeMap = annCrawler.fectchAnnTopicsByUrls(undbAnns, 0);
+					for (AltCoinBean alt : undbAnns) {
+						if (topicIdTimeMap.containsKey(alt.getTopicid())) {
+							alt.setPublishDate(topicIdTimeMap.get(alt.getTopicid()));
+							alt.setCreateTime(curr);
+							alt.setIsParsed(Boolean.TRUE);
+							altCoinService.saveOrUpdate(alt);
+						}
 					}
+					topicIdTimeMap.clear();
 				}
 				
 				Thread.sleep(1 * 1000);
 			}
 		} catch (Throwable e) {
-			log.error("Init Ann Board error.", e);
+			log.error("Init Ann Board By URL error.", e);
 			
 			success = false;
-			resp = "Init Ann Board error!";
+			resp = "Init Ann Board By URL error!";
 		}
 		
 		return Utils.getJsonMessage(success, resp);
