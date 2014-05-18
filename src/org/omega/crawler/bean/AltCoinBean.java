@@ -1,5 +1,7 @@
 package org.omega.crawler.bean;
 
+import java.text.SimpleDateFormat;
+
 import org.omega.crawler.bean.base.BaseAltCoinBean;
 import org.omega.crawler.common.Utils;
 
@@ -36,6 +38,27 @@ public class AltCoinBean extends BaseAltCoinBean {
 	
 	public String getHalfDaysTxt() {
 		return Utils.formatDay(getHalfDays());
+	}
+	
+	public String toPrintableTxt() {
+		String pdate = null;
+		if (getPublishDate() != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+			pdate = sdf.format(getPublishDate());
+		}
+		
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append(getName()).append("[").append(getAbbrName()).append("], ")
+		  .append("total: ").append(getTotalAmount()).append(", ")
+		  .append("algo: ").append(getAlgo()).append(", ")
+		  .append("breward: ").append(getBlockReward()).append(", ")
+		  .append("btime: ").append(getBlockTime()).append(", ")
+		  .append("premine: ").append(getMinedPercentage()).append("%, ")
+		  .append("preAmount: ").append(getPreMined()).append(", ")
+//		  .append("launch: ").append(pdate).append(", ")
+		  .append("launchRaw: ").append(getLaunchRaw()).append(", ");
+		return sb.toString();
 	}
 	
 }

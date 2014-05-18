@@ -1,6 +1,11 @@
 package org.omega.crawler.spider;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -14,6 +19,7 @@ import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
 import org.omega.crawler.bean.AltCoinBean;
+import org.omega.crawler.common.ContentMatcher;
 import org.omega.crawler.common.Utils;
 
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -24,27 +30,24 @@ import edu.uci.ics.crawler4j.url.WebURL;
 public class DetailAltCoinSpider extends WebCrawler {
 
 	private static final Log log = LogFactory.getLog(DetailAltCoinSpider.class);
+	
+	private static final boolean IS_DOWNLOADING = false;
 
 	public final static Map<Integer, Timestamp> topicIdTimeMap = new HashMap<Integer, Timestamp>();
+	public final static Map<Integer, AltCoinBean> topicIdAltCoinMap = new HashMap<Integer, AltCoinBean>();
+	
 
 	private final static Pattern TALK_PATTER = Pattern.compile("^https.+bitcointalk.org.index.php.topic.\\d+\\..+$");
 
-	@Override
 	public boolean shouldVisit(WebURL url) {
 		String href = url.getURL().toLowerCase();
-
 		return TALK_PATTER.matcher(href).matches();
 	}
 
-	/**
-	 * This function is called when a page is fetched and ready to be processed
-	 * by your program.
-	 */
-	@Override
 	public void visit(Page page) {
 
 		String url = page.getWebURL().getURL();
-		log.info("Visit page url: " + url);
+		log.info("Visit page url for detail: " + url);
 
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
@@ -67,11 +70,48 @@ public class DetailAltCoinSpider extends WebCrawler {
 					}
 					
 //					ann.setPublishDate(new Timestamp(postDate.getTime()));
-					topicIdTimeMap.put(Utils.getTopicIdByUrl(url), new Timestamp(postDate.getTime()));
-//					if (isNeedContent) ann.setPublishContent(cp.getSubjectContentHtml());
+					Integer topicId = Utils.getTopicIdByUrl(url);
+					
+					topicIdTimeMap.put(topicId, new Timestamp(postDate.getTime()));
+					
+					AltCoinBean alt = buildAltCion(node, cleaner);
+					alt.setTopicid(topicId);
+					alt.setPublishDate(new Timestamp(postDate.getTime()));
+					
+					topicIdAltCoinMap.put(topicId, alt);
+					
+					if (IS_DOWNLOADING) {
+						downloadHtmlPage(alt, html);
+					}
+					
 				}
 			}
 		}
+	}
+	
+	public void downloadHtmlPage(AltCoinBean alt, String html) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+		String pdate = sdf.format(alt.getPublishDate());
+		
+		File htmlPath = new File(BitcointalkCrawler.crawl_storage_folder + "/" + pdate + "-" + alt.getTopicid() + "-" + alt.getName() + "-" + alt.getAbbrName() + ".html");
+		
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(htmlPath);
+			byte[] bs = html.getBytes();
+			fos.write(bs);
+			fos.flush();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (fos != null) fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 	public String getPublishDate(TagNode page) {
@@ -100,7 +140,7 @@ public class DetailAltCoinSpider extends WebCrawler {
 		return cont;
 	}
 	
-	public String getSubjectContentHtml(TagNode page, HtmlCleaner cleaner) {
+	public String getContentHtml(TagNode page, HtmlCleaner cleaner) {
 		Object[] ns = null;
 		try {
 			ns = page.evaluateXPath("//body/div[2]/form/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td[2]/div[@class='post']");
@@ -116,5 +156,38 @@ public class DetailAltCoinSpider extends WebCrawler {
 		
 		return cont;
 	}
+	
+	public String getTitle(TagNode page, HtmlCleaner cleaner) {
+		Object[] ns = null;
+		try {// //*[@id="top_subject"] 
+			ns = page.evaluateXPath("//title");
+		} catch (XPatherException e) {
+			e.printStackTrace();
+		}
+		
+		String cont = "";
+		if (ns != null && ns.length > 0) {
+			TagNode n = (TagNode) ns[0];
+			cont = cleaner.getInnerHtml(n);
+		}
+		
+		return cont;
+	}
 
+	public AltCoinBean buildAltCion(TagNode page, HtmlCleaner cleaner) {
+		String content = getContentHtml(page, cleaner);
+		String title = getTitle(page, cleaner);
+		
+		String[] lineArr = content.toLowerCase().split("<br />");
+		List<String> lines = new ArrayList<String>(lineArr.length);
+		for (String l : lineArr) {
+			lines.add(cleaner.clean(l).getText().toString());
+		}
+
+		ContentMatcher cm = new ContentMatcher(title, lines);
+		AltCoinBean alt = cm.buildAndMatch();
+		
+		return alt;
+	}
+	
 }
