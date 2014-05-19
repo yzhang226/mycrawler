@@ -3,11 +3,8 @@ package org.omega.crawler.bitcointalk;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,8 +14,6 @@ import org.omega.crawler.bean.AltCoinBean;
 import org.omega.crawler.bean.AltCoinTopicBean;
 import org.omega.crawler.common.Page;
 import org.omega.crawler.common.Utils;
-import org.omega.crawler.common.thread.AltCoinCrawlerThread;
-import org.omega.crawler.common.thread.AltCoinTopicCrawlerThread;
 import org.omega.crawler.service.AltCoinService;
 import org.omega.crawler.service.AltCoinTopicService;
 import org.omega.crawler.spider.BitcointalkCrawler;
@@ -67,29 +62,19 @@ public class BitcointalkController {
 				}
 				anns.clear();
 				
-//				CountDownLatch counter = new CountDownLatch(1);
-//				new AltCoinCrawlerThread(undbAnns, false, counter).start();
-//				counter.await();
-				
-//				for (AltCoinBean ann : undbAnns) {
-//					if (ann.getPublishDate() != null) {
-//						ann.setCreateTime(new Timestamp(System.currentTimeMillis()));
-//						ann.setIsParsed(Boolean.TRUE);
-//						altCoinService.saveOrUpdate(ann);
-//					}
-//				}
 				if (Utils.isNotEmpty(undbAnns)) {
 					Timestamp curr = new Timestamp(System.currentTimeMillis());
-					Map<Integer, Timestamp> topicIdTimeMap = annCrawler.fectchAnnTopicsByUrls(undbAnns, 0);
+					Map<Integer, AltCoinBean> topicIdAltCoinMap = annCrawler.fectchAnnTopicsByUrls(undbAnns, 0);
 					for (AltCoinBean alt : undbAnns) {
-						if (topicIdTimeMap.containsKey(alt.getTopicid())) {
-							alt.setPublishDate(topicIdTimeMap.get(alt.getTopicid()));
+						if (topicIdAltCoinMap.containsKey(alt.getTopicid())) {
+							copyProperties(alt, topicIdAltCoinMap.get(alt.getTopicid()));
+							
 							alt.setCreateTime(curr);
 							alt.setIsParsed(Boolean.TRUE);
 							altCoinService.saveOrUpdate(alt);
 						}
 					}
-					topicIdTimeMap.clear();
+					topicIdAltCoinMap.clear();
 				}
 				
 				Thread.sleep(1 * 1000);
@@ -102,6 +87,22 @@ public class BitcointalkController {
 		}
 		
 		return Utils.getJsonMessage(success, resp);
+	}
+	
+	private void copyProperties(AltCoinBean src, AltCoinBean matched) {
+		src.setPublishDate(matched.getPublishDate());
+		
+		src.setName(matched.getName());
+		src.setAbbrName(matched.getAbbrName());
+		
+		src.setTotalAmount(matched.getTotalAmount());
+		src.setBlockReward(matched.getBlockReward());
+		src.setBlockTime(matched.getBlockTime());
+		src.setMinedPercentage(matched.getMinedPercentage());
+		
+		src.setAlgo(matched.getAlgo());
+		src.setPreMined(matched.getPreMined());
+		src.setLaunchRaw(matched.getLaunchRaw());
 	}
 	
 	@RequestMapping("/updatealtcoins.do")
@@ -198,16 +199,16 @@ public class BitcointalkController {
 				}
 				beans.clear();
 				
-				CountDownLatch counter = new CountDownLatch(1);
-				new AltCoinTopicCrawlerThread(undbBeans, false, counter).start();
-				counter.await();
-				
-				for (AltCoinTopicBean bean : undbBeans) {
-					if (bean.getPublishDate() != null) {
-						bean.setIsParsed(Boolean.TRUE);
-						altCoinTopicService.saveOrUpdate(bean);
-					}
-				}
+//				CountDownLatch counter = new CountDownLatch(1);
+//				new AltCoinTopicCrawlerThread(undbBeans, false, counter).start();
+//				counter.await();
+//				
+//				for (AltCoinTopicBean bean : undbBeans) {
+//					if (bean.getPublishDate() != null) {
+//						bean.setIsParsed(Boolean.TRUE);
+//						altCoinTopicService.saveOrUpdate(bean);
+//					}
+//				}
 				
 				Thread.sleep(10 * 1000);
 			}

@@ -25,6 +25,7 @@ public class BaseAltCoinBean implements Serializable {
 	
 	private String algo;
 	private Date launchTime;
+	private String launchRaw;
 	private String name;
 	private String abbrName;
 	private Integer interestLevel;
@@ -124,6 +125,12 @@ public class BaseAltCoinBean implements Serializable {
 	}
 	public void setLaunchTime(Date launchTime) {
 		this.launchTime = launchTime;
+	}
+	public String getLaunchRaw() {
+		return launchRaw;
+	}
+	public void setLaunchRaw(String launchRaw) {
+		this.launchRaw = launchRaw;
 	}
 	public String getName() {
 		return name;

@@ -10,7 +10,6 @@ public class DocIder {
 	private DocIder() { }
 
 	public static synchronized int getNext() {
-		System.out.println("id.get() is " + id.get());
 		return id.getAndIncrement();
 	}
 

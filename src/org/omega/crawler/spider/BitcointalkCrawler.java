@@ -16,7 +16,7 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
 public class BitcointalkCrawler {
 	
-	private static final String crawl_storage_folder = "/storage/crawler4j";
+	public static final String crawl_storage_folder = "/storage/crawler4j";
 	private static final int numberOfCrawlers = 2;
 	
 	public CrawlController createCrawlController() throws Exception {
@@ -56,7 +56,7 @@ public class BitcointalkCrawler {
 		return AltCoinSpider.beans;
 	}
 	
-	public Map<Integer, Timestamp> fectchAnnTopicsByUrls(List<AltCoinBean> undbAnns, int group) throws Exception {
+	public Map<Integer, AltCoinBean> fectchAnnTopicsByUrls(List<AltCoinBean> undbAnns, int group) throws Exception {
 		CrawlController controller = createCrawlController();
 		
 		int did;
@@ -69,7 +69,7 @@ public class BitcointalkCrawler {
 		
 		controller.start(DetailAltCoinSpider.class, numberOfCrawlers);
 
-		return DetailAltCoinSpider.topicIdTimeMap;
+		return DetailAltCoinSpider.topicIdAltCoinMap;
 	}
 	
 	public List<AltCoinTopicBean> fectchTalkTopics(String baseSeedUrl, int group) throws Exception {

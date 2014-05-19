@@ -311,6 +311,27 @@ public final class Utils {
 		return url == null ? "" : url.getPath();
 	}
 	
+	public static String removeChars(String s) {
+		return  replaceAll(s, "\\D+", "");
+	}
+	
+	public static String replaceAll(String s, String regex, String replacement) {
+		if (s == null) {
+			return "";
+		}
+		Pattern p = Pattern.compile(regex);
+		
+		Matcher m = p.matcher(s);
+		
+		StringBuffer sb = new StringBuffer();
+		while (m.find()) {
+			m.appendReplacement(sb, replacement);
+		}
+		m.appendTail(sb);
+		
+		return sb.toString();
+	}
+	
 	public static void main(String[] args) {
 		System.out.println(encryptWithMd5("ubi6La5z"));
 		String text = "February 17, 2014, 06:16:06 PM";
