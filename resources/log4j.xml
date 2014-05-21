@@ -20,10 +20,14 @@
 		</layout>
 	</appender>
 
-	<logger name="com.mobiusws"  >
-		<level value="INFO" />
+	<logger name="org.omega"  >
+		<level value="DEBUG" />
 	</logger>
-
+	<logger name="org.apache.commons.beanutils"  >
+		<level value="DEBUG" />
+	</logger>
+	
+	
 	<root>
 		<priority value="INFO" />
 		<appender-ref ref="STDOUT" />

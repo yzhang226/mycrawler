@@ -4,6 +4,10 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.ConvertUtilsBean;
+import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils.converters.LongConverter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -48,6 +52,14 @@ public class SystemWarmupServlet extends HttpServlet {
 		
 		Utils.setWebDeployPath(servletContext.getRealPath("/"));
 		servletContext.setAttribute("image_path",  Utils.getCardImagePath());
+		
+		
+//		ConvertUtils.deregister(Long.class);
+//		Converter longcon = new LongConverter(null);
+//		ConvertUtils.register(longcon, Long.class);
+		
+		ConvertUtilsBean cub = new ConvertUtilsBean();
+		cub.register(true, true, 2);
 		
 		
 	}

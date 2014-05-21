@@ -47,6 +47,10 @@ public class BaseAltCoinBean implements Serializable {
 	private Long preMined;
 	private Double minedPercentage;
 	
+	private Integer powDays;
+	private Integer powHeight;
+	private Long posAmount;
+	
 	
 	public Integer getId() {
 		return id;
@@ -232,14 +236,25 @@ public class BaseAltCoinBean implements Serializable {
 	public void setMinedPercentage(Double minedPercentage) {
 		this.minedPercentage = minedPercentage;
 	}
+	public Integer getPowDays() {
+		return powDays;
+	}
+	public void setPowDays(Integer powDays) {
+		this.powDays = powDays;
+	}
+	public Integer getPowHeight() {
+		return powHeight;
+	}
+	public void setPowHeight(Integer powHeight) {
+		this.powHeight = powHeight;
+	}
+	public Long getPosAmount() {
+		return posAmount;
+	}
+	public void setPosAmount(Long posAmount) {
+		this.posAmount = posAmount;
+	}
 	public String toHtml() {
-		/*
-		 * <td>Publish Date</td>
-		<td>Title</td>
-		<td>Author</td>
-		<td>Replies</td>
-		<td>Views</td>
-		 */
 		StringBuilder sb = new StringBuilder("<tr>");
 		sb.append("<td>").append(null != publishDate ? new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(publishDate) : "").append("</td>");
 		sb.append("<td>").append(title).append("</td>");

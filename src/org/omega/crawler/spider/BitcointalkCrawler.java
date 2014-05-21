@@ -1,11 +1,11 @@
 package org.omega.crawler.spider;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
 import org.omega.crawler.bean.AltCoinBean;
 import org.omega.crawler.bean.AltCoinTopicBean;
+import org.omega.crawler.common.Constants;
 import org.omega.crawler.common.DocIder;
 
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
@@ -16,13 +16,13 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
 public class BitcointalkCrawler {
 	
-	public static final String crawl_storage_folder = "/storage/crawler4j";
+	
 	private static final int numberOfCrawlers = 2;
 	
 	public CrawlController createCrawlController() throws Exception {
 		CrawlConfig config = new CrawlConfig();
 		
-		config.setCrawlStorageFolder(crawl_storage_folder);
+		config.setCrawlStorageFolder(Constants.CRAWL_FOLDER);
 		config.setIncludeHttpsPages(true);
 		config.setMaxDepthOfCrawling(0);
 		config.setPolitenessDelay(1 * 1000);
@@ -56,7 +56,7 @@ public class BitcointalkCrawler {
 		return AltCoinSpider.beans;
 	}
 	
-	public Map<Integer, AltCoinBean> fectchAnnTopicsByUrls(List<AltCoinBean> undbAnns, int group) throws Exception {
+	public Map<Integer, AltCoinBean> fectchAnnTopicsByUrls(List<AltCoinBean> undbAnns) throws Exception {
 		CrawlController controller = createCrawlController();
 		
 		int did;

@@ -10,8 +10,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.omega.crawler.bean.AltCoinBean;
 
 public final class Utils {
 
@@ -39,6 +42,18 @@ public final class Utils {
 		return !isEmpty(list);
 	}
 	
+	public static boolean isPositive(Integer i) {
+		return i != null && i.intValue() > 0;
+	}
+	
+	public static boolean isPositive(Long i) {
+		return i != null && i.longValue() > 0;
+	}
+	
+	public static boolean isPositive(Double i) {
+		return i != null && i.doubleValue() > 0;
+	}
+	
 	public static Integer getTopicIdByUrl(String link) {
 		return Integer.valueOf(link.substring(link.indexOf('=') + 1, link.lastIndexOf('.')));
 	}
@@ -46,6 +61,9 @@ public final class Utils {
 	public static String formatNumber(Number n) {
 		if (n == null) {
 			return null;
+		}
+		if (n.doubleValue() == 0) {
+			return "0";
 		}
 		String txt = "";
 		double a = n.doubleValue();
@@ -83,7 +101,7 @@ public final class Utils {
 		} else if (a >= 7) {
 			txt = String.format("%1$.1fw", new Double(a/7.0));
 		} else {
-			txt = String.format("%1$.1f", new Double(a));
+			txt = String.valueOf(n);
 		}
 		
 		return txt;
@@ -115,6 +133,30 @@ public final class Utils {
 		xchar = "%" + xchar + "%";
 		
 		return xchar;
+	}
+	
+	public static String normalizeTime(String timezone, String calltime) {	
+		String switchTimeZone = timezone;
+
+		TimeZone swTimeZone = TimeZone.getTimeZone(switchTimeZone);
+		
+		String outPutStr = "0";
+		if (!"".equals(calltime) && calltime.length() == 14) {	
+			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+			format.setTimeZone(swTimeZone);
+			Date parseDate = null;
+			try {
+				parseDate = format.parse(calltime);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+
+			SimpleDateFormat formatOut = new SimpleDateFormat("yyyyMMddHHmmss");
+			formatOut.setTimeZone(TimeZone.getTimeZone("GMT"));
+			outPutStr = formatOut.format(parseDate);
+		}
+		
+		return outPutStr;
 	}
 	
 	public static Date substractDays4Date(Date d, int days) {
@@ -330,6 +372,38 @@ public final class Utils {
 		m.appendTail(sb);
 		
 		return sb.toString();
+	}
+	
+	public static String generateHtml4AltCoin(String fileName, AltCoinBean alt) {
+		StringBuilder sb = new StringBuilder();
+		
+		// <tr style='font-weight: bold;font-size: 9px;'>
+		// 		<td>File Name</td><td>Name</td><td>Abbr</td><td>Algo</td><td>Total</td><td>Block Time</td><td>Block Reward</td><td>PreMined</td><td>Percentage</td>
+		//      <td>Launch Raw</td><td>Post Date</td><td>Used Time</td>
+		// </tr>
+		// <a href='file://localhost/storage/crawler4j/pages/' target='_blank'></a>
+		sb.append("<tr>").append("\n");
+		sb.append("\t").append("<td>").append(getHref(fileName)).append("</td><td>").append(alt.getName()).append("</td><td>").append(alt.getAbbrName()).append("</td>");
+		sb.append("\t").append("<td>").append(swap(alt.getAlgo())).append("</td>");
+		sb.append("\t").append("<td>").append(swap(alt.getTotalAmount())).append("</td><td>").append(swap(alt.getBlockTime())).append("</td><td>").append(swap(alt.getBlockReward())).append("</td>");
+		sb.append("\t").append("<td>").append(swap(alt.getPreMined())).append("</td><td>").append(swap(alt.getMinedPercentage())).append("</td><td>").append(swap(alt.getLaunchRaw())).append("</td>");
+		sb.append("\t").append("<td>").append(swap(alt.getPublishDate())).append("</td><td>").append(alt.getUsedTime()).append("</td>").append("\n");
+		
+		sb.append("</tr>").append("\n");;
+		
+		return sb.toString();
+	}
+	
+	private static String getHref(String fileName) {
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("<a href='file://localhost").append(Constants.CRAWL_PAGES_FOLDER).append("/").append(fileName).append("' target='_blank'>").append(fileName).append("</a>");
+		
+		return sb.toString();
+	}
+	
+	private static Object swap(Object txt) {
+		return txt == null ? "" : txt;
 	}
 	
 	public static void main(String[] args) {

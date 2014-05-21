@@ -13,4 +13,10 @@ public final class Constants {
 	
 	public static final int ONE_HOUR_MILLIS = 24 * 60 * 60 * 1000;
 	
+	public static final String CRAWL_FOLDER = "/storage/crawler4j";
+	public static final String CRAWL_PAGES_FOLDER = CRAWL_FOLDER + "/pages";
+	
+	public static final String TIMEZONE_SHANGHAI = "Asia/Shanghai";
+	
+	
 }

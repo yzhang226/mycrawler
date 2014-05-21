@@ -2,6 +2,7 @@ package org.omega.crawler.bean;
 
 import java.text.SimpleDateFormat;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.omega.crawler.bean.base.BaseAltCoinBean;
 import org.omega.crawler.common.Utils;
 
@@ -33,11 +34,27 @@ public class AltCoinBean extends BaseAltCoinBean {
 	}
 	
 	public String getMinedPercentageTxt() {
-		return getMinedPercentage() != null ? String.format("%1$.2f", getMinedPercentage()) : "";
+		return Utils.isPositive(getMinedPercentage()) ? String.format("%1$.2f", getMinedPercentage()) : "";
 	}
 	
 	public String getHalfDaysTxt() {
 		return Utils.formatDay(getHalfDays());
+	}
+	
+	public String getPosAmountTxt() {
+		return Utils.formatNumber(getPosAmount());
+	}
+	
+	public String getPowDaysTxt() {
+		return Utils.formatDay(getPowDays());
+	}
+	
+	public String getPublishDateTxt() {
+		if (getPublishDate() != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
+			return sdf.format(getPublishDate());
+		}
+		return "";
 	}
 	
 	public String toPrintableTxt() {
@@ -60,5 +77,14 @@ public class AltCoinBean extends BaseAltCoinBean {
 		  .append("launchRaw: ").append(getLaunchRaw()).append(", ");
 		return sb.toString();
 	}
+	
+	private double usedTime;
+	public double getUsedTime() {
+		return usedTime;
+	}
+	public void setUsedTime(double usedTime) {
+		this.usedTime = usedTime;
+	}
+	
 	
 }

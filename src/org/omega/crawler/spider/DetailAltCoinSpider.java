@@ -19,6 +19,7 @@ import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
 import org.omega.crawler.bean.AltCoinBean;
+import org.omega.crawler.common.Constants;
 import org.omega.crawler.common.ContentMatcher;
 import org.omega.crawler.common.Utils;
 
@@ -31,7 +32,7 @@ public class DetailAltCoinSpider extends WebCrawler {
 
 	private static final Log log = LogFactory.getLog(DetailAltCoinSpider.class);
 	
-	private static final boolean IS_DOWNLOADING = false;
+	private static final boolean IS_DOWNLOADING = true;
 
 	public final static Map<Integer, Timestamp> topicIdTimeMap = new HashMap<Integer, Timestamp>();
 	public final static Map<Integer, AltCoinBean> topicIdAltCoinMap = new HashMap<Integer, AltCoinBean>();
@@ -50,41 +51,56 @@ public class DetailAltCoinSpider extends WebCrawler {
 		log.info("Visit page url for detail: " + url);
 
 		if (page.getParseData() instanceof HtmlParseData) {
-			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
-			String html = htmlParseData.getHtml();
-
-			HtmlCleaner cleaner = new HtmlCleaner();
-
-			TagNode node = cleaner.clean(html);
-			
-			if (node != null) {
-				String date = getPublishDate(node);
-				Date postDate = null;
-				if (Utils.isNotEmpty(date)) {
-					// January 21, 2014, 09:01:57 PM
-					// MMMMM dd, yyyy, KK:mm:ss aaa
-					if (date.toLowerCase().contains("today")) {// Today at 12:39:37 AM
-						postDate = Utils.parseTodayText(date);
-					} else {
-						postDate = Utils.parseDateText(date);
+			Integer topicId = null;
+			AltCoinBean alt = null;
+			String html = null;
+			try {
+				topicId = Utils.getTopicIdByUrl(url);
+				
+				HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
+				html = htmlParseData.getHtml();
+	
+				HtmlCleaner cleaner = new HtmlCleaner();
+	
+				TagNode node = cleaner.clean(html);
+				
+				if (node != null) {
+					String date = getPublishDate(node);
+					Date postDate = null;
+					if (Utils.isNotEmpty(date)) {
+						// January 21, 2014, 09:01:57 PM
+						// MMMMM dd, yyyy, KK:mm:ss aaa
+						if (date.toLowerCase().contains("today")) {// Today at 12:39:37 AM
+							postDate = Utils.parseTodayText(date);
+						} else {
+							postDate = Utils.parseDateText(date);
+						}
+						
+						
+						
+						topicIdTimeMap.put(topicId, new Timestamp(postDate.getTime()));
+						
+						alt = buildAltCion(node, cleaner);
+						alt.setTopicid(topicId);
+						alt.setPublishDate(new Timestamp(postDate.getTime()));
+						
+						topicIdAltCoinMap.put(topicId, alt);
+						
+						
+						
 					}
-					
-//					ann.setPublishDate(new Timestamp(postDate.getTime()));
-					Integer topicId = Utils.getTopicIdByUrl(url);
-					
-					topicIdTimeMap.put(topicId, new Timestamp(postDate.getTime()));
-					
-					AltCoinBean alt = buildAltCion(node, cleaner);
-					alt.setTopicid(topicId);
-					alt.setPublishDate(new Timestamp(postDate.getTime()));
-					
-					topicIdAltCoinMap.put(topicId, alt);
-					
-					if (IS_DOWNLOADING) {
-						downloadHtmlPage(alt, html);
-					}
-					
 				}
+			
+			} catch (Exception e) {
+				log.error("Parse html page error topic id[" + topicId + "].", e);
+			}
+			
+			try {
+				if (IS_DOWNLOADING) {
+					downloadHtmlPage(alt, html);
+				}
+			} catch (Exception e) {
+				log.error("Download page error topic id[" + topicId + "].", e);
 			}
 		}
 	}
@@ -93,7 +109,7 @@ public class DetailAltCoinSpider extends WebCrawler {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String pdate = sdf.format(alt.getPublishDate());
 		
-		File htmlPath = new File(BitcointalkCrawler.crawl_storage_folder + "/" + pdate + "-" + alt.getTopicid() + "-" + alt.getName() + "-" + alt.getAbbrName() + ".html");
+		File htmlPath = new File(Constants.CRAWL_PAGES_FOLDER + "/" + pdate + "-" + alt.getTopicid() + "-" + alt.getName() + "-" + alt.getAbbrName() + ".html");
 		
 		FileOutputStream fos = null;
 		try {

@@ -316,5 +316,22 @@
 
 	<div id="__columns" ></div>
 	
+<!-- 	<div class="page-content"> -->
+<!-- 		<div class="container-fluid"> -->
+
+			<div class="row-fluid">
+				<div class="span12">
+					<ul class="breadcrumb">
+						<li><i class="icon-home"></i> <a id="bread" href="<%=request.getContextPath()%>/jsp/bitcointalk/showdashboard.do">Dashboard</a> /</li>
+						<li><a id="bread" href="<%=request.getContextPath()%>/jsp/bitcointalk/showinterestcoins.do">Interest Coins</a> /</li>
+						<li><a id="bread" href="<%=request.getContextPath()%>/jsp/bitcointalk/showanncoins.do">Alt Coins</a> /</li>
+						<li><a id="bread" href="<%=request.getContextPath()%>/jsp/bitcointalk/showtalktopics.do">Alt Coins Topic</a></li>
+					</ul>
+				</div>
+			</div>
+
+<!-- 		</div> -->
+<!-- 	</div> -->
+	
 </body>
 </html>

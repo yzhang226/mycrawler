@@ -23,17 +23,11 @@
 		
 		// single multiple
 		// alert("editable is " + editable);
-		var mode = editable ? "multiple" : "single";
+		// var mode = editable ? "multiple" : "single";
+		var mode = "multiple";
 		// alert("mode is " + mode);
 		
 		$('#__grid__').tcgtable({rowSelect : mode});
-		
-		var subCols = $('#__columns').children();
-		var idx = 3;
-		$(subCols[idx]).children()[0].click();
-		$(subCols[idx+1]).children()[0].click();
-		$(subCols[idx+2]).children()[0].click();
-		// $(subCols[idx+3]).children()[0].click();
 		
 		$("#date_picker input").datepicker({
 		   beforeShow: function(input) {
@@ -51,21 +45,6 @@
 		   closeText : "Close"
 		});
 		
-		//  : "icon-check-empty]'
-		// var ms = $("td[minable='1']");
-		
-		$("td[minable='1']").unbind('click').click(function() {
-			var min = $($(this).children()[0]);
-			checkMinable(min.attr('id'), min.attr('tvalue'));
-		});
-		
-		$("td[isShow='1']").unbind('click').click(function() {
-			var min = $($(this).children()[0]);
-			checkMinable(min.attr('id'), min.attr('tvalue'));
-		});
-		 
-		 
-		
 	});
 	
 	function searchByField() {
@@ -79,11 +58,11 @@
 		window.location.href = url;
 	}
 	
-	var fields = new Array("launchTime","cpuMinable","gpuMinable","asicMinable","interestLevel","isShow","algo",
-						   "proof","name","abbrName","totalAmount","blockReward","blockTime","halfBlocks","halfDays",
-						   "difficultyAdjust","preMined","minedPercentage");
-	var formatedFields = new Array("totalAmount","blockReward","halfBlocks","preMined");
-	var formatedDayFields = new Array("halfDays");
+	var fields = new Array("interestLevel", "name", "abbrName", "totalAmount", "algo", "preMined", "minedPercentage", 
+							"proof", "blockReward", "blockTime", "halfBlocks", "halfDays", "powDays", "powHeight", "posAmount", 
+							"difficultyAdjust", "launchTime");
+	var formatedFields = new Array("totalAmount","blockReward","halfBlocks","preMined","powHeight","posAmount");
+	var formatedDayFields = new Array("halfDays","powDays");
 	function updateSelecedtInfo() {
     	var ids = $('#clickedObjId').val();
 		
@@ -108,22 +87,23 @@
 					if (isNullOrUndefined(fv)) {
 						fv = f.val();
 					}
-					if (formatedFields.contains(fields[j])) {
-						fv = formatNumber(fv);
-					} else if (formatedDayFields.contains(fields[j])) {
-						fv = formateDay(fv);
+					if (!isNullOrUndefined(fv)) {
+						if (formatedFields.contains(fields[j])) {
+							fv = formatNumber(fv);
+						} else if (formatedDayFields.contains(fields[j])) {
+							fv = formateDay(fv);
+						}
+					} else {
+						fv = "";
 					}
 					
-					sValues.push(fv);
+					
+					sValues.push(" " + fv);
 				}
 			}
 		}
 		
-		// alert("updateSelecedtInfo sValues is " + sValues);
-		
-		var url = getFullUrl('/jsp/bitcointalk/updatealtcoins.do?altIds=' + sIds.join() + '&altValues=' + sValues.join());
-		
-		// alert("updateSelecedtInfo url is " + url)
+		var url = getFullUrl('/jsp/bitcointalk/updatealtcoins.do?altIds=' + sIds.join() + '&altValues=' + sValues.join() + '&attrs=' + fields.join());
 		
 		$.ajax({
 				url : url,
@@ -265,19 +245,7 @@
 		
 		<div class="page-content">
 			<div class="container-fluid">
-				<!-- BEGIN PAGE HEADER-->
-				<div class="row-fluid">
-					<div class="span12">
-<!-- 						<h3 class="page-title"> -->
-<!-- 							<img src="../assets/img/logo_admin.png"> -->
-<!-- 						</h3> -->
-						<ul class="breadcrumb">
-							<li><i class="icon-home"></i> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showinterestcoins.do">Interest Coins</a> / </li>
-							<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" class="active">Alt Coins</a> / </li>
-							<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showtalktopics.do">Alt Coins Topic</a> </li>
-						</ul>
-				</div>
-				</div>
+			
 				<div class="row-fluid">
 					<div class="span12">
 						<div class="portlet box blue">
@@ -313,6 +281,7 @@
 				           		
 								
 								
+								
 					           <div class="btn-group pull-right" style="vertical-align: top;">
 									<div class="controls">
 					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="reInitAnnCoins();">ReInit AnnCoins</button>
@@ -327,215 +296,135 @@
 									</div>
 								</div>
 								
+								<div class="btn-group pull-right" style="vertical-align: top;">
+									<div class="controls">
+					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="">Deactivate</button>
+				                  	</div>
+					           </div>
+								
 							</div>
 
 							<div style="overflow:auto; scrollbar-base-color:#ff6600;">
 								<table class="table table-bordered table-hover" id="__grid__">
 									<thead>
 										<tr id="_table_head_">
-											<th>Publish Date</th>
-<%-- 											<c:if test="${!editable }"> --%>
-												<th>Create Time</th>
-<%-- 											</c:if> --%>
-											
-											<th >Launch</th>
-											<th >CPU</th>
-											<th >GPU</th>
-											<th >ASIC</th>
+											<th >Topicid</th>
 											<th >Interest</th>
-											<c:if test="${editable }">
-												<th >Is Show</th>
-											</c:if>
 											
-											<th >Algo</th>
-											<th >Proof</th>
 											<th >Name</th>
 											<th >Abbr</th>
-											
 											<th >Total</th>
+											<th >Algo</th>
+											
+											<th >Premined</th>
+											<th >Percentage</th>
+											<th >Proof</th>
+											
 											<th >BReward</th>
 											<th >BTime</th>
 											<th >HBlocks</th>
 											<th >HDays</th>
+											<th >PoW Days</th>
+											<th >PoW Height</th>
+											<th >PoSAmount</th>
+											<th >Difficulty</th>
 											
-											<th >DAdjust</th>
-											
-											<th >Pre Mined</th>
-											<th >Percentage</th>
-											
-											
-											<th>Title</th>
-											<th>Author</th>
-											<%-- 
-											<th>Replies</th>
-											<th>Views</th>
-											 --%>
+											<th >Launch</th>
+											<th >Publish Date</th>
+<!-- 											<th >Create Time</th> -->
+<!-- 											<th >Author</th> -->
 										</tr>
 										
 										<tr id="_head_fields_" style="display: none;">
-											<th >publishDate</th>
-<%-- 											<c:if test="${!editable }"> --%>
-												<th >createTime</th>
-<%-- 											</c:if> --%>
-											
-											
-											<th >launchTime</th>
-											<th >cpuMinable</th>
-											<th >gpuMinable</th>
-											<th >asicMinable</th>
+											<th >topicid</th>
 											<th >interestLevel</th>
-											<c:if test="${editable }">
-												<th >isShow</th>
-											</c:if>
 											
-											<th >algo</th>
-											<th >proof</th>
 											<th >name</th>
 											<th >abbrName</th>
-											
 											<th >totalAmount</th>
+											<th >algo</th>
+											
+											<th >preMined</th>
+											<th >minedPercentage</th>
+											<th >proof</th>
+											
 											<th >blockReward</th>
 											<th >blockTime</th>
 											<th >halfBlocks</th>
 											<th >halfDays</th>
-											
+											<th >powDays</th>
+											<th >powHeight</th>
+											<th >posAmount</th>
 											<th >difficultyAdjust</th>
-											<th >preMined</th>
-											<th >minedPercentage</th>
 											
-											<th >title</th>
-											<th >author</th>
-											<%-- 
-											<th >replies</th>
-											<th >views</th>
-											 --%>
+											<th >launchTime</th>
+											<th >publishDate</th>
+											
+<!-- 											<th >createTime</th> -->
+<!-- 											<th >author</th> -->
 										</tr>
 									</thead>
 									
 									<tbody>
 										<c:forEach var="ann" items="${anns }">
-											<tr class="odd gradeX" objid="${ann.id }">
-	                                         	<td>${ann.publishDate }</td>
-	                                         	<td>${ann.createTime }</td>
+											<tr class="odd gradeX" objid="${ann.id }" title="${ann.title }">
+	                                         	
+	                                         	<td><a href="${ann.link }" target="_blank"> ${ann.topicid } </a></td>
 	                                         	
 	                                         	<c:if test="${editable }">
-	                                         		<td>
-														<div style="width: 100px;">
-															<div id="date_picker" style="vertical-align: middle; margin-bottom: 0px; width: 90px;">
-																<input type="text" id="${ann.id }_launchTime"  value="${ann.launchTime }" style="width: 90px" /> 
-															</div>
-														</div>
-													</td>
-													<td minable='1'>
-														<i id="${ann.id }_cpuMinable" class='${ann.cpuMinable ? "icon-check" : "icon-check-empty" }' tValue='${ann.cpuMinable ? 1 : 0 }'></i>
-													</td>
-													<td minable='1'>
-														<i id="${ann.id }_gpuMinable" class='${ann.gpuMinable ? "icon-check" : "icon-check-empty" }' tValue='${ann.gpuMinable ? 1 : 0 }'></i>
-													</td>
-													<td minable='1'>
-														<i id="${ann.id }_asicMinable" class='${ann.asicMinable ? "icon-check" : "icon-check-empty" }' tValue='${ann.asicMinable ? 1 : 0 }'></i>
-													</td>
-													
-	                                         		<td> 
-														<select id="${ann.id }_interestLevel" style="width: 50px" class="span5 m-wrap" data-placeholder="Choose a Category" tabindex="1">
-														<c:forEach begin="0" end="10" var="i">
-															<option value="${i }" ${i == ann.interestLevel ? "selected" : "" }>${i }</option>
-														</c:forEach>
-		                                         		</select> 
-													</td>
-													<td isShow='1'>
-														<i id="${ann.id }_isShow" class='${ann.isShow ? "icon-check" : "icon-check-empty" }' tValue='${ann.isShow ? 1 : 0 }'></i>
-													</td>
-													
-	                                         		<td>
-		                                         		<select id="${ann.id }_algo" style="width: 90px" class="span5 m-wrap" data-placeholder="Choose a Category" tabindex="1">
-		                                         			<option value="" ></option>
-		                                         			<option value="scrypt" ${ann.algo == 'scrypt' ? "selected" : "" }>scrypt</option>
-		                                         			<option value="scryptNFactor" ${ann.algo == 'scryptNFactor' ? "selected" : "" }>Scrypt-NFactor</option>
-		                                         			
-		                                         			<option value="sha256" ${ann.algo == 'sha256' ? "selected" : "" }>sha-256</option>
-		                                         			<option value="sha3" ${ann.algo == 'sha3' ? "selected" : "" }>sha-3</option>
-		                                         			<option value="blake256" ${ann.algo == 'blake256' ? "selected" : "" }>blake-256</option>
-		                                         			<option value="Quark" ${ann.algo == 'Quark' ? "selected" : "" }>Quark</option>
-		                                         			<option value="qubit" ${ann.algo == 'qubit' ? "selected" : "" }>Qubit</option>
-		                                         			<option value="SHAvite3" ${ann.algo == 'SHAvite3' ? "selected" : "" }>SHAvite-3</option>
-<%-- 		                                         			<option value="BlakeBmwGroestlJhKeccakSkein" ${ann.algo == 'BlakeBmwGroestlJhKeccakSkein' ? "selected" : "" }>Blake/Bmw/Groestl/Jh/Keccak/Skein</option> --%>
-		                                         			
-		                                         			<option value="ScyptSHA256DQubitSkeinGroestl" ${ann.algo == 'ScyptSHA256DQubitSkeinGroestl' ? "selected" : "" }>Scypt/SHA256D/Qubit/Skein/Groestl</option>
-		                                         			
-		                                         		</select> 
-	                                         		</td>
-	                                         		<td> 
-														<select id="${ann.id }_proof" style="width: 90px" class="span5 m-wrap" data-placeholder="Choose a Category" tabindex="1">
-															<option value=""></option>
-															<option value="PoW" ${"PoW" == ann.proof ? "selected" : "" }>PoW</option>
-															<option value="PoS" ${"PoS" == ann.proof ? "selected" : "" }>PoS</option>
-															<option value="ppws" ${"ppws" == ann.proof ? "selected" : "" }>PPWS</option>
-															<option value="PoWPoS" ${"PoWPoS" == ann.proof ? "selected" : "" }>PoW/PoS</option>
-															<option value="PoF" ${"PoF" == ann.proof ? "selected" : "" }>Proof Of Friction</option>
-															
-															<option value="ProofofStorage" ${"ProofofStorage" == ann.proof ? "selected" : "" }>Proof-of-Storage</option>
-															
-		                                         		</select> 
-													</td>
-													
-													<td> <input type="text" id="${ann.id }_name" value="${ann.name }" maxlength="15" style="width: 65px" > </td>
+	                                         		<td> <input type="text" id="${ann.id }_interestLevel" value="${ann.interestLevel }" style="width: 18px"> </td>
+	                                         		<td> <input type="text" id="${ann.id }_name" value="${ann.name }" maxlength="15" style="width: 85px" > </td>
 													<td> <input type="text" id="${ann.id }_abbrName" value="${ann.abbrName }" maxlength="5" style="width: 25px"> </td>
-													
 													<td> <input type="text" id="${ann.id }_totalAmount" value="${ann.totalAmountTxt }" style="width: 65px" > </td>
+													<td> <input type="text" id="${ann.id }_algo" value="${ann.algo }" style="width: 65px"> </td>
+													
+													<td> <input type="text" id="${ann.id }_preMined" value="${ann.preMinedTxt }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_minedPercentage" value="${ann.minedPercentageTxt }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_proof" value="${ann.proof }" style="width: 45px"> </td>
+													
 													<td> <input type="text" id="${ann.id }_blockReward" value="${ann.blockRewardTxt }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_blockTime" value="${ann.blockTime }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_halfBlocks" value="${ann.halfBlocksTxt }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_halfDays" value="${ann.halfDaysTxt }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_powDays" value="${ann.powDaysTxt }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_powHeight" value="${ann.powHeight }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_posAmount" value="${ann.posAmountTxt }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_difficultyAdjust" value="${ann.difficultyAdjust }" style="width: 65px" > </td>
-													<td> <input type="text" id="${ann.id }_preMined" value="${ann.preMinedTxt }" style="width: 45px" > </td>
-													<td> <input type="text" id="${ann.id }_minedPercentage" value="${ann.minedPercentageTxt }" style="width: 45px" > </td>
 													
+													<td> <input type="text" id="${ann.id }_launchTime" value="${ann.launchTime }" style="width: 65px" > </td>
 	                                         	</c:if>
 	                                         	<c:if test="${!editable }">
-	                                         	
-										<%-- 
-									var fields = new Array("countDown","cpuMinable","gpuMinable","asicMinable","interestLevel","isShow","algo",
-						   "proof","name","abbrName","totalAmount","blockReward","blockTime","halfBlocks","halfDays",
-						   "difficultyAdjust","preMined","minedPercentage");
-									 --%>
-													
-													<td>${ann.launchTime }</td>
-													<td><i class='${ann.cpuMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
-													<td><i class='${ann.gpuMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
-													<td><i class='${ann.asicMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
 													<td>${ann.interestLevel }</td>
-													
-		                                         	<td>${ann.algo }</td>
-													<td>${ann.proof }</td>
 													<td>${ann.name }</td>
 													<td>${ann.abbrName }</td>
-													
 													<td>${ann.totalAmountTxt }</td>
+		                                         	<td>${ann.algo }</td>
+		                                         	
+		                                         	<td>${ann.preMinedTxt }</td>
+													<td>${ann.minedPercentageTxt }</td>
+													<td>${ann.proof }</td>
+													
 													<td>${ann.blockRewardTxt }</td>
 													<td>${ann.blockTime }</td>
 													<td>${ann.halfBlocksTxt }</td>
 													<td>${ann.halfDaysTxt }</td>
+													<td>${ann.powDaysTxt }</td>
+													<td>${ann.powHeight }</td>
+													<td>${ann.posAmountTxt }</td>
 													<td>${ann.difficultyAdjust }</td>
 													
-													<td>${ann.preMinedTxt }</td>
-													<td>${ann.minedPercentageTxt }</td>
-													
-<%-- 													<td><i class='${ann.isShow ? "icon-check" : "icon-check-empty" }' ></i></td> --%>
+													<td>${ann.launchTime }</td>
 	                                         	</c:if>
 	                                         	
-	                                         	<td> <a href="${ann.link }" target="_blank"> ${ann.title } </a> </td>
-	                                         	<td>${ann.author }</td>
+	                                         	<td>${ann.publishDateTxt }</td>
 	                                         	
-	                                         	<%-- 
-												<td>${ann.replies }</td>
-												<td>${ann.views }</td>
-												 --%>
+<%-- 	                                         	<td>${ann.createTime }</td> --%>
+<%-- 	                                         	<td>${ann.author }</td> --%>
 											</tr>
 										</c:forEach>
 										<c:if test="${empty anns }">
 											<tr>
-												<td colspan="19" class="no-data">No Data</td>
+												<td colspan="20" class="no-data">No Data</td>
 											</tr>
 										</c:if>
 									</tbody>

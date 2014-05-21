@@ -101,5 +101,15 @@
             <column name="mined_percentage" />
         </property>
         
+        <property name="powDays" type="java.lang.Integer">
+            <column name="pow_days" />
+        </property>
+        <property name="powHeight" type="java.lang.Integer">
+            <column name="pow_height" />
+        </property>
+        <property name="posAmount" type="java.lang.Long">
+            <column name="pos_amount" />
+        </property>
+        
     </class>
 </hibernate-mapping>

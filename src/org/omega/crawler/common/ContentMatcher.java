@@ -18,8 +18,8 @@ import org.omega.crawler.bean.AltCoinBean;
 
 public final class ContentMatcher {
 
-	private static final Pattern PATTERN_ABBR = Pattern.compile("\\[[^\\]]+\\][^\\[]*\\[([^\\]]+)\\]");
-	private static final Pattern PATTERN_NAME = Pattern.compile("\\s?(\\w+\\s?coin)");
+	private static final Pattern PATTERN_ABBR = Pattern.compile("\\[[^\\]]+\\][^\\[]*\\[([^\\]]+)\\]", Pattern.CASE_INSENSITIVE);
+	private static final Pattern PATTERN_NAME = Pattern.compile("\\s?(\\w+\\s?coin)", Pattern.CASE_INSENSITIVE);
 	
 	private static final List<Pattern> PATTERN_TOTALs = new ArrayList<Pattern>();
 	private static final List<Pattern> PATTERN_REWARDs = new ArrayList<Pattern>();
@@ -57,14 +57,14 @@ public final class ContentMatcher {
 	private static void addPatterns(String patts, List<Pattern> ll) {
 		String[] pattArr = patts.split(",");
 		for (String patt : pattArr) {
-			ll.add(Pattern.compile(patt.trim()));
+			ll.add(Pattern.compile(patt.trim(), Pattern.CASE_INSENSITIVE));
 		}
 	}
 	
 	private String title;
 	private List<String> lines = null;
 	public ContentMatcher(String title, List<String> lines) {
-		this.title = title.toLowerCase();
+		this.title = title;// toLowerCase()
 		this.lines = lines;
 	}
 	
@@ -279,94 +279,16 @@ public final class ContentMatcher {
 	
 	
 	public static void main(String[] args) throws Exception {
-//		test1("D:/storage/crawler4j/pages/Nautiluscoin.htm");
-//		test1("D:/Koalacoin.htm");
-//		test1("D:/Antarcticcoin.htm");
-//		test1("D:/storage/crawler4j/pages/NA-OT.html");
-//		test1("D:/storage/crawler4j/pages/CakeCoin-DS.html");
-//		test1("D:/storage/crawler4j/pages/WampumCoin-WAM.html");
-//		test1("D:/storage/crawler4j/pages/WinCoin-NA.html");
-//		test1("D:/storage/crawler4j/pages/WorldpeaceCoin-ANN.html");
-//		test1("D:/storage/crawler4j/pages/CarCoin-X11.html");
-//		test1("D:/storage/crawler4j/pages/NA-CIV.html");
+		HtmlPageMatcher pm = new HtmlPageMatcher();
 		
-		File dir = new File("D:/storage/crawler4j/pages");
+		File dir = new File(Constants.CRAWL_PAGES_FOLDER);
 		
 		for (File f : dir.listFiles()) {
-			test1(f.getAbsolutePath());
+			pm.tryMatch(f.getAbsolutePath());
 		}
 		
 	}
 	
-	private static void test1(String htmlPath) throws Exception {
-		
-		HtmlCleaner cleaner = new HtmlCleaner();
-		TagNode page = cleaner.clean(getHtmlPage(htmlPath));
-		
-		String content = getSubjectContentHtml(page, cleaner);
-		String[] lineArr = content.toLowerCase().split("<br />");
-		List<String> lines = new ArrayList<String>(lineArr.length);
-		for (String l : lineArr) {
-			lines.add(cleaner.clean(l).getText().toString());
-		}
-		
-		String title = getTitle(page, cleaner);
-
-		ContentMatcher cm = new ContentMatcher(title, lines);
-		AltCoinBean alt = cm.buildAndMatch();
-		System.out.println(new File(htmlPath).getName() + " ---- " + alt.toPrintableTxt());
-	}
 	
-	private static String getHtmlPage(String path)  {
-		String html = "";
-		try {
-			RandomAccessFile raf = new RandomAccessFile(path, "r");
-			int len = (int) raf.length();
-			byte[] bs = new byte[len];
-			raf.read(bs);
-			raf.close();
-			
-			html = new String(bs);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return html;
-	}
-	
-	static String getTitle(TagNode page, HtmlCleaner cleaner) {
-		Object[] ns = null;
-		try {// //*[@id="top_subject"] 
-			ns = page.evaluateXPath("//title");
-		} catch (XPatherException e) {
-			e.printStackTrace();
-		}
-		
-		String cont = "";
-		if (ns != null && ns.length > 0) {
-			TagNode n = (TagNode) ns[0];
-			cont = cleaner.getInnerHtml(n);
-		}
-		
-		return cont;
-	}
-	
-	
-	static String getSubjectContentHtml(TagNode page, HtmlCleaner cleaner) throws Exception {
-		Object[] ns = null;
-		try {
-			ns = page.evaluateXPath("//body/div[2]/form/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td[2]/div[@class='post']");
-		} catch (XPatherException e) {
-			e.printStackTrace();
-		}
-		
-		String cont = "";
-		if (ns != null && ns.length > 0) {
-			TagNode n = (TagNode) ns[0];
-			cont = cleaner.getInnerHtml(n);
-		}
-		
-		return cont;
-	}
 	
 }
