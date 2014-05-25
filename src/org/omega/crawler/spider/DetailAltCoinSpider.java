@@ -19,7 +19,9 @@ import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
 import org.omega.crawler.bean.AltCoinBean;
+
 import org.omega.crawler.common.Constants;
+
 import org.omega.crawler.common.ContentMatcher;
 import org.omega.crawler.common.Utils;
 
@@ -33,6 +35,7 @@ public class DetailAltCoinSpider extends WebCrawler {
 	private static final Log log = LogFactory.getLog(DetailAltCoinSpider.class);
 	
 	private static final boolean IS_DOWNLOADING = true;
+
 
 	public final static Map<Integer, Timestamp> topicIdTimeMap = new HashMap<Integer, Timestamp>();
 	public final static Map<Integer, AltCoinBean> topicIdAltCoinMap = new HashMap<Integer, AltCoinBean>();
@@ -86,9 +89,14 @@ public class DetailAltCoinSpider extends WebCrawler {
 						
 						topicIdAltCoinMap.put(topicId, alt);
 						
-						
+						if (IS_DOWNLOADING) {
+							downloadHtmlPage(alt, html);
+						}
 						
 					}
+					
+					
+
 				}
 			
 			} catch (Exception e) {
@@ -129,6 +137,7 @@ public class DetailAltCoinSpider extends WebCrawler {
 		}
 		
 	}
+	
 	
 	public String getPublishDate(TagNode page) {
 		Object[] ns = null;

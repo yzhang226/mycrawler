@@ -64,7 +64,9 @@ public class BitcointalkController {
 				
 				if (Utils.isNotEmpty(undbAnns)) {
 					Timestamp curr = new Timestamp(System.currentTimeMillis());
+
 					Map<Integer, AltCoinBean> topicIdAltCoinMap = annCrawler.fectchAnnTopicsByUrls(undbAnns);
+
 					for (AltCoinBean alt : undbAnns) {
 						if (topicIdAltCoinMap.containsKey(alt.getTopicid())) {
 							copyProperties(alt, topicIdAltCoinMap.get(alt.getTopicid()));
@@ -102,12 +104,16 @@ public class BitcointalkController {
 		
 		src.setAlgo(matched.getAlgo());
 		src.setPreMined(matched.getPreMined());
+
 		
 		String launchraw = matched.getLaunchRaw();
 		if (Utils.isNotEmpty(launchraw) && launchraw.length() > 119) {
 			launchraw = launchraw.substring(0, 119);
 		}
 		src.setLaunchRaw(launchraw);
+
+
+
 	}
 	
 	@RequestMapping("/updatealtcoins.do")

@@ -2,7 +2,6 @@ package org.omega.crawler.bean;
 
 import java.text.SimpleDateFormat;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.omega.crawler.bean.base.BaseAltCoinBean;
 import org.omega.crawler.common.Utils;
 

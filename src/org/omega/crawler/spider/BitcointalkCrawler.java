@@ -16,7 +16,8 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
 public class BitcointalkCrawler {
 	
-	
+
+
 	private static final int numberOfCrawlers = 2;
 	
 	public CrawlController createCrawlController() throws Exception {
@@ -56,7 +57,9 @@ public class BitcointalkCrawler {
 		return AltCoinSpider.beans;
 	}
 	
+
 	public Map<Integer, AltCoinBean> fectchAnnTopicsByUrls(List<AltCoinBean> undbAnns) throws Exception {
+
 		CrawlController controller = createCrawlController();
 		
 		int did;
