@@ -160,7 +160,7 @@ public class BitcointalkController {
 					} catch (Exception e) {
 						log.error("Set Property[" + attrName + "] to value[" + row[f] + "] error.", e);
 					}
-					
+					System.out.println("test resync funciton ..");
 				}
 				
 				if (alt.getHalfDays() == null && Utils.isPositive(alt.getHalfBlocks()) && Utils.isPositive(alt.getBlockTime()) ) {
