@@ -102,7 +102,12 @@ public class BitcointalkController {
 		
 		src.setAlgo(matched.getAlgo());
 		src.setPreMined(matched.getPreMined());
-		src.setLaunchRaw(matched.getLaunchRaw());
+		
+		String launchraw = matched.getLaunchRaw();
+		if (Utils.isNotEmpty(launchraw) && launchraw.length() > 119) {
+			launchraw = launchraw.substring(0, 119);
+		}
+		src.setLaunchRaw(launchraw);
 	}
 	
 	@RequestMapping("/updatealtcoins.do")

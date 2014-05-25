@@ -10,6 +10,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
@@ -17,7 +19,9 @@ import org.omega.crawler.bean.AltCoinBean;
 
 
 public final class ContentMatcher {
-
+	
+	private static final Log log = LogFactory.getLog(ContentMatcher.class);
+	
 	private static final Pattern PATTERN_ABBR = Pattern.compile("\\[[^\\]]+\\][^\\[]*\\[([^\\]]+)\\]", Pattern.CASE_INSENSITIVE);
 	private static final Pattern PATTERN_NAME = Pattern.compile("\\s?(\\w+\\s?coin)", Pattern.CASE_INSENSITIVE);
 	
@@ -74,6 +78,8 @@ public final class ContentMatcher {
 		alt.setName(buildAltName());
 		alt.setAbbrName(buildAltAbbr());
 		
+		try {
+			
 		Long mtotal = null; 
 		for (String line : lines) {
 			mtotal = buildAltTotal(line);
@@ -135,6 +141,9 @@ public final class ContentMatcher {
 				alt.setLaunchRaw(mlaunch);
 				break;
 			}
+		}
+		} catch (Exception e) {
+			log.error("Build altcoin content error.", e);
 		}
 		
 		return alt;
@@ -216,10 +225,11 @@ public final class ContentMatcher {
 		}
 		int bt = 0;
 		if (btime != null) {
-			bt = Integer.parseInt(btime);
+			double btx = Double.parseDouble(btime);
 			if (unit != null && unit.contains("minute")) {
-				bt = bt * 60;
-			} 
+				btx = btx * 60;
+			}
+			bt = (int) btx;
 		}
 		return bt == 0 ? null : bt;
 	}

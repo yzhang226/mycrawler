@@ -4,6 +4,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.Converter;
@@ -58,8 +60,8 @@ public class SystemWarmupServlet extends HttpServlet {
 //		Converter longcon = new LongConverter(null);
 //		ConvertUtils.register(longcon, Long.class);
 		
-		ConvertUtilsBean cub = new ConvertUtilsBean();
-		cub.register(true, true, 2);
+		BeanUtilsBean.getInstance().getConvertUtils().register(false, true, 2);
+		
 		
 		
 	}

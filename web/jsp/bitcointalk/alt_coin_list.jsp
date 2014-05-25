@@ -213,7 +213,7 @@
 		var baseSeedUrl = "https://bitcointalk.org/index.php?board=159.";
 		// var baseSeedUrl = "https://bitcointalk.org/index.php?board=67.";
 		var startgroup = 0;
-		var endgroup = 1;
+		var endgroup = 4;
 		
 		url = url + "?baseSeedUrl=" + baseSeedUrl + "&startgroup=" + startgroup + "&endgroup=" + endgroup;
 		
