@@ -1,16 +1,22 @@
 package org.omega.crawler.common;
 
 import java.io.File;
+import java.io.LineNumberReader;
 import java.io.RandomAccessFile;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.PrettyHtmlSerializer;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
 import org.omega.crawler.bean.AltCoinBean;
+
+import com.google.common.io.LineReader;
 
 public class HtmlPageMatcher {
 	
@@ -21,12 +27,27 @@ public class HtmlPageMatcher {
 		HtmlCleaner cleaner = new HtmlCleaner();
 		TagNode page = cleaner.clean(getHtmlPage(htmlPath));
 		
+		String htmlline = null;
+		String innerline = null;
+		List<String> lines = new ArrayList<String>();
 		String content = getSubjectContentHtml(page, cleaner);
-		String[] lineArr = content.split("<(?i)br />");// 
-		List<String> lines = new ArrayList<String>(lineArr.length);
-		for (String l : lineArr) {
-			lines.add(cleaner.clean(l).getText().toString());
+//		String[] lineArr = content.split("<(?i)br />");// 
+//		List<String> lines = new ArrayList<String>(lineArr.length);
+//		for (String l : lineArr) {
+//			line = cleaner.clean(l).getText().toString();
+//			if (Utils.isNotEmpty(line)) {
+//				lines.add(line);
+//			}
+//		}
+		
+		LineNumberReader lnr = new LineNumberReader(new StringReader(content));
+		while ((htmlline = lnr.readLine()) != null) {
+			innerline = cleaner.clean(htmlline).getText().toString();
+			if (Utils.isNotEmpty(innerline)) {
+				lines.add(innerline);
+			}
 		}
+		lnr.close();
 		
 		String title = getTitle(page, cleaner);
 
@@ -100,13 +121,17 @@ public class HtmlPageMatcher {
 			e.printStackTrace();
 		}
 		
-		String cont = "";
+		String prettyCont = "";
 		if (ns != null && ns.length > 0) {
 			TagNode n = (TagNode) ns[0];
-			cont = cleaner.getInnerHtml(n);
+//			prettyCont = cleaner.getInnerHtml(n);
+			
+			cleaner.getProperties().setOmitXmlDeclaration(true);
+			PrettyHtmlSerializer htmlSer = new PrettyHtmlSerializer(cleaner.getProperties(), " ");
+			prettyCont = htmlSer.getAsString(n, true);
 		}
 		
-		return cont;
+		return prettyCont;
 	}
 	
 	

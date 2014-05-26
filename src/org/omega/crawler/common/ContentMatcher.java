@@ -1,21 +1,16 @@
 package org.omega.crawler.common;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.htmlcleaner.HtmlCleaner;
-import org.htmlcleaner.TagNode;
-import org.htmlcleaner.XPatherException;
 import org.omega.crawler.bean.AltCoinBean;
 
 
@@ -23,10 +18,11 @@ public final class ContentMatcher {
 	
 	private static final Log log = LogFactory.getLog(ContentMatcher.class);
 	
+	private static final String DIGITS_REGEX = "([1-9]((\\d{1,3}\\D){1,5}|(\\d{1,15})))";
+	
 	private static final Pattern PATTERN_ABBR = Pattern.compile("\\[[^\\]]+\\][^\\[]*\\[([^\\]]+)\\]", Pattern.CASE_INSENSITIVE);
 	private static final Pattern PATTERN_NAME = Pattern.compile("\\s?(\\w+\\s?coin)", Pattern.CASE_INSENSITIVE);
 
-	
 	private static final List<Pattern> PATTERN_TOTALs = new ArrayList<Pattern>();
 	private static final List<Pattern> PATTERN_REWARDs = new ArrayList<Pattern>();
 	private static final List<Pattern> PATTERN_BTIMEs = new ArrayList<Pattern>();
@@ -40,12 +36,22 @@ public final class ContentMatcher {
 	}
 	
 	private static void loadPatterns() {
-		String path = ContentMatcher.class.getResource("/patterns.properties").getPath();
+		String path = null;
 		try {
+			path = Utils.getResourcePath("patterns.properties");
 			InputStream is = new FileInputStream(path);
 			Properties pros = new Properties();
 			pros.load(is);
 			is.close();
+			
+			String digRegex = pros.getProperty("DIGITS_REGEX");
+			for (Entry<Object, Object> entry : pros.entrySet()) {
+				String value = entry.getValue().toString();
+				value = value.replace("${DIGITS_REGEX}", digRegex);
+				
+				pros.setProperty(entry.getKey().toString(), value);
+//				System.out.println(pros.get(entry.getKey().toString()));
+			}
 			
 			addPatterns(pros.getProperty("alt.total"), PATTERN_TOTALs);
 			addPatterns(pros.getProperty("alt.reward"), PATTERN_REWARDs);
@@ -54,28 +60,22 @@ public final class ContentMatcher {
 			addPatterns(pros.getProperty("alt.algo"), PATTERN_ALGOs);
 			addPatterns(pros.getProperty("alt.premine.amount"), PATTERN_PREAMOUNTs);
 			addPatterns(pros.getProperty("alt.launch.date"), PATTERN_LAUNCHs);
-			
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("load patterns error.", e);
 		}
 	}
 	
 	private static void addPatterns(String patts, List<Pattern> ll) {
-		String[] pattArr = patts.split(",");
+		String[] pattArr = patts.split(" , ");
 		for (String patt : pattArr) {
-
 			ll.add(Pattern.compile(patt.trim(), Pattern.CASE_INSENSITIVE));
-
 		}
 	}
 	
 	private String title;
 	private List<String> lines = null;
 	public ContentMatcher(String title, List<String> lines) {
-
 		this.title = title;// toLowerCase()
-
-
 		this.lines = lines;
 	}
 	
@@ -85,9 +85,6 @@ public final class ContentMatcher {
 		alt.setName(buildAltName());
 		alt.setAbbrName(buildAltAbbr());
 		
-
-		try {
-
 		Long mtotal = null; 
 		for (String line : lines) {
 			mtotal = buildAltTotal(line);
@@ -150,156 +147,185 @@ public final class ContentMatcher {
 				break;
 			}
 		}
-
-		} catch (Exception e) {
-			log.error("Build altcoin content error.", e);
-		}
 		
 		return alt;
 	}
 	
 	private String buildAltAbbr() {
 		String abbr = "NA";
-		
-		Matcher m = PATTERN_ABBR.matcher(title);
-		if (m.find()) {
-			abbr = m.group(1);
+		try {
+			Matcher m = PATTERN_ABBR.matcher(title);
+			if (m.find()) {
+				abbr = m.group(1);
+			}
+			if (abbr.length() > 20) {
+				abbr = abbr.substring(0, 10);
+			}
+		} catch (Exception e) {
+			log.error("Parse abbr name error", e);
 		}
-		
 		return abbr.toUpperCase();
 	}
 	
 	private String buildAltName() {
 		String name = "NA";
-		Matcher m = PATTERN_NAME.matcher(title);
-		if (m.find()) {
-			name = m.group(1);
-			StringBuilder nb = new StringBuilder(name.length());
-			nb.append(name.substring(0, 1).toUpperCase());
-			nb.append(name.substring(1, name.length()-4));
-			nb.append("Coin");
+		try {
+			Matcher m = PATTERN_NAME.matcher(title);
+			if (m.find()) {
+				name = m.group(1);
+				StringBuilder nb = new StringBuilder(name.length());
+				nb.append(name.substring(0, 1).toUpperCase());
+				nb.append(name.substring(1, name.length()-4));
+				nb.append("Coin");
+				
+				name = Utils.replaceAll(nb.toString(), "\\s", "");
+			}
 			
-			name = Utils.replaceAll(nb.toString(), "\\s", "");
-			
+			if (name.length() > 20) {
+				name = name.substring(0, 19);
+			}
+		} catch (Exception e) {
+			log.error("Parse name error", e);
 		}
-		
 		return name;
 	}
 	
 	private Long buildAltTotal(String line) {
-		String total = null;
-		String unit = null;
-		for (Pattern p : PATTERN_TOTALs) {
-			Matcher m = p.matcher(line);
-			if (m.find()) {
-				total = Utils.removeChars(m.group(1));
-				if (m.groupCount() >= 3) unit = m.group(3);
-				break;
+		Long ttx = null;
+		
+		try {
+			String total = null;
+			String unit = null;
+			for (Pattern p : PATTERN_TOTALs) {
+				Matcher m = p.matcher(line);
+				if (m.find()) {
+					total = Utils.removeChars(m.group(1));
+					if (m.groupCount() >= 4) unit = m.group(4);
+					break;
+				}
 			}
+			
+			ttx = Utils.isNotEmpty(total) ? Long.parseLong(total) : null;
+			if (ttx != null && unit != null) {
+				if (unit.contains("million")) ttx = ttx * 1000000;
+			}
+		} catch (Exception e) {
+			log.error("Parse total error", e);
 		}
-		
-		Long ttx = Utils.isNotEmpty(total) ? Long.parseLong(total) : null;
-		if (ttx != null && unit != null) {
-			if (unit.contains("million")) ttx = ttx * 1000000;
-		}
-		
 		return ttx;
 	}
 	
 	private Double buildAltReward(String line) {
-		String reward = null;
-		for (Pattern p : PATTERN_REWARDs) {
-			Matcher m = p.matcher(line);
-			if (m.find()) {
-				reward = m.group(1);
-				reward = reward.trim();
-				break;
+		Double rewardd = null;
+		try {
+			String reward = null;
+			for (Pattern p : PATTERN_REWARDs) {
+				Matcher m = p.matcher(line);
+				if (m.find()) {
+					reward = m.group(1);
+					reward = reward.trim();
+					break;
+				}
 			}
+			rewardd = Utils.isNotEmpty(reward) ? Double.parseDouble(reward) : null;
+		} catch (Exception e) {
+			log.error("Parse block reward error", e);
 		}
 		
-		return Utils.isNotEmpty(reward) ? Double.parseDouble(reward) : null;
+		return rewardd;
 	}
 	
 	private Integer buildAltBTime(String line) {
-		String btime = null;
-		String unit = null;
-		for (Pattern p : PATTERN_BTIMEs) {
-			Matcher m = p.matcher(line);
-			if (m.find()) {
-				btime = m.group(1);
-				unit = m.group(3);
-				btime = btime.trim();
-				break;
-			}
-		}
 		int bt = 0;
-		if (btime != null) {
-
-			double btx = Double.parseDouble(btime);
-			if (unit != null && unit.contains("minute")) {
-				btx = btx * 60;
+		try {
+			String btime = null;
+			String unit = null;
+			for (Pattern p : PATTERN_BTIMEs) {
+				Matcher m = p.matcher(line);
+				if (m.find()) {
+					btime = m.group(1);
+					unit = m.group(4);
+					btime = btime.trim();
+					break;
+				}
 			}
-			bt = (int) btx;
-
-			bt = Integer.parseInt(btime);
-			if (unit != null && unit.contains("minute")) {
-				bt = bt * 60;
-			} 
-
+			
+			if (btime != null) {
+				double btx = Double.parseDouble(btime);
+				if (unit != null && unit.contains("minute")) {
+					btx = btx * 60;
+				}
+				bt = (int) btx;
+			}
+		} catch (Exception e) {
+			log.error("Parse block time error", e);
 		}
+		
 		return bt == 0 ? null : bt;
 	}
 	
 	private Double buildAltPremine(String line) {
 		String pre = null;
-		for (Pattern p : PATTERN_PREMINEs) {
-			Matcher m = p.matcher(line);
-			if (m.find()) {
-				pre = m.group(1).trim();
-				break;
+		try {
+			for (Pattern p : PATTERN_PREMINEs) {
+				Matcher m = p.matcher(line);
+				if (m.find()) {
+					pre = m.group(1).trim();
+					break;
+				}
 			}
+		} catch (Exception e) {
+			log.error("Parse premine percentage error", e);
 		}
-		
 		return pre == null ? null : Double.parseDouble(pre);
 	}
 	
 	private String buildAltAlgo(String line) {
 		String algo = null;
-		for (Pattern p : PATTERN_ALGOs) {
-			Matcher m = p.matcher(line);
-			if (m.find()) {
-				algo = m.group(1).trim();
-				break;
+		try {
+			for (Pattern p : PATTERN_ALGOs) {
+				Matcher m = p.matcher(line);
+				if (m.find()) {
+					algo = m.group(1).trim();
+					break;
+				}
 			}
+		} catch (Exception e) {
+			log.error("Parse premine amount error", e);
 		}
-		
 		return algo;
 	}
 	
 	private Long buildAltPreAmount(String line) {
 		String preAmount = null;
-		for (Pattern p : PATTERN_PREAMOUNTs) {
-			Matcher m = p.matcher(line);
-			if (m.find()) {
-				preAmount = m.group(1).trim();
-				preAmount = Utils.removeChars(preAmount);
-				break;
+		try {
+			for (Pattern p : PATTERN_PREAMOUNTs) {
+				Matcher m = p.matcher(line);
+				if (m.find()) {
+					preAmount = m.group(1).trim();
+					preAmount = Utils.removeChars(preAmount);
+					break;
+				}
 			}
+		} catch (Exception e) {
+			log.error("Parse premine amount error", e);
 		}
-		
 		return preAmount == null ? null : Long.parseLong(preAmount);
 	}
 	
 	private String buildAltLaunch(String line) {
 		String launch = null;
-		for (Pattern p : PATTERN_LAUNCHs) {
-			Matcher m = p.matcher(line);
-			if (m.find()) {
-				launch = m.group(1).trim();
-				break;
+		try {
+			for (Pattern p : PATTERN_LAUNCHs) {
+				Matcher m = p.matcher(line);
+				if (m.find()) {
+					launch = m.group(1).trim();
+					break;
+				}
 			}
+		} catch (Exception e) {
+			log.error("Parse launch date error", e);
 		}
-		
 		return launch;
 	}
 	
@@ -308,87 +334,15 @@ public final class ContentMatcher {
 
 		HtmlPageMatcher pm = new HtmlPageMatcher();
 		
-		File dir = new File(Constants.CRAWL_PAGES_FOLDER);
-		
-		for (File f : dir.listFiles()) {
-			pm.tryMatch(f.getAbsolutePath());
-		}
-
+//		File dir = new File(Constants.CRAWL_PAGES_FOLDER);
+//		for (File f : dir.listFiles()) {
+//			pm.tryMatch(f.getAbsolutePath());
+//		}
+		// "/Users/cook/Downloads/YinYangcoin.html"
+		String ff = "/storage/crawler4j/pages/20140525001628-624041-XGenerationCoin-NA.html";
+		pm.tryMatch(ff);
+		// ((\d+\D?)+)\s?(coins)\s?(per|one|each)\D+block
 		
 	}
 
-	
-
-	private static void test1(String htmlPath) throws Exception {
-		
-		HtmlCleaner cleaner = new HtmlCleaner();
-		TagNode page = cleaner.clean(getHtmlPage(htmlPath));
-		
-		String content = getSubjectContentHtml(page, cleaner);
-		String[] lineArr = content.toLowerCase().split("<br />");
-		List<String> lines = new ArrayList<String>(lineArr.length);
-		for (String l : lineArr) {
-			lines.add(cleaner.clean(l).getText().toString());
-		}
-		
-		String title = getTitle(page, cleaner);
-
-		ContentMatcher cm = new ContentMatcher(title, lines);
-		AltCoinBean alt = cm.buildAndMatch();
-		System.out.println(new File(htmlPath).getName() + " ---- " + alt.toPrintableTxt());
-	}
-	
-	private static String getHtmlPage(String path)  {
-		String html = "";
-		try {
-			RandomAccessFile raf = new RandomAccessFile(path, "r");
-			int len = (int) raf.length();
-			byte[] bs = new byte[len];
-			raf.read(bs);
-			raf.close();
-			
-			html = new String(bs);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return html;
-	}
-	
-	static String getTitle(TagNode page, HtmlCleaner cleaner) {
-		Object[] ns = null;
-		try {// //*[@id="top_subject"] 
-			ns = page.evaluateXPath("//title");
-		} catch (XPatherException e) {
-			e.printStackTrace();
-		}
-		
-		String cont = "";
-		if (ns != null && ns.length > 0) {
-			TagNode n = (TagNode) ns[0];
-			cont = cleaner.getInnerHtml(n);
-		}
-		
-		return cont;
-	}
-	
-	
-	static String getSubjectContentHtml(TagNode page, HtmlCleaner cleaner) throws Exception {
-		Object[] ns = null;
-		try {
-			ns = page.evaluateXPath("//body/div[2]/form/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td[2]/div[@class='post']");
-		} catch (XPatherException e) {
-			e.printStackTrace();
-		}
-		
-		String cont = "";
-		if (ns != null && ns.length > 0) {
-			TagNode n = (TagNode) ns[0];
-			cont = cleaner.getInnerHtml(n);
-		}
-		
-		return cont;
-	}
-
-	
 }

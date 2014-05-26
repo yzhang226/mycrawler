@@ -70,18 +70,23 @@ public final class Utils {
 		// String.format("%1$.2f",dd)
 		if (a >= 1000000000000l) {
 			double b = a/1000000000000.0;
-			txt = b + "T";
+			txt = String.format("%1$.2fT", b);
+//			txt = b + "T";
 		} else if (a >= 1000000000) {
 			double b = a/1000000000.0;
-			txt = b + "B";
+			txt = String.format("%1$.2fB", b);
+//			txt = b + "B";
 		} else if (a >= 1000000) {
 			double b = a/1000000.0;
-			txt = b + "M";
+			txt = String.format("%1$.2fM", b);
+//			txt = b + "M";
 		} else if (a >= 1000) {
 			double b = a/1000.0;
-			txt = b + "K";
+			txt = String.format("%1$.2fK", b);
+//			txt = b + "K";
 		} else {
-			txt = n.toString();
+			txt = String.format("%1$.2f", a);
+//			txt = n.toString();
 		}
 		
 		return txt;

@@ -16,12 +16,11 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.PrettyHtmlSerializer;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
 import org.omega.crawler.bean.AltCoinBean;
-
 import org.omega.crawler.common.Constants;
-
 import org.omega.crawler.common.ContentMatcher;
 import org.omega.crawler.common.Utils;
 
@@ -35,8 +34,7 @@ public class DetailAltCoinSpider extends WebCrawler {
 	private static final Log log = LogFactory.getLog(DetailAltCoinSpider.class);
 	
 	private static final boolean IS_DOWNLOADING = true;
-
-
+	
 	public final static Map<Integer, Timestamp> topicIdTimeMap = new HashMap<Integer, Timestamp>();
 	public final static Map<Integer, AltCoinBean> topicIdAltCoinMap = new HashMap<Integer, AltCoinBean>();
 	
@@ -64,7 +62,7 @@ public class DetailAltCoinSpider extends WebCrawler {
 				html = htmlParseData.getHtml();
 	
 				HtmlCleaner cleaner = new HtmlCleaner();
-	
+				
 				TagNode node = cleaner.clean(html);
 				
 				if (node != null) {
@@ -79,8 +77,6 @@ public class DetailAltCoinSpider extends WebCrawler {
 							postDate = Utils.parseDateText(date);
 						}
 						
-						
-						
 						topicIdTimeMap.put(topicId, new Timestamp(postDate.getTime()));
 						
 						alt = buildAltCion(node, cleaner);
@@ -88,15 +84,7 @@ public class DetailAltCoinSpider extends WebCrawler {
 						alt.setPublishDate(new Timestamp(postDate.getTime()));
 						
 						topicIdAltCoinMap.put(topicId, alt);
-						
-						if (IS_DOWNLOADING) {
-							downloadHtmlPage(alt, html);
-						}
-						
 					}
-					
-					
-
 				}
 			
 			} catch (Exception e) {
@@ -173,13 +161,16 @@ public class DetailAltCoinSpider extends WebCrawler {
 			e.printStackTrace();
 		}
 		
-		String cont = "";
+		String prettyCont = "";
 		if (ns != null && ns.length > 0) {
 			TagNode n = (TagNode) ns[0];
-			cont = cleaner.getInnerHtml(n);
+			String cont = cleaner.getInnerHtml(n);
+			
+			PrettyHtmlSerializer htmlSer = new PrettyHtmlSerializer(cleaner.getProperties(), " ");
+			prettyCont = htmlSer.getAsString(cont);
 		}
 		
-		return cont;
+		return prettyCont;
 	}
 	
 	public String getTitle(TagNode page, HtmlCleaner cleaner) {
