@@ -17,9 +17,9 @@
         <property name="title" type="string">
             <column name="title" length="255" />
         </property>
-        <property name="link" type="string">
+        <!-- <property name="link" type="string">
             <column name="link" length="180" />
-        </property>
+        </property> -->
         <property name="publishDate" type="timestamp">
             <column name="publish_date" length="0"/>
         </property>
@@ -109,6 +109,10 @@
         </property>
         <property name="posAmount" type="java.lang.Long">
             <column name="pos_amount" />
+        </property>
+        
+        <property name="lastPostTime" type="timestamp">
+            <column name="last_post_time" length="0"/>
         </property>
         
     </class>

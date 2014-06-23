@@ -50,8 +50,9 @@ public class AltCoinBean extends BaseAltCoinBean {
 	
 	public String getPublishDateTxt() {
 		if (getPublishDate() != null) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
-			return sdf.format(getPublishDate());
+//			SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHH");
+			return Utils.formatDate2Short(Utils.convertDateZone(getPublishDate(), Utils.TIME_ZONE_GMT, Utils.TIME_ZONE_LOCAL));
+//			return sdf.format(getPublishDate());
 		}
 		return "";
 	}

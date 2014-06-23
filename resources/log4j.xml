@@ -21,11 +21,11 @@
 	</appender>
 
 	<logger name="org.omega"  >
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
-	<logger name="org.apache.commons.beanutils"  >
+	<!-- <logger name="org.apache.commons.beanutils"  >
 		<level value="DEBUG" />
-	</logger>
+	</logger> -->
 	
 	
 	<root>

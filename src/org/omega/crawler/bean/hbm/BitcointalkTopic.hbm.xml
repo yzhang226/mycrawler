@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="org.omega.crawler.bean.AltCoinTopicBean" table="alt_coin_topic" dynamic-insert="true" dynamic-update="true">
+    <class name="org.omega.crawler.bean.BitcointalkTopicBean" table="bitcointalk_topic" dynamic-insert="true" dynamic-update="true">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />
@@ -17,9 +17,9 @@
         <property name="title" type="string">
             <column name="title" length="255" />
         </property>
-        <property name="link" type="string">
+        <!-- <property name="link" type="string">
             <column name="link" length="180" />
-        </property>
+        </property> -->
         <property name="publishDate" type="date">
             <column name="publish_date" length="0"/>
         </property>

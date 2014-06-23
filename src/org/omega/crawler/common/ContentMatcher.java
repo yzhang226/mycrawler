@@ -200,6 +200,9 @@ public final class ContentMatcher {
 				Matcher m = p.matcher(line);
 				if (m.find()) {
 					total = Utils.removeChars(m.group(1));
+//					for (int i=1; i< m.groupCount(); i++) {
+//						System.out.println(i + ", " + m.group(i));
+//					}
 					if (m.groupCount() >= 4) unit = m.group(4);
 					break;
 				}
@@ -207,7 +210,7 @@ public final class ContentMatcher {
 			
 			ttx = Utils.isNotEmpty(total) ? Long.parseLong(total) : null;
 			if (ttx != null && unit != null) {
-				if (unit.contains("million")) ttx = ttx * 1000000;
+				if (unit.toLowerCase().contains("million")) ttx = ttx * 1000000;
 			}
 		} catch (Exception e) {
 			log.error("Parse total error", e);
@@ -222,8 +225,9 @@ public final class ContentMatcher {
 			for (Pattern p : PATTERN_REWARDs) {
 				Matcher m = p.matcher(line);
 				if (m.find()) {
-					reward = m.group(1);
-					reward = reward.trim();
+//					reward = m.group(1);
+//					reward = reward.trim();
+					reward = Utils.removeChars(m.group(1));
 					break;
 				}
 			}
@@ -339,10 +343,14 @@ public final class ContentMatcher {
 //			pm.tryMatch(f.getAbsolutePath());
 //		}
 		// "/Users/cook/Downloads/YinYangcoin.html"
-		String ff = "/storage/crawler4j/pages/20140525001628-624041-XGenerationCoin-NA.html";
-		pm.tryMatch(ff);
+//		String ff = "/storage/crawler4j/pages/20140525001628-624041-XGenerationCoin-NA.html";
+//		pm.tryMatch(ff);
 		// ((\d+\D?)+)\s?(coins)\s?(per|one|each)\D+block
 		
+		ContentMatcher cm = new ContentMatcher(null, null);
+//		System.out.println(cm.buildAltTotal("Total Coins:5,000,000  "));;
+//		System.out.println(cm.buildAltTotal("Total coin: 1,000,000,000(1billion)"));
+		System.out.println(cm.buildAltTotal("Maximum Supply: ~ 100 Million [Mathematically Regulated with slight Inflation]"));
 	}
 
 }

@@ -51,6 +51,8 @@ public class BaseAltCoinBean implements Serializable {
 	private Integer powHeight;
 	private Long posAmount;
 	
+	private Timestamp lastPostTime;
+	
 	
 	public Integer getId() {
 		return id;
@@ -253,6 +255,12 @@ public class BaseAltCoinBean implements Serializable {
 	}
 	public void setPosAmount(Long posAmount) {
 		this.posAmount = posAmount;
+	}
+	public Timestamp getLastPostTime() {
+		return lastPostTime;
+	}
+	public void setLastPostTime(Timestamp lastPostTime) {
+		this.lastPostTime = lastPostTime;
 	}
 	public String toHtml() {
 		StringBuilder sb = new StringBuilder("<tr>");

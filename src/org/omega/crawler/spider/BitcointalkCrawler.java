@@ -3,10 +3,14 @@ package org.omega.crawler.spider;
 import java.util.List;
 import java.util.Map;
 
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.TagNode;
+import org.htmlcleaner.XPatherException;
 import org.omega.crawler.bean.AltCoinBean;
-import org.omega.crawler.bean.AltCoinTopicBean;
+import org.omega.crawler.bean.BitcointalkTopicBean;
 import org.omega.crawler.common.Constants;
 import org.omega.crawler.common.DocIder;
+import org.omega.crawler.common.Utils;
 
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
@@ -16,9 +20,49 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
 public class BitcointalkCrawler {
 	
-
-
 	private static final int numberOfCrawlers = 2;
+//	private static final String ANN_PAGE_URL = "https://bitcointalk.org/index.php?board=159.0";
+	
+	// 
+	public List<AltCoinBean> fectchAnnTopics(String baseSeedUrl) throws Exception {
+		CrawlController controller = createCrawlController();
+		
+		String url = null;
+		for (int i = 0; i < Utils.ANN_TOTAL_PAGE_NUMBER; i++) {
+			url = baseSeedUrl + i * 40;
+			addSeed(controller, url);
+		}
+		controller.start(AltCoinSpider.class, numberOfCrawlers);
+		
+		return AltCoinSpider.beans;
+	}
+
+	public Map<Integer, AltCoinBean> fectchAnnTopicsByUrls(List<AltCoinBean> undbAnns) throws Exception {
+		CrawlController controller = createCrawlController();
+		
+		for (AltCoinBean alt : undbAnns) {
+			addSeed(controller, alt.getLink());
+		}
+		controller.start(DetailAltCoinSpider.class, numberOfCrawlers);
+
+		return DetailAltCoinSpider.topicIdAltCoinMap;
+	}
+	
+	public List<BitcointalkTopicBean> fectchTalkTopics(String baseSeedUrl, int group) throws Exception {
+		CrawlController controller = createCrawlController();
+
+		int gap = 20;
+		int start = gap * group;
+		int end = gap * (group + 1);
+		String url = null;
+		for (int i = start; i < end; i++) {
+			url = baseSeedUrl + i * 40;
+			addSeed(controller, url);
+		}
+		controller.start(AltCoinTopicSpider.class, numberOfCrawlers);
+
+		return AltCoinTopicSpider.beans;
+	}
 	
 	public CrawlController createCrawlController() throws Exception {
 		CrawlConfig config = new CrawlConfig();
@@ -36,65 +80,13 @@ public class BitcointalkCrawler {
 		return new CrawlController(config, pageFetcher, robotstxtServer);
 	}
 	
-	public List<AltCoinBean> fectchAnnTopics(String baseSeedUrl, int group) throws Exception {
-		CrawlController controller = createCrawlController();
-		
-		int gap = 20;
-		int start = gap * group;
-		int end = gap * (group + 1);
-		int did;
-		String url = null;
-		for (int i = start; i < end; i++) {
-			url = baseSeedUrl + i * 40;
-			did = controller.getDocIdServer().getDocId(url);
-			if (did == -1) {
-				controller.addSeed(url, DocIder.getNext());
-			}
+	private void addSeed(CrawlController controller, String url) {
+		int did = controller.getDocIdServer().getDocId(url);
+		if (did == -1) {
+			controller.addSeed(url, DocIder.getNext());
+		} else {
+			controller.addSeed(url, did);
 		}
-		
-		controller.start(AltCoinSpider.class, numberOfCrawlers);
-		
-		return AltCoinSpider.beans;
 	}
-	
-
-	public Map<Integer, AltCoinBean> fectchAnnTopicsByUrls(List<AltCoinBean> undbAnns) throws Exception {
-
-		CrawlController controller = createCrawlController();
-		
-		int did;
-		for (AltCoinBean alt : undbAnns) {
-			did = controller.getDocIdServer().getDocId(alt.getLink());
-			if (did == -1) {
-				controller.addSeed(alt.getLink(), DocIder.getNext());
-			}
-		}
-		
-		controller.start(DetailAltCoinSpider.class, numberOfCrawlers);
-
-		return DetailAltCoinSpider.topicIdAltCoinMap;
-	}
-	
-	public List<AltCoinTopicBean> fectchTalkTopics(String baseSeedUrl, int group) throws Exception {
-		CrawlController controller = createCrawlController();
-
-		int gap = 20;
-		int start = gap * group;
-		int end = gap * (group + 1);
-		int did;
-		String url = null;
-		for (int i = start; i < end; i++) {
-			url = baseSeedUrl + i * 40;
-			did = controller.getDocIdServer().getDocId(url);
-			if (did == -1) {
-				controller.addSeed(url, DocIder.getNext());
-			}
-		}
-		
-		controller.start(AltCoinTopicSpider.class, numberOfCrawlers);
-
-		return AltCoinTopicSpider.beans;
-	}
-	
 	
 }

@@ -1,6 +1,8 @@
 package org.omega.crawler.spider;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -101,6 +103,24 @@ public class AltCoinSpider extends WebCrawler {
 								if (cr.size() > 5) {
 									String views = cr.get(5).getText().toString().trim();
 									if (Utils.isNotEmpty(views)) anncoin.setViews(Integer.valueOf(views));
+								}
+								
+								if (cr.size() > 6) {
+									String lastPostTxt = cr.get(6).getText().toString().trim();
+									Date lastPost = null;
+									if (Utils.isNotEmpty(lastPostTxt)) {
+										String[] ss = lastPostTxt.split("\n");
+										if (ss.length > 0 && Utils.isNotEmpty(ss[0])) {
+											lastPostTxt =  ss[0].trim() ;
+											if (lastPostTxt.toLowerCase().contains("today")) {// Today at 12:39:37 AM
+												lastPost = Utils.parseTodayText(lastPostTxt);
+											} else {
+												lastPost = Utils.parseDateText(lastPostTxt);
+											}
+										}
+									}
+									
+									if (lastPost != null) anncoin.setLastPostTime(new Timestamp(lastPost.getTime()));
 								}
 
 								beans.add(anncoin);

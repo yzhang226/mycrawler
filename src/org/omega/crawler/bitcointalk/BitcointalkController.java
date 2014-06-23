@@ -11,7 +11,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.omega.crawler.bean.AltCoinBean;
-import org.omega.crawler.bean.AltCoinTopicBean;
+import org.omega.crawler.bean.BitcointalkTopicBean;
 import org.omega.crawler.common.Page;
 import org.omega.crawler.common.Utils;
 import org.omega.crawler.service.AltCoinService;
@@ -31,6 +31,7 @@ public class BitcointalkController {
 	private static final Log log = LogFactory.getLog(BitcointalkController.class);
 	
 	private static final long ONE_DAY_SECONDS = 24 * 60 * 60;
+	private static boolean IS_FIRST_SEEK = true;
 	
 	@Autowired
 	private AltCoinService altCoinService;
@@ -41,52 +42,68 @@ public class BitcointalkController {
 	@RequestMapping("/initannboard.do")
 	@ResponseBody
 	public String initAnnBoard(Model model, HttpServletRequest request, 
-								@RequestParam String baseSeedUrl, 
-								@RequestParam int startgroup,
-								@RequestParam int endgroup ) {
+								@RequestParam String baseSeedUrl) {
 		String resp = null;
 		boolean success = true;
 		try {
 			BitcointalkCrawler annCrawler = new BitcointalkCrawler();
 			
-			for (int i=startgroup; i<endgroup; i++) {
-				List<AltCoinBean> anns = annCrawler.fectchAnnTopics(baseSeedUrl, i);
-				
-				List<Integer> parsedTopicids = altCoinService.findParsedTopicids();
-				
-				List<AltCoinBean> undbAnns = new ArrayList<>();
-				for (AltCoinBean ann : anns) {
-					if (!parsedTopicids.contains(ann.getTopicid())) {
-						undbAnns.add(ann);
-					}
-				}
-				anns.clear();
-				
-				if (Utils.isNotEmpty(undbAnns)) {
-					Timestamp curr = new Timestamp(System.currentTimeMillis());
-
-					Map<Integer, AltCoinBean> topicIdAltCoinMap = annCrawler.fectchAnnTopicsByUrls(undbAnns);
-
-					for (AltCoinBean alt : undbAnns) {
-						if (topicIdAltCoinMap.containsKey(alt.getTopicid())) {
-							copyProperties(alt, topicIdAltCoinMap.get(alt.getTopicid()));
-							
-							alt.setCreateTime(curr);
-							alt.setIsParsed(Boolean.TRUE);
-							altCoinService.saveOrUpdate(alt);
-						}
-					}
-					topicIdAltCoinMap.clear();
-				}
-				
-				Thread.sleep(1 * 1000);
+			if (IS_FIRST_SEEK) {
+				Utils.ANN_TOTAL_PAGE_NUMBER = Utils.extractTotalPagesNumber(Utils.fetchPageByUrl(Utils.ANN_PAGE_URL));
 			}
+			
+			List<AltCoinBean> anns = annCrawler.fectchAnnTopics(baseSeedUrl);
+			List<Integer> parsedTopicids = altCoinService.findParsedTopicids();
+			
+			List<AltCoinBean> undbAnns = new ArrayList<>();
+			List<AltCoinBean> dbedAnns = new ArrayList<>();
+			for (AltCoinBean ann : anns) {
+				if (!parsedTopicids.contains(ann.getTopicid())) {
+					undbAnns.add(ann);
+				} else {
+					dbedAnns.add(ann);
+				}
+			}
+			anns.clear();
+			
+			if (Utils.isNotEmpty(undbAnns)) {// insert ann info
+				Timestamp curr = new Timestamp(System.currentTimeMillis());
+
+				Map<Integer, AltCoinBean> topicIdAltCoinMap = annCrawler.fectchAnnTopicsByUrls(undbAnns);
+
+				for (AltCoinBean alt : undbAnns) {
+					if (topicIdAltCoinMap.containsKey(alt.getTopicid())) {
+						copyProperties(alt, topicIdAltCoinMap.get(alt.getTopicid()));
+						
+						alt.setCreateTime(curr);
+						alt.setIsParsed(Boolean.TRUE);
+						altCoinService.saveOrUpdate(alt);
+					}
+				}
+				topicIdAltCoinMap.clear();
+			}
+			
+			if (IS_FIRST_SEEK && Utils.isNotEmpty(dbedAnns)) {
+				for (AltCoinBean ann : dbedAnns) {
+					AltCoinBean alt = altCoinService.getByTopicId(ann.getTopicid());
+					alt.setTitle(ann.getTitle());
+					alt.setReplies(ann.getReplies());
+					alt.setViews(ann.getViews());
+					alt.setLastPostTime(ann.getLastPostTime());
+					
+					altCoinService.saveOrUpdate(alt);
+				}
+			}
+			
+			Thread.sleep(1 * 1000);
 		} catch (Throwable e) {
 			log.error("Init Ann Board By URL error.", e);
 			
 			success = false;
 			resp = "Init Ann Board By URL error!";
 		}
+		
+		IS_FIRST_SEEK = false;
 		
 		return Utils.getJsonMessage(success, resp);
 	}
@@ -111,9 +128,72 @@ public class BitcointalkController {
 			launchraw = launchraw.substring(0, 119);
 		}
 		src.setLaunchRaw(launchraw);
+	}
+	
+	@RequestMapping("/updateallcoins.do")
+	@ResponseBody
+	public String updateAllCoins(Model model, HttpServletRequest request, 
+								@RequestParam String baseSeedUrl) {
+		String resp = null;
+		boolean success = true;
+		try {
+			BitcointalkCrawler annCrawler = new BitcointalkCrawler();
+			
+			List<AltCoinBean> anns = annCrawler.fectchAnnTopics(baseSeedUrl);
+			
+			List<Integer> parsedTopicids = altCoinService.findParsedTopicids();
+			
+			List<AltCoinBean> unNamedAnns = new ArrayList<>();
+			List<AltCoinBean> dbedAnns = new ArrayList<>();
+			for (AltCoinBean ann : anns) {
+				if (parsedTopicids.contains(ann.getTopicid())) {
+					dbedAnns.add(ann);
+				}
+			}
+			anns.clear();
+			
+			if (Utils.isNotEmpty(dbedAnns)) {// update ann info
+				for (AltCoinBean ann : dbedAnns) {
+					AltCoinBean alt = altCoinService.getByTopicId(ann.getTopicid());
+					if (Utils.isNotEmpty(alt.getName())) {
+//							alt.setTitle(ann.getTitle());
+//							alt.setReplies(ann.getReplies());
+//							alt.setViews(ann.getViews());
+//							alt.setLastPostTime(ann.getLastPostTime());
+//							
+//							altCoinService.save(alt);
+					} else {
+						unNamedAnns.add(alt);
+					}
+				}
+			}
+			
+			if (Utils.isNotEmpty(unNamedAnns)) {// update ann info
+				Timestamp curr = new Timestamp(System.currentTimeMillis());
 
+				Map<Integer, AltCoinBean> topicIdAltCoinMap = annCrawler.fectchAnnTopicsByUrls(unNamedAnns);
 
-
+				for (AltCoinBean alt : unNamedAnns) {
+					if (topicIdAltCoinMap.containsKey(alt.getTopicid())) {
+						copyProperties(alt, topicIdAltCoinMap.get(alt.getTopicid()));
+						
+						alt.setCreateTime(curr);
+						alt.setIsParsed(Boolean.TRUE);
+						altCoinService.saveOrUpdate(alt);
+					}
+				}
+				topicIdAltCoinMap.clear();
+			}
+			
+			Thread.sleep(1 * 1000);
+		} catch (Throwable e) {
+			log.error("Init Ann Board By URL error.", e);
+			
+			success = false;
+			resp = "Init Ann Board By URL error!";
+		}
+		
+		return Utils.getJsonMessage(success, resp);
 	}
 	
 	@RequestMapping("/updatealtcoins.do")
@@ -211,12 +291,12 @@ public class BitcointalkController {
 			BitcointalkCrawler annCrawler = new BitcointalkCrawler();
 			
 			for (int i=startgroup; i<endgroup; i++) {
-				List<AltCoinTopicBean> beans = annCrawler.fectchTalkTopics(baseSeedUrl, i);
+				List<BitcointalkTopicBean> beans = annCrawler.fectchTalkTopics(baseSeedUrl, i);
 				
 				List<Integer> parsedTopicids = altCoinTopicService.findParsedTopicids();
 				
-				List<AltCoinTopicBean> undbBeans = new ArrayList<AltCoinTopicBean>();
-				for (AltCoinTopicBean ann : beans) {
+				List<BitcointalkTopicBean> undbBeans = new ArrayList<BitcointalkTopicBean>();
+				for (BitcointalkTopicBean ann : beans) {
 					if (!parsedTopicids.contains(ann.getTopicid())) {
 						undbBeans.add(ann);
 					}
@@ -257,14 +337,21 @@ public class BitcointalkController {
 		
 		Page<AltCoinBean> params = (Page<AltCoinBean>) request.getAttribute("params");
 		
-		if (Utils.isEmpty(params.getOrderBy())) {
-			params.setOrderBy("publishDate, launchTime, interestLevel");
+//		if (Utils.isEmpty(params.getOrderBy())) {
+//			params.setOrderBy("publishDate, launchTime, interestLevel");
+			params.setOrderBy("lastPostTime");
 			params.setOrder(Page.DESC);
-		}
+//		}
 		
 		List<AltCoinBean> alts = altCoinService.findAnnCoins(params);
 		
+		// by reply
+		params.setOrderBy("replies, views");
+		params.setOrder(Page.DESC);
+		List<AltCoinBean> altsByReply = altCoinService.findAnnCoins(params);
+		
 		model.addAttribute("alts", alts);
+		model.addAttribute("altsByReply", altsByReply);
 		model.addAttribute("params", params);
 		
 		return jsp;
@@ -281,7 +368,7 @@ public class BitcointalkController {
 		Page<AltCoinBean> params = (Page<AltCoinBean>) request.getAttribute("params");
 		
 		if (Utils.isEmpty(params.getOrderBy())) {
-			params.setOrderBy("createTime, publishDate");
+			params.setOrderBy("publishDate, createTime");
 			params.setOrder(Page.DESC);
 		}
 		
@@ -353,14 +440,14 @@ public class BitcointalkController {
 							@RequestParam(required=false) String searchValue ) {
 		String jsp = "bitcointalk/alt_coin_topic_list";
 		
-		Page<AltCoinTopicBean> params = (Page<AltCoinTopicBean>) request.getAttribute("params");
+		Page<BitcointalkTopicBean> params = (Page<BitcointalkTopicBean>) request.getAttribute("params");
 		
 		if (Utils.isEmpty(params.getOrderBy())) {
 			params.setOrderBy("publishDate");
 			params.setOrder(Page.DESC);
 		}
 		
-		List<AltCoinTopicBean> topics = null;
+		List<BitcointalkTopicBean> topics = null;
 		if (Utils.isNotEmpty(searchField) && Utils.isNotEmpty(searchValue)) {
 			topics = altCoinTopicService.searchTalkTopics(params, searchField, searchValue.trim());
 		} else {

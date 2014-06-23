@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
-import org.omega.crawler.bean.AltCoinTopicBean;
+import org.omega.crawler.bean.BitcointalkTopicBean;
 import org.omega.crawler.common.Page;
 import org.omega.crawler.common.SimpleHibernateTemplate;
 import org.omega.crawler.common.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class AltCoinTopicService extends SimpleHibernateTemplate<AltCoinTopicBean, Integer> {
+public class AltCoinTopicService extends SimpleHibernateTemplate<BitcointalkTopicBean, Integer> {
 
 	@Autowired
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-		this.entityClass = AltCoinTopicBean.class;
+		this.entityClass = BitcointalkTopicBean.class;
 	}
 	
-	public List<AltCoinTopicBean> findTalkTopics(Page<AltCoinTopicBean> page) {
+	public List<BitcointalkTopicBean> findTalkTopics(Page<BitcointalkTopicBean> page) {
 		String hql = "from AltCoinTopicBean ann";
 		
 		hql = Utils.getOrderHql(page, hql, "ann");
@@ -28,7 +28,7 @@ public class AltCoinTopicService extends SimpleHibernateTemplate<AltCoinTopicBea
 		return page.getResult();
 	}
 	
-	public List<AltCoinTopicBean> searchTalkTopics(Page<AltCoinTopicBean> page, String searchField, String searchValue) {
+	public List<BitcointalkTopicBean> searchTalkTopics(Page<BitcointalkTopicBean> page, String searchField, String searchValue) {
 		String hql = "from AltCoinTopicBean ann ";
 		
 		String sqlValue = Utils.convertToSqlMatchChars(searchValue);

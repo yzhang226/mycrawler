@@ -24,6 +24,7 @@
 		var mode = editable ? "multiple" : "single";
 		
 		$('#__grid__').tcgtable({rowSelect : mode});
+		$('#__grid2__').tcgtable({rowSelect : mode});
 		
 	});
 	
@@ -75,7 +76,7 @@
 						
 						<tbody>
 							<c:forEach var="ann" items="${alts }">
-								<tr class="odd gradeX" objid="${ann.id }">
+								<tr class="odd gradeX" objid="${ann.id }" title="${ann.title }">
 									<td> <a href='${ann.link }' target='_blank'>${ann.name }</a> </td>
 									<td>${ann.abbrName }</td>
 									<td>${ann.totalAmountTxt }</td>
@@ -83,7 +84,7 @@
 									<td>${ann.interestLevel }</td>
 									
 									<td>${ann.launchTime }</td>
-	                                <td>${ann.publishDate }</td>
+	                                <td>${ann.publishDateTxt }</td>
 								</tr>
 							</c:forEach>
 							
@@ -117,7 +118,86 @@
 						</ul>
 					</div>
 				</div>
-				<div class="span6"></div>
+				<div class="span6">
+				
+					<div class="portlet-title">
+						<div class="caption">Most replied Coins</div>
+						<div class="tools"></div>
+					</div>
+					<div style="overflow:auto; scrollbar-base-color:#ff6600;">
+						<table class="table table-bordered table-hover" id="__grid2__">
+						<thead>
+							<tr id="_table_head_">
+								<th >Name</th>
+								<th >Abbr</th>
+								<th >Total</th>
+								<th >Algo</th>
+								<th >Interest</th>
+								
+								<th >Replies</th>
+								<th >Views</th>
+								<th>Publish Date</th>
+							</tr>
+							
+							<tr id="_head_fields_" style="display: none;">
+								<th >name</th>
+								<th >abbrName</th>
+								<th >totalAmount</th>
+								<th >algo</th>
+								<th >interestLevel</th>
+								
+								<th >replies</th>
+								<th >views</th>
+								<th >publishDate</th>
+							</tr>
+						</thead>
+						
+						<tbody>
+							<c:forEach var="ann" items="${altsByReply }">
+								<tr class="odd gradeX" objid="${ann.id }" title="${ann.title }">
+									<td> <a href='${ann.link }' target='_blank'>${ann.name }</a> </td>
+									<td>${ann.abbrName }</td>
+									<td>${ann.totalAmountTxt }</td>
+									<td>${ann.algo }</td>
+									<td>${ann.interestLevel }</td>
+									
+									<td>${ann.replies }</td>
+									<td>${ann.views }</td>
+	                                <td>${ann.publishDateTxt }</td>
+								</tr>
+							</c:forEach>
+							
+							<c:if test="${empty alts }">
+								<tr>
+									<td colspan="8" class="no-data">No Data</td>
+								</tr>
+							</c:if>
+						</tbody>
+						</table>
+					</div>
+					<div class="pagination pagination-centered">
+						<ul>
+							<c:if var="pageNotEmpty" test="${totalPages > 0 }">
+								<li><a id="1" title="First Page"><i class="icon-step-backward"></i></a></li>
+								<li><a id="${pageNo == 1 ? 1 : pageNo - 1 }" title="Previous Page"><i class="icon-caret-left"></i></a></li>
+								
+								<c:forEach var="idx" begin="${beginPageNo }" end="${endPageNo }">
+									<li class=${pageNo == idx ? 'active' : ''}><a id="${idx }">${idx }</a></li>
+								</c:forEach>
+								 
+								<li><a id="${pageNo < totalPages ? pageNo+1 : pageNo }" title="Next Page"><i class="icon-caret-right"></i></a></li>
+								<li><a id="${totalPages }" title="Last Page"><i class="icon-step-forward"></i></a></li>
+							</c:if>
+							<c:if test="${!pageNotEmpty }">
+								<li><a id="0"  title="First Page"><i class="icon-step-backward"></i></a></li>
+								<li><a id="0" title="Last Page"><i class="icon-step-forward"></i></a></li>
+							</c:if>
+							
+							<li><a>Total ${totalCount } Records</a></li>
+						</ul>
+					</div>
+				
+				</div>
 			</div>
 			<div class="row-fluid">
 				<div class="span6"></div>

@@ -20,6 +20,11 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 		this.entityClass = AltCoinBean.class;
 	}
 	
+	public AltCoinBean getByTopicId(int topicId) {
+		String hql = "from AltCoinBean ann where ann.topicid = " + topicId;
+		return (AltCoinBean) findUnique(hql);
+	}
+	
 	public List<AltCoinBean> findInterestAnnCoins(Page<AltCoinBean> page, Integer interest) {
 		String hql = "from AltCoinBean ann";
 		
@@ -32,6 +37,17 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 	}
 	
 	public List<AltCoinBean> findAnnCoins(Page<AltCoinBean> page) {
+		String hql = "from AltCoinBean ann";
+		
+		hql = hql + " where ann.isShow is true";
+		hql = Utils.getOrderHql(page, hql, "ann");
+		
+		find(page, hql);
+		
+		return page.getResult();
+	}
+	
+	public List<AltCoinBean> findAnnCoinsByReply(Page<AltCoinBean> page) {
 		String hql = "from AltCoinBean ann";
 		
 		hql = hql + " where ann.isShow is true";
@@ -57,7 +73,6 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
 		find(page, hql);
-		System.out.println("page.getTotalCount() is " + page.getTotalCount());
 		
 		return page.getResult();
 	}

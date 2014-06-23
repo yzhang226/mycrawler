@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
-import org.omega.crawler.bean.AltCoinTopicBean;
+import org.omega.crawler.bean.BitcointalkTopicBean;
 import org.omega.crawler.common.Utils;
 
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -21,7 +21,7 @@ public class AltCoinTopicSpider extends WebCrawler {
 
 	private static final Log log = LogFactory.getLog(AltCoinTopicSpider.class);
 
-	public final static List<AltCoinTopicBean> beans = new ArrayList<AltCoinTopicBean>();
+	public final static List<BitcointalkTopicBean> beans = new ArrayList<BitcointalkTopicBean>();
 
 	private final static Pattern TALK_PATTER = Pattern.compile("^https.+bitcointalk.org.index.php.topic.\\d+.\\d$");
 
@@ -79,7 +79,7 @@ public class AltCoinTopicSpider extends WebCrawler {
 
 							String link = topicNode.getAttributeByName("href");
 
-							AltCoinTopicBean anncoin = new AltCoinTopicBean();
+							BitcointalkTopicBean anncoin = new BitcointalkTopicBean();
 
 							anncoin.setTitle(topicTitle);
 							anncoin.setLink(topicNode.getAttributeByName("href"));

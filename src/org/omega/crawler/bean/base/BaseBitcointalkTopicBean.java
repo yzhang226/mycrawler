@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class BaseAltCoinTopicBean implements Serializable {
+public class BaseBitcointalkTopicBean implements Serializable {
 	
 	private static final long serialVersionUID = -5430310744786224042L;
 	

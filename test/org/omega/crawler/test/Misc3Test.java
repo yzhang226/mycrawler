@@ -10,6 +10,7 @@ import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.PrettyHtmlSerializer;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
+import org.omega.crawler.common.Utils;
 
 public class Misc3Test {
 
@@ -66,6 +67,13 @@ public class Misc3Test {
 //		System.out.println(ser.getAsString(IOUtils.toString(new FileInputStream(ff))));
 //		System.out.println(ser.getAsString(getContentHtml(node, cleaner)));
 //		System.out.println(getContentHtml(node, cleaner));;
+		
+		Double dbx = 1000.00;
+		System.out.println(dbx % 1000 == 0);
+		int ii = dbx.intValue();
+		System.out.println(dbx == ii);
+		
+		System.out.println(Utils.extractTotalPagesNumber(Utils.fetchPageByUrl(Utils.ANN_PAGE_URL)));
 		
 	}
 	

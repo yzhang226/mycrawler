@@ -1,5 +1,10 @@
 package org.omega.crawler.common;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -14,16 +19,42 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.TagNode;
+import org.htmlcleaner.XPatherException;
 import org.omega.crawler.bean.AltCoinBean;
 
-public final class Utils {
+import edu.uci.ics.crawler4j.crawler.CrawlConfig;
+import edu.uci.ics.crawler4j.fetcher.PageFetchResult;
+import edu.uci.ics.crawler4j.fetcher.PageFetcher;
+import edu.uci.ics.crawler4j.parser.HtmlParseData;
+import edu.uci.ics.crawler4j.parser.ParseData;
+import edu.uci.ics.crawler4j.url.URLCanonicalizer;
+import edu.uci.ics.crawler4j.url.WebURL;
 
+public final class Utils {
+	
+	private static final Log log = LogFactory.getLog(Utils.class);
+	
+	public static int ANN_TOTAL_PAGE_NUMBER = 0;
+	public static final String ANN_PAGE_URL = "https://bitcointalk.org/index.php?board=159.0";
+	
 	private static final String HEX_ALPH = "0123456789ABCDEF";
 	private static String WEB_DEPLOY_PATH = null;
 	private static String CARD_IMAGE_PATH = null;
 	
+	public static final String TIME_ZONE_LOCAL = TimeZone.getDefault().getID();
+	public static final String TIME_ZONE_GMT = "GMT";
+	
 	private static final Locale LOCALE_US = Locale.US;
 	private static final Pattern TODAY_DATE_PATTERN = Pattern.compile("(\\d{2}+):(\\d{2}+):(\\d{2}+) (\\w{2}+)");
+	
+	public static final String DATE_FORMAT_FULL = "yyyyMMddHHmmss";
+	public static final String DATE_FORMAT_SHORT = "yyMMddHH";
+	
 	
 	
 	public static boolean isEmpty(String text) {
@@ -32,6 +63,10 @@ public final class Utils {
 	
 	public static boolean isNotEmpty(String text) {
 		return !isEmpty(text);
+	}
+	
+	public static boolean isNotEmpty(Object[] objs) {
+		return objs != null && objs.length != 0;
 	}
 	
 	public static boolean isEmpty(Collection<?> list) {
@@ -66,30 +101,28 @@ public final class Utils {
 			return "0";
 		}
 		String txt = "";
-		double a = n.doubleValue();
-		// String.format("%1$.2f",dd)
+		Double a = n.doubleValue();
 		if (a >= 1000000000000l) {
-			double b = a/1000000000000.0;
-			txt = String.format("%1$.2fT", b);
-//			txt = b + "T";
+			Double b = a/1000000000000.0;
+			txt = isInteger(b) ? b.intValue() + "T" : String.format("%1$.2fT", b);
 		} else if (a >= 1000000000) {
-			double b = a/1000000000.0;
-			txt = String.format("%1$.2fB", b);
-//			txt = b + "B";
+			Double b = a/1000000000.0;
+			txt = isInteger(b) ? b.intValue() + "B" : String.format("%1$.2fB", b);
 		} else if (a >= 1000000) {
-			double b = a/1000000.0;
-			txt = String.format("%1$.2fM", b);
-//			txt = b + "M";
+			Double b = a/1000000.0;
+			txt = isInteger(b) ? b.intValue() + "M" : String.format("%1$.2fM", b);
 		} else if (a >= 1000) {
-			double b = a/1000.0;
-			txt = String.format("%1$.2fK", b);
-//			txt = b + "K";
+			Double b = a/1000.0;
+			txt = isInteger(b) ? b.intValue() + "K" : String.format("%1$.2fK", b);
 		} else {
-			txt = String.format("%1$.2f", a);
-//			txt = n.toString();
+			txt = isInteger(a) ? a.intValue() + "" : String.format("%1$.2f", a);
 		}
 		
 		return txt;
+	}
+	
+	public static boolean isInteger(Double dou) {
+		return dou.intValue() == dou;
 	}
 	
 	public static String formatDay(Number n) {
@@ -110,6 +143,24 @@ public final class Utils {
 		}
 		
 		return txt;
+	}
+	
+	
+	
+	public static Date convertDateZone(Date sourceDate, String srcTimeZone, String destTimeZone) {
+//		SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT_FULL);
+		TimeZone srcZone = TimeZone.getTimeZone(srcTimeZone);
+		TimeZone destZone = TimeZone.getTimeZone(destTimeZone);
+		long targetTime = sourceDate.getTime() - srcZone.getRawOffset() + destZone.getRawOffset();
+		return new Date(targetTime);
+	}
+    
+	public static String formatDate2Short(Date d) {
+		if (d == null) {
+			return "";
+		}
+		SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT_SHORT);
+		return format.format(d);
 	}
 	
 	public static boolean containsChar(String str) {
@@ -140,30 +191,6 @@ public final class Utils {
 		return xchar;
 	}
 	
-	public static String normalizeTime(String timezone, String calltime) {	
-		String switchTimeZone = timezone;
-
-		TimeZone swTimeZone = TimeZone.getTimeZone(switchTimeZone);
-		
-		String outPutStr = "0";
-		if (!"".equals(calltime) && calltime.length() == 14) {	
-			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-			format.setTimeZone(swTimeZone);
-			Date parseDate = null;
-			try {
-				parseDate = format.parse(calltime);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-
-			SimpleDateFormat formatOut = new SimpleDateFormat("yyyyMMddHHmmss");
-			formatOut.setTimeZone(TimeZone.getTimeZone("GMT"));
-			outPutStr = formatOut.format(parseDate);
-		}
-		
-		return outPutStr;
-	}
-	
 	public static Date substractDays4Date(Date d, int days) {
 		Calendar res = Calendar.getInstance();
 		res.clear();
@@ -187,9 +214,12 @@ public final class Utils {
 	
 	public static Date parseTodayText(String dateText) {
 		Date today = new Date(System.currentTimeMillis());
+		
+		Date gmtToday = convertDateZone(today, TIME_ZONE_LOCAL, TIME_ZONE_GMT);
+		
 		Calendar cal = Calendar.getInstance();
 		cal.clear();
-		cal.setTime(today);
+		cal.setTime(gmtToday);
 		
 		Matcher m = TODAY_DATE_PATTERN.matcher(dateText);
 		
@@ -389,10 +419,10 @@ public final class Utils {
 		// <a href='file://localhost/storage/crawler4j/pages/' target='_blank'></a>
 		sb.append("<tr>").append("\n");
 		sb.append("\t").append("<td>").append(getHref(fileName)).append("</td><td>").append(alt.getName()).append("</td><td>").append(alt.getAbbrName()).append("</td>");
-		sb.append("\t").append("<td>").append(swap(alt.getAlgo())).append("</td>");
-		sb.append("\t").append("<td>").append(swap(alt.getTotalAmount())).append("</td><td>").append(swap(alt.getBlockTime())).append("</td><td>").append(swap(alt.getBlockReward())).append("</td>");
-		sb.append("\t").append("<td>").append(swap(alt.getPreMined())).append("</td><td>").append(swap(alt.getMinedPercentage())).append("</td><td>").append(swap(alt.getLaunchRaw())).append("</td>");
-		sb.append("\t").append("<td>").append(swap(alt.getPublishDate())).append("</td><td>").append(alt.getUsedTime()).append("</td>").append("\n");
+		sb.append("\t").append("<td>").append(trimNull(alt.getAlgo())).append("</td>");
+		sb.append("\t").append("<td>").append(trimNull(alt.getTotalAmount())).append("</td><td>").append(trimNull(alt.getBlockTime())).append("</td><td>").append(trimNull(alt.getBlockReward())).append("</td>");
+		sb.append("\t").append("<td>").append(trimNull(alt.getPreMined())).append("</td><td>").append(trimNull(alt.getMinedPercentage())).append("</td><td>").append(trimNull(alt.getLaunchRaw())).append("</td>");
+		sb.append("\t").append("<td>").append(trimNull(alt.getPublishDate())).append("</td><td>").append(alt.getUsedTime()).append("</td>").append("\n");
 		
 		sb.append("</tr>").append("\n");;
 		
@@ -407,12 +437,81 @@ public final class Utils {
 		return sb.toString();
 	}
 	
-	private static Object swap(Object txt) {
+	private static Object trimNull(Object txt) {
 		return txt == null ? "" : txt;
 	}
 	
+	public static String fetchPageByUrl(String pageUrl) {
+		String canonicalUrl = URLCanonicalizer.getCanonicalURL(pageUrl);
+		WebURL webUrl = new WebURL();
+		webUrl.setURL(canonicalUrl);
+		
+		CrawlConfig config = new CrawlConfig();
+		config.setCrawlStorageFolder(Constants.CRAWL_FOLDER);
+		config.setIncludeHttpsPages(true);
+		config.setMaxDepthOfCrawling(0);
+		config.setPolitenessDelay(1 * 1000);
 
-	public static void main(String[] args) {
+		PageFetcher pageFetcher = createPageFetcher();
+		
+		edu.uci.ics.crawler4j.crawler.Page page = new edu.uci.ics.crawler4j.crawler.Page(webUrl);
+		
+		PageFetchResult fetchResult = pageFetcher.fetchHeader(webUrl);
+		
+		if (!fetchResult.fetchContent(page)) {
+			return null;
+		}
+		
+		String content = null;
+		try {
+			if (page.getContentCharset() == null) {
+				content = new String(page.getContentData());
+			} else {
+				content = new String(page.getContentData(), page.getContentCharset());
+			}
+		} catch (Exception e) {
+			log.error("get page content error", e);
+		}
+		
+		return content;
+	}
+	
+	private static PageFetcher createPageFetcher() {
+		CrawlConfig config = new CrawlConfig();
+		config.setCrawlStorageFolder(Constants.CRAWL_FOLDER);
+		config.setIncludeHttpsPages(true);
+		config.setMaxDepthOfCrawling(0);
+		config.setPolitenessDelay(1 * 1000);
+
+		return new PageFetcher(config);
+	}
+	
+	public static int extractTotalPagesNumber(String html) {
+		
+		if (isEmpty(html)) {
+			return 100;
+		}
+		
+		HtmlCleaner cleaner = new HtmlCleaner();
+
+		TagNode node = cleaner.clean(html);
+
+		Object[] nodes = null;
+		try {
+			nodes = node.evaluateXPath("//body/div[2]/table/tbody/tr/td/a");
+		} catch (XPatherException e) {
+			e.printStackTrace();
+		}
+
+		if (Utils.isNotEmpty(nodes)) {
+			TagNode n = (TagNode) nodes[nodes.length-1];
+			return Integer.valueOf(n.getText().toString().trim()).intValue();
+		}
+		
+		return 99;
+	}
+	
+	public static void main(String[] args) throws ParseException, Exception {
 		System.out.println(encryptWithMd5("ubi6La5z"));
 		String text = "February 17, 2014, 06:16:06 PM";
 		
@@ -421,6 +520,27 @@ public final class Utils {
 		System.out.println(formatNumber(1344L));
 		System.out.println(formatNumber(134400000L));
 		System.out.println(formatNumber(134400000000L));
+		
+		
+		String currTxt = "2014-06-15 21:09:00";
+		Date curr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(currTxt);
+		System.out.println(convertDateZone(curr, "GMT", "Asia/Shanghai"));
+		System.out.println(formatDate2Short( convertDateZone(curr, "GMT", "Asia/Shanghai")));
+		
+		Date curr2 = new Date();
+		System.out.println(convertDateZone(curr2, "GMT", "Asia/Shanghai"));
+		System.out.println(formatDate2Short(convertDateZone(curr2, "GMT", "Asia/Shanghai")));
+		
+		String todayText = "Today at 06:07:42 AM";
+		System.out.println(parseTodayText(todayText));
+		
+		System.out.println(TimeZone.getDefault().getID());
+		
+//		System.out.println(fetchPageByUrl("https://bitcointalk.org/index.php?board=159.0"));
+		
+		String html = IOUtils.toString(new FileInputStream("/Users/cook/Downloads/ann_alts.html"));
+		System.out.println(extractTotalPagesNumber(html));
+		
 		
 	}
 	

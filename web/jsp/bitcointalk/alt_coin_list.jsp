@@ -206,16 +206,14 @@
 		}
 	}
 	
+	var baseSeedUrl = "https://bitcointalk.org/index.php?board=159.";
+	// var baseSeedUrl = "https://bitcointalk.org/index.php?board=67.";
+	var startgroup = 0;
+	var endgroup = 4;
 	
 	function reInitAnnCoins() {
 		var url = getFullUrl("/jsp/bitcointalk/initannboard.do");
-		
-		var baseSeedUrl = "https://bitcointalk.org/index.php?board=159.";
-		// var baseSeedUrl = "https://bitcointalk.org/index.php?board=67.";
-		var startgroup = 0;
-		var endgroup = 4;
-		
-		url = url + "?baseSeedUrl=" + baseSeedUrl + "&startgroup=" + startgroup + "&endgroup=" + endgroup;
+		url = url + "?baseSeedUrl=" + baseSeedUrl;// + "&startgroup=" + startgroup + "&endgroup=" + endgroup;
 		
 		alert('url is ' + url);
 		$.ajax({
@@ -232,7 +230,41 @@
 				}
 		});
 	}
-
+	
+	function updateCoins() {
+		var url = getFullUrl("/jsp/bitcointalk/updateallcoins.do");
+		url = url + "?baseSeedUrl=" + baseSeedUrl;// + "&startgroup=" + startgroup + "&endgroup=" + endgroup;
+		
+		alert('url is ' + url);
+		$.ajax({
+				url : url,
+				success : function(data) {
+					var resp = $.parseJSON(data);
+					alert(resp.message);
+					
+					if (resp.success == 'true') {
+						
+						var url = combineFullUrlDefault(null);
+						window.location.href=url;
+					}
+				}
+		});
+	}
+	
+	var bitcointalk_base_url = "https://bitcointalk.org/index.php?topic=";
+	function clickTopicLink(topic_id) {
+		var turl = bitcointalk_base_url + topic_id + ".0";
+		window.open(turl, "_blank");
+		window.focus();
+		return false;
+	}
+	
+	function showTopicTitle(rowTd) {
+		var info = '<strong>' + rowTd.getAttribute("title") + '</strong>';
+		$('#rowTitle').html(info);
+		return false;
+	}
+	
 	</script>
 
 	
@@ -281,10 +313,9 @@
 				           		
 								
 								
-								
 					           <div class="btn-group pull-right" style="vertical-align: top;">
 									<div class="controls">
-					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="reInitAnnCoins();">ReInit AnnCoins</button>
+					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="reInitAnnCoins();">Seek New Coins</button>
 				                  	</div>
 					           </div>
 					           
@@ -301,7 +332,21 @@
 					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="">Deactivate</button>
 				                  	</div>
 					           </div>
-								
+					           
+					           <div class="btn-group pull-right" style="vertical-align: top;">
+									<div class="controls">
+										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
+										   <button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="updateCoins();">Update All</button>
+										</span>
+				                  	</div>
+					           </div>
+					           
+							</div>
+							
+							<div class="clearfix">
+								<div class="alert" style="font-family: 'Segoe UI',Helvetica,Arial,sans-serif;">
+					                <span id="rowTitle" style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; "></span>
+			                  	</div>
 							</div>
 
 							<div style="overflow:auto; scrollbar-base-color:#ff6600;">
@@ -367,9 +412,10 @@
 									
 									<tbody>
 										<c:forEach var="ann" items="${anns }">
-											<tr class="odd gradeX" objid="${ann.id }" title="${ann.title }">
+											<tr class="odd gradeX" objid="${ann.id }" title="${ann.title }" onclick="showTopicTitle(this);">
 	                                         	
-	                                         	<td><a href="${ann.link }" target="_blank"> ${ann.topicid } </a></td>
+	                                         	<%-- onclick="clickTopicLink(${ann.topicid });" href="javascript:clickTopicLink(${ann.topicid });" --%>
+	                                         	<td ><a onclick="clickTopicLink(${ann.topicid });" target="_blank" > ${ann.topicid } </a></td>
 	                                         	
 	                                         	<c:if test="${editable }">
 	                                         		<td> <input type="text" id="${ann.id }_interestLevel" value="${ann.interestLevel }" style="width: 18px"> </td>

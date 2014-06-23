@@ -19,7 +19,6 @@ public class SystemWarmupServlet extends HttpServlet {
 	
 	private static final Log log = LogFactory.getLog(SystemWarmupServlet.class);
 
-	@SuppressWarnings("unchecked")
 	public void init() throws ServletException {
 		log.info("Warmup System init ...");
 		
@@ -55,14 +54,10 @@ public class SystemWarmupServlet extends HttpServlet {
 		Utils.setWebDeployPath(servletContext.getRealPath("/"));
 		servletContext.setAttribute("image_path",  Utils.getCardImagePath());
 		
-		
-//		ConvertUtils.deregister(Long.class);
-//		Converter longcon = new LongConverter(null);
-//		ConvertUtils.register(longcon, Long.class);
-		
 		BeanUtilsBean.getInstance().getConvertUtils().register(false, true, 2);
 		
-		
+//		int end = Utils.extractTotalPagesNumber(Utils.fetchPageByUrl("https://bitcointalk.org/index.php?board=159.0"));
+//		Utils.ANN_TOTAL_PAGE_NUMBER = 0;
 		
 	}
 	
