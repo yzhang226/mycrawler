@@ -76,6 +76,26 @@ if(typeof Array.prototype.remove != 'function') {
 	};
 }
 
+function StringBuilder(value) {
+ this.strings = new Array("");
+ this.append(value);
+};
+
+StringBuilder.prototype.append = function (value) {
+ if (value) {
+     this.strings.push(value);
+ }
+ return this;
+};
+
+StringBuilder.prototype.clear = function () {
+ this.strings.length = 0;
+};
+
+StringBuilder.prototype.toString = function () {
+ return this.strings.join("");
+};
+
 jQuery.validator.addMethod("website_url", function(val, elem) {
     if (val.length == 0) { return true; }
  
@@ -102,10 +122,12 @@ var selectedObjIds = new Array();
 	$.fn.tcgtable = function(options) {
 		
 		var settings = $.extend({
-			rowSelect : "single"
+			rowSelect : "single",
+			needPagination : "true"
 		}, options);
 		
 		var isMultiple = settings.rowSelect == 'multiple';
+		var isNeedPagination = settings.needPagination == 'true';
 		
 		tableId = this.attr('id');
 		
@@ -335,21 +357,24 @@ var selectedObjIds = new Array();
 			 }
 		 }
 		 });
-	   
-	    var paginationLinks = $("div[class='pagination pagination-centered'] ul li a");
-	    // alert("paginationLinks.length is " + paginationLinks.length);
-	    for (var i=0; i<paginationLinks.length-1; i++) {
-	    	var pLink = $(paginationLinks[i]);
-	    	var pageNum = pLink.attr('id');
-	    	if (!isNullOrUndefined(pageNum)) {
-	    		pageNum = Number(pageNum);
-	    		if (pageNum > 0) {
-	    			var url = combineFullUrl(null, $('#order').val(), $('#orderBy').val(), pageNum, $('#statusId').val());
-	    			
-	    			pLink.attr('href', url);
-	    		}
-	    	}
-	    }
+		
+		if (isNeedPagination) {
+			var paginationLinks = $("div[class='pagination pagination-centered'] ul li a");
+		    // alert("paginationLinks.length is " + paginationLinks.length);
+		    for (var i=0; i<paginationLinks.length-1; i++) {
+		    	var pLink = $(paginationLinks[i]);
+		    	var pageNum = pLink.attr('id');
+		    	if (!isNullOrUndefined(pageNum)) {
+		    		pageNum = Number(pageNum);
+		    		if (pageNum > 0) {
+		    			var url = combineFullUrl(null, $('#order').val(), $('#orderBy').val(), pageNum, $('#statusId').val());
+		    			
+		    			pLink.attr('href', url);
+		    		}
+		    	}
+		    }
+		}
+	    
 	   
 	    popupColsDiv.mouseover(function (e) {
 	    	var colsDiv = $("div#__columns");

@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="org.omega.crawler.bean.BitcointalkTopicBean" table="bitcointalk_topic" dynamic-insert="true" dynamic-update="true">
+    <class name="org.omega.crawler.bean.BCTTopicBean" table="bct_topic" dynamic-insert="true" dynamic-update="true">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />

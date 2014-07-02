@@ -351,6 +351,7 @@ public final class ContentMatcher {
 //		System.out.println(cm.buildAltTotal("Total Coins:5,000,000  "));;
 //		System.out.println(cm.buildAltTotal("Total coin: 1,000,000,000(1billion)"));
 		System.out.println(cm.buildAltTotal("Maximum Supply: ~ 100 Million [Mathematically Regulated with slight Inflation]"));
+		System.out.println(cm.buildAltTotal(" Total POW Coins: 2,750,000"));
 	}
 
 }

@@ -45,6 +45,16 @@
 		   closeText : "Close"
 		});
 		
+		$('#searchValue').keypress(function(e) {
+		    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)){ 
+		    	searchByField(); 
+		    	return false; 
+		    } else {
+		    	return true;
+		    }
+		});
+		
+		$('#searchValue').focus();
 	});
 	
 	function searchByField() {
@@ -251,14 +261,6 @@
 		});
 	}
 	
-	var bitcointalk_base_url = "https://bitcointalk.org/index.php?topic=";
-	function clickTopicLink(topic_id) {
-		var turl = bitcointalk_base_url + topic_id + ".0";
-		window.open(turl, "_blank");
-		window.focus();
-		return false;
-	}
-	
 	function showTopicTitle(rowTd) {
 		var info = '<strong>' + rowTd.getAttribute("title") + '</strong>';
 		$('#rowTitle').html(info);
@@ -294,8 +296,6 @@
 							<div class="clearfix">
 								 <div class="btn-group caption">
 									<div class="controls" style="font-family: 'Segoe UI',Helvetica,Arial,sans-serif;line-height: 20px;font-size: 14px;  margin-bottom: 0px;">
-									
-									
 						                <select id="searchField" name="searchField" class="span5 m-wrap" data-placeholder="Choose a Category"  style="width: 190px;vertical-align: middle; margin-bottom: 0px;" tabindex="1">
 											<option value="title" ${searchField == 'title' ? "selected" : "" }>Title</option>
 											<option value="name" ${searchField == 'name' ? "selected" : "" }>Name</option>
@@ -305,7 +305,8 @@
 											<option value="publishContent" ${searchField == 'publishContent' ? "selected" : "" }>Content</option>
 									  	</select>
 									  	<span style="font-size: 16px;vertical-align: middle; margin-bottom: 0px;"> : </span>
-									  	<input type="text" id="searchValue" name="searchValue" value="${searchValue }" class="span5 m-wrap medium" style="width: 100px;vertical-align: middle; margin-bottom: 0px;" title="CAN use asterisk(*) match any chars "  />
+									  	<input type="text" id="searchValue" name="searchValue" value="${searchValue }" 
+									  	class="span5 m-wrap medium" style="width: 100px;vertical-align: middle; margin-bottom: 0px;" />
 									  	&nbsp; &nbsp;
 									  	<button type="button" onclick="searchByField();" style="width: 70px; vertical-align: top;vertical-align: middle; margin-bottom: 0px;" class="btn blue m-wrap">Search</button>
 				                  	</div>
@@ -355,12 +356,10 @@
 										<tr id="_table_head_">
 											<th >Topicid</th>
 											<th >Interest</th>
-											
 											<th >Name</th>
 											<th >Abbr</th>
 											<th >Total</th>
 											<th >Algo</th>
-											
 											<th >Premined</th>
 											<th >Percentage</th>
 											<th >Proof</th>
@@ -373,26 +372,20 @@
 											<th >PoW Height</th>
 											<th >PoSAmount</th>
 											<th >Difficulty</th>
-											
 											<th >Launch</th>
 											<th >Publish Date</th>
-<!-- 											<th >Create Time</th> -->
-<!-- 											<th >Author</th> -->
 										</tr>
 										
 										<tr id="_head_fields_" style="display: none;">
 											<th >topicid</th>
 											<th >interestLevel</th>
-											
 											<th >name</th>
 											<th >abbrName</th>
 											<th >totalAmount</th>
 											<th >algo</th>
-											
 											<th >preMined</th>
 											<th >minedPercentage</th>
 											<th >proof</th>
-											
 											<th >blockReward</th>
 											<th >blockTime</th>
 											<th >halfBlocks</th>
@@ -404,15 +397,12 @@
 											
 											<th >launchTime</th>
 											<th >publishDate</th>
-											
-<!-- 											<th >createTime</th> -->
-<!-- 											<th >author</th> -->
 										</tr>
 									</thead>
 									
 									<tbody>
 										<c:forEach var="ann" items="${anns }">
-											<tr class="odd gradeX" objid="${ann.id }" title="${ann.title }" onclick="showTopicTitle(this);">
+											<tr class="odd gradeX" objid="${ann.id }" title="${ann.title }" onclick="showTopicTitle(this, 'rowTitle');">
 	                                         	
 	                                         	<%-- onclick="clickTopicLink(${ann.topicid });" href="javascript:clickTopicLink(${ann.topicid });" --%>
 	                                         	<td ><a onclick="clickTopicLink(${ann.topicid });" target="_blank" > ${ann.topicid } </a></td>

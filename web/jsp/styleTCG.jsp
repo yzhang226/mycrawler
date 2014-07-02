@@ -244,6 +244,31 @@
 		function isSuccess(resp) {
 			return resp == 'true';
 		}
+		
+		var bitcointalk_base_url = "https://bitcointalk.org/index.php?topic=";
+		function clickTopicLink(topic_id) {
+			var turl = bitcointalk_base_url + topic_id + ".0";
+			window.open(turl, "_blank");
+			window.focus();
+			return false;
+		}
+		
+		function showTopicTitle(rowTd, showJqId) {
+			var info = '<strong>' + rowTd.getAttribute("title") + '</strong>';
+			$('#'+showJqId).html(info);
+			
+			var trs = $(rowTd).parent().children();
+			 
+			 for (var i=0; i<trs.length; i++) {
+				// trs[i].style.backgroundColor = i % 2 == 0 ? even_color : odd_color;
+				$(trs[i]).css('background-color', i % 2 == 0 ? even_color : odd_color);
+			 }
+			 $(rowTd).removeAttr("style");
+			 $(rowTd).css('background-color', selected_color);
+			// trs[i].style.backgroundColor = selected_color;
+			return false;
+		}
+		
 	</script> 
 
 

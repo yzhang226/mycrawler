@@ -24,39 +24,51 @@ public class Page<T> {
 	private String method;
 	private List<T> result = null;
 	private int totalCount = -1;
-
+	private int totalPages = -1;
+	
+	private int beginPageNo = -1;
+	private int endPageNo = -1;
+	
 	public int getBeginPageNo() {
-		int begin = 1;
+		if (beginPageNo != -1) {
+			return beginPageNo;
+		}
+		
+		beginPageNo = 1;
 		int totalPages = getTotalPages();
 		
 		if (getTotalPages() > PAGE_LIMIT) {
 			if (pageNo - BEGIN_GAP >= 1) {// need jump page no
 				if (pageNo + END_GAP > totalPages) {
-					begin = pageNo - ((PAGE_LIMIT-1) - (totalPages-pageNo));
+					beginPageNo = pageNo - ((PAGE_LIMIT-1) - (totalPages-pageNo));
 				} else {
-					begin = pageNo - BEGIN_GAP;
+					beginPageNo = pageNo - BEGIN_GAP;
 				}
 			}
 		}
 		
-		return begin;
+		return beginPageNo;
 	}
 	
 	public int getEndPageNo() {
+		if (endPageNo != -1) {
+			return endPageNo;
+		}
+		
 		int totalPages = getTotalPages();
-		int end = totalPages;
+		endPageNo = totalPages;
 		
 		if (getTotalPages() > PAGE_LIMIT) {
 			if (pageNo - BEGIN_GAP >= 1) {// need jump page no
 				if (pageNo + END_GAP <= totalPages) {
-					end = pageNo + END_GAP;
+					endPageNo = pageNo + END_GAP;
 				}
 			} else {
-				end = PAGE_LIMIT;
+				endPageNo = PAGE_LIMIT;
 			}
 		}
 		
-		return end;
+		return endPageNo;
 	}
 
 	public Page() {
@@ -193,14 +205,17 @@ public class Page<T> {
 
 
 	public int getTotalPages() {
+		if (totalPages != -1) {
+			return totalPages;
+		}
 		if (totalCount == -1)
 			return -1;
 
-		int count = totalCount / pageSize;
+		totalPages = totalCount / pageSize;
 		if (totalCount % pageSize > 0) {
-			count++;
+			totalPages++;
 		}
-		return count;
+		return totalPages;
 	}
 
 

@@ -7,7 +7,7 @@ import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
 import org.omega.crawler.bean.AltCoinBean;
-import org.omega.crawler.bean.BitcointalkTopicBean;
+import org.omega.crawler.bean.BCTTopicBean;
 import org.omega.crawler.common.Constants;
 import org.omega.crawler.common.DocIder;
 import org.omega.crawler.common.Utils;
@@ -48,7 +48,7 @@ public class BitcointalkCrawler {
 		return DetailAltCoinSpider.topicIdAltCoinMap;
 	}
 	
-	public List<BitcointalkTopicBean> fectchTalkTopics(String baseSeedUrl, int group) throws Exception {
+	public List<BCTTopicBean> fectchTalkTopics(String baseSeedUrl, int group) throws Exception {
 		CrawlController controller = createCrawlController();
 
 		int gap = 20;

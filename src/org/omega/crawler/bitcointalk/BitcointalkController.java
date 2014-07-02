@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.omega.crawler.bean.AltCoinBean;
-import org.omega.crawler.bean.BitcointalkTopicBean;
+import org.omega.crawler.bean.BCTTopicBean;
 import org.omega.crawler.common.Page;
 import org.omega.crawler.common.Utils;
 import org.omega.crawler.service.AltCoinService;
@@ -50,6 +51,7 @@ public class BitcointalkController {
 			
 			if (IS_FIRST_SEEK) {
 				Utils.ANN_TOTAL_PAGE_NUMBER = Utils.extractTotalPagesNumber(Utils.fetchPageByUrl(Utils.ANN_PAGE_URL));
+				log.info("There are total " + Utils.ANN_TOTAL_PAGE_NUMBER + " topic pages number ");
 			}
 			
 			List<AltCoinBean> anns = annCrawler.fectchAnnTopics(baseSeedUrl);
@@ -206,37 +208,22 @@ public class BitcointalkController {
 		boolean success = true;
 		try {
 			String[] ids = altIds.split(",");
-			String[] fieldArr = attrs.split(",");
-			String[] values = altValues.split(",");
+			String[] fieldsArr = attrs.split(",");
 			
-			int len = fieldArr.length;
-			
-			List<String[]> rows = new ArrayList<String[]>(ids.length);
-			int idx = 0;
-			for (int r=0; r<ids.length; r++) {
-				String[] row = new String[len];
-				
-				idx = idx + len * r;
-				for (int m=0; m<len; m++) {
-					row[m] = Utils.isEmpty(values[idx+m]) ? "" : values[idx+m].trim();
-				}
-				
-				rows.add(row);
-			}
-			
+			List<String[]> rows = splitToRows(ids.length, fieldsArr.length, altValues);
 			
 			for (int i=0; i<ids.length; i++) {
 				AltCoinBean alt = altCoinService.get(Integer.valueOf(ids[i])); 
 				String[] row = rows.get(i);
 				String attrName = null;
 				String attrValue = null;
-				for (int f=0; f<len; f++) {
-					attrName = fieldArr[f];
+				for (int f=0; f<fieldsArr.length; f++) {
+					attrName = fieldsArr[f];
 					attrValue = row[f];
 					try {
-						log.debug("Before, set property[" + attrName + "] to value[" + attrValue + "]");
+//						log.debug("Before, set property[" + attrName + "] to value[" + attrValue + "]");
 						BeanUtils.setProperty(alt, attrName, attrValue);
-						log.debug("After,  get property[" + attrName + "]'s value[" + BeanUtils.getProperty(alt, attrName) + "]");
+//						log.debug("After,  get property[" + attrName + "]'s value[" + BeanUtils.getProperty(alt, attrName) + "]");
 					} catch (Exception e) {
 						log.error("Set Property[" + attrName + "] to value[" + row[f] + "] error.", e);
 					}
@@ -279,6 +266,25 @@ public class BitcointalkController {
 		return Utils.getJsonMessage(success, resp);
 	}
 	
+	private List<String[]> splitToRows(int rowLength, int fieldNumber, String altValues) {
+		int len = fieldNumber;
+		String[] values = altValues.split(",");
+		
+		List<String[]> rows = new ArrayList<String[]>(rowLength);
+		int idx = 0;
+		for (int r=0; r<rowLength; r++) {
+			String[] row = new String[len];
+			
+			idx = len * r;
+			for (int m=0; m<len; m++) {
+				row[m] = Utils.isEmpty(values[idx+m]) ? "" : values[idx+m].trim();
+			}
+			
+			rows.add(row);
+		}
+		return rows;
+	}
+	
 	@RequestMapping("/crawlertopicboard.do")
 	@ResponseBody
 	public String crawlerTopicBoard(Model model, HttpServletRequest request, 
@@ -291,12 +297,12 @@ public class BitcointalkController {
 			BitcointalkCrawler annCrawler = new BitcointalkCrawler();
 			
 			for (int i=startgroup; i<endgroup; i++) {
-				List<BitcointalkTopicBean> beans = annCrawler.fectchTalkTopics(baseSeedUrl, i);
+				List<BCTTopicBean> beans = annCrawler.fectchTalkTopics(baseSeedUrl, i);
 				
 				List<Integer> parsedTopicids = altCoinTopicService.findParsedTopicids();
 				
-				List<BitcointalkTopicBean> undbBeans = new ArrayList<BitcointalkTopicBean>();
-				for (BitcointalkTopicBean ann : beans) {
+				List<BCTTopicBean> undbBeans = new ArrayList<BCTTopicBean>();
+				for (BCTTopicBean ann : beans) {
 					if (!parsedTopicids.contains(ann.getTopicid())) {
 						undbBeans.add(ann);
 					}
@@ -355,6 +361,26 @@ public class BitcointalkController {
 		model.addAttribute("params", params);
 		
 		return jsp;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/showCoins4Board.do")
+	@ResponseBody
+	public Page<AltCoinBean> showCoins4Board(Model model, HttpServletRequest request, 
+										  HttpServletResponse response) {
+		Page<AltCoinBean> params =  null;
+		try {
+			params = (Page<AltCoinBean>) request.getAttribute("params");
+			
+//			params.setOrderBy("lastPostTime");
+//			params.setOrder(Page.DESC);
+			
+			altCoinService.findAnnCoins(params);
+		} catch (Throwable e) {
+			log.error("getLastCoins error.", e);
+		}
+		
+		return params;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -440,14 +466,14 @@ public class BitcointalkController {
 							@RequestParam(required=false) String searchValue ) {
 		String jsp = "bitcointalk/alt_coin_topic_list";
 		
-		Page<BitcointalkTopicBean> params = (Page<BitcointalkTopicBean>) request.getAttribute("params");
+		Page<BCTTopicBean> params = (Page<BCTTopicBean>) request.getAttribute("params");
 		
 		if (Utils.isEmpty(params.getOrderBy())) {
 			params.setOrderBy("publishDate");
 			params.setOrder(Page.DESC);
 		}
 		
-		List<BitcointalkTopicBean> topics = null;
+		List<BCTTopicBean> topics = null;
 		if (Utils.isNotEmpty(searchField) && Utils.isNotEmpty(searchValue)) {
 			topics = altCoinTopicService.searchTalkTopics(params, searchField, searchValue.trim());
 		} else {

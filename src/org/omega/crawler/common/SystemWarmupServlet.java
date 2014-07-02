@@ -1,15 +1,15 @@
 package org.omega.crawler.common;
 
+import java.util.Date;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.BeanUtilsBean;
-import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.ConvertUtilsBean;
-import org.apache.commons.beanutils.Converter;
-import org.apache.commons.beanutils.converters.LongConverter;
+import org.apache.commons.beanutils.converters.ConverterFacade;
+import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -54,7 +54,17 @@ public class SystemWarmupServlet extends HttpServlet {
 		Utils.setWebDeployPath(servletContext.getRealPath("/"));
 		servletContext.setAttribute("image_path",  Utils.getCardImagePath());
 		
-		BeanUtilsBean.getInstance().getConvertUtils().register(false, true, 2);
+		ConvertUtilsBean cUtilsBean = BeanUtilsBean.getInstance().getConvertUtils();
+		cUtilsBean.register(false, true, 2);
+		
+		
+		DateConverter dateConverter = new DateConverter(null);
+		String[] patterns = new String[]{"yyMMddHH"};
+		dateConverter.setPatterns(patterns);
+		ConverterFacade dateFacade = new ConverterFacade(dateConverter);
+		
+		cUtilsBean.deregister(Date.class);
+		cUtilsBean.register(dateFacade, Date.class);
 		
 //		int end = Utils.extractTotalPagesNumber(Utils.fetchPageByUrl("https://bitcointalk.org/index.php?board=159.0"));
 //		Utils.ANN_TOTAL_PAGE_NUMBER = 0;

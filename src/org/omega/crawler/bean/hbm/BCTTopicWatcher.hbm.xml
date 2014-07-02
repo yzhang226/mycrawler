@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.omega.crawler.bean.BCTTopicWatcherBean" table="bct_topic_watch_list" dynamic-insert="true" dynamic-update="true">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        
+        <many-to-one name="bctTopic" class="org.omega.crawler.bean.BCTTopicBean" cascade="save-update">
+        	<column name="bct_topic_id" />
+        </many-to-one>
+        
+    </class>
+</hibernate-mapping>

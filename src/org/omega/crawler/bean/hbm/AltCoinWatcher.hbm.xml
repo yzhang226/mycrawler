@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.omega.crawler.bean.AltCoinWatcherBean" table="alt_coin_watcher_list" dynamic-insert="true" dynamic-update="true">
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        
+        <many-to-one name="altCoin" class="org.omega.crawler.bean.AltCoinBean" cascade="save-update">
+        	<column name="alt_coin_id" />
+        </many-to-one>
+        
+    </class>
+</hibernate-mapping>

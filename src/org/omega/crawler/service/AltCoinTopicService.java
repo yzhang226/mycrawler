@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
-import org.omega.crawler.bean.BitcointalkTopicBean;
+import org.omega.crawler.bean.BCTTopicBean;
 import org.omega.crawler.common.Page;
 import org.omega.crawler.common.SimpleHibernateTemplate;
 import org.omega.crawler.common.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class AltCoinTopicService extends SimpleHibernateTemplate<BitcointalkTopicBean, Integer> {
+public class AltCoinTopicService extends SimpleHibernateTemplate<BCTTopicBean, Integer> {
 
 	@Autowired
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-		this.entityClass = BitcointalkTopicBean.class;
+		this.entityClass = BCTTopicBean.class;
 	}
 	
-	public List<BitcointalkTopicBean> findTalkTopics(Page<BitcointalkTopicBean> page) {
-		String hql = "from AltCoinTopicBean ann";
+	public List<BCTTopicBean> findTalkTopics(Page<BCTTopicBean> page) {
+		String hql = "from BCTTopicBean ann";
 		
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
@@ -28,8 +28,8 @@ public class AltCoinTopicService extends SimpleHibernateTemplate<BitcointalkTopi
 		return page.getResult();
 	}
 	
-	public List<BitcointalkTopicBean> searchTalkTopics(Page<BitcointalkTopicBean> page, String searchField, String searchValue) {
-		String hql = "from AltCoinTopicBean ann ";
+	public List<BCTTopicBean> searchTalkTopics(Page<BCTTopicBean> page, String searchField, String searchValue) {
+		String hql = "from BCTTopicBean ann ";
 		
 		String sqlValue = Utils.convertToSqlMatchChars(searchValue);
 		
@@ -42,7 +42,7 @@ public class AltCoinTopicService extends SimpleHibernateTemplate<BitcointalkTopi
 	}
 	
 	public List<Integer> findParsedTopicids() {
-		String hql = "select tt.topicid from AltCoinTopicBean tt where tt.isParsed is true";
+		String hql = "select tt.topicid from BCTTopicBean tt where tt.isParsed is true";
 		List<Integer> parsedTopicids = find(hql);
 		
 		List<Integer> topicids = new ArrayList<>();

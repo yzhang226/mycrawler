@@ -17,7 +17,7 @@
    <!--  <import resource="mvc-view-config.xml"/> -->
    
 <!--    <mvc:default-servlet-handler/>   -->
-<!-- 	<mvc:annotation-driven /> -->
+ 	<mvc:annotation-driven />
 
 	<!--
 		- This bean processes annotated handler methods, applying PetClinic-specific PropertyEditors

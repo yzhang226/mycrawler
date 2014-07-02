@@ -73,21 +73,7 @@
 			<!-- BEGIN PAGE CONTAINER-->        
 			<div class="container-fluid">
 				<!-- BEGIN PAGE HEADER-->
-				<div class="row-fluid">
-					<div class="span12">
-				  
-						<!-- BEGIN PAGE TITLE & BREADCRUMB-->
-<!-- 						<h3 class="page-title"> -->
-<!-- 							<img src="../assets/img/logo_admin.png"> -->
-<!-- 						</h3> -->
-							<ul class="breadcrumb">
-								<li><i class="icon-home"></i> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showinterestcoins.do">Interest Coins</a> / </li>
-								<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" >Alt Coins</a> / </li>
-								<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showtalktopics.do" class="active">Alt Coins Topic</a> </li>
-							</ul>
-					<!-- END PAGE TITLE & BREADCRUMB-->
-					</div>
-				</div>
+
 				<!-- END PAGE HEADER-->
 				<!-- BEGIN PAGE CONTENT-->
 				<div class="row-fluid">
@@ -148,7 +134,7 @@
 										<c:forEach var="t" items="${topics }">
 											<tr class="odd gradeX">
 	                                         	<td>${t.publishDate }</td>
-	                                         	<td> <a href="${t.link }" target="_blank"> ${t.title } </a> </td>
+	                                         	<td> <a  onclick="clickTopicLink(${t.topicid });" target="_blank"> ${t.title } </a> </td>
 	                                         	<td>${t.author }</td>
 												<td>${t.replies }</td>
 												<td>${t.views }</td>
