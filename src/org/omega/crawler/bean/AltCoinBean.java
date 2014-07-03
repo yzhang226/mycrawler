@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import org.omega.crawler.bean.base.BaseAltCoinBean;
 import org.omega.crawler.common.Utils;
 
-
 public class AltCoinBean extends BaseAltCoinBean {
 
 	private static final long serialVersionUID = 1L;
@@ -13,7 +12,7 @@ public class AltCoinBean extends BaseAltCoinBean {
 	public AltCoinBean() { }
 	
 	public AltCoinBean(Integer topicid) {
-		setTopicid(topicid);
+		setTopicId(topicid);
 	}
 	
 	public String getTotalAmountTxt() {
@@ -40,8 +39,12 @@ public class AltCoinBean extends BaseAltCoinBean {
 		return Utils.formatDay(getHalfDays());
 	}
 	
-	public String getPosAmountTxt() {
-		return Utils.formatNumber(getPosAmount());
+	public String getPowAmountTxt() {
+		return Utils.formatNumber(getPowAmount());
+	}
+	
+	public String getPowHeightTxt() {
+		return Utils.formatNumber(getPowHeight());
 	}
 	
 	public String getPowDaysTxt() {
@@ -52,7 +55,14 @@ public class AltCoinBean extends BaseAltCoinBean {
 		if (getPublishDate() != null) {
 //			SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHH");
 			return Utils.formatDate2Short(Utils.convertDateZone(getPublishDate(), Utils.TIME_ZONE_GMT, Utils.TIME_ZONE_LOCAL));
-//			return sdf.format(getPublishDate());
+		}
+		return "";
+	}
+	
+	public String getLaunchTimeTxt() {
+		if (getLaunchTime() != null) {
+//			SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHH");
+			return Utils.formatDate2Short(Utils.convertDateZone(getLaunchTime(), Utils.TIME_ZONE_GMT, Utils.TIME_ZONE_LOCAL));
 		}
 		return "";
 	}

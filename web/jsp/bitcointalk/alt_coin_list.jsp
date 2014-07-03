@@ -68,10 +68,10 @@
 		window.location.href = url;
 	}
 	
-	var fields = new Array("interestLevel", "name", "abbrName", "totalAmount", "algo", "preMined", "minedPercentage", 
-							"proof", "blockReward", "blockTime", "halfBlocks", "halfDays", "powDays", "powHeight", "posAmount", 
+	var fields = new Array("interest", "name", "abbrName", "totalAmount", "algo", "preMined", "minedPercentage", 
+							"proof", "blockReward", "blockTime", "halfBlocks", "halfDays", "powDays", "powHeight", "powAmount", 
 							"difficultyAdjust", "launchTime");
-	var formatedFields = new Array("totalAmount","blockReward","halfBlocks","preMined","powHeight","posAmount");
+	var formatedFields = new Array("totalAmount","blockReward","halfBlocks","preMined","powHeight","powAmount");
 	var formatedDayFields = new Array("halfDays","powDays");
 	function updateSelecedtInfo() {
     	var ids = $('#clickedObjId').val();
@@ -261,6 +261,33 @@
 		});
 	}
 	
+	function changeStatus(status) {
+		var ids = $('#clickedObjId').val();
+		
+		if (isNullOrUndefined(ids)) {
+			alert("Please select Alt Coin to process!");
+			return;
+		}
+		
+		var url = getFullUrl("/jsp/bitcointalk/changeCoinStatus.do");
+		url = url + "?altIds=" + ids + "&targetStatus=" + status;
+		
+		$.ajax({
+				url : url,
+				success : function(data) {
+					var resp = $.parseJSON(data);
+					alert(resp.message);
+					
+					if (resp.success == 'true') {
+						
+						var url = combineFullUrlDefault(null);
+						window.location.href=url;
+					}
+				}
+		});
+		
+	}
+	
 	function showTopicTitle(rowTd) {
 		var info = '<strong>' + rowTd.getAttribute("title") + '</strong>';
 		$('#rowTitle').html(info);
@@ -321,18 +348,26 @@
 					           </div>
 					           
 								<div class="btn-group pull-right ">
-									<div class="controls" style="font-family: 'Segoe UI',Helvetica,Arial,sans-serif;">
+									<div class="controls" >
 										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
-										<button type="button" onclick="updateSelecedtInfo();" class="btn blue" style="vertical-align: top;" >Update Info</button>
+										<button type="button"  ${editable ? "class='btn blue' " : "class='btn blue'  disabled='disabled'" } onclick="updateSelecedtInfo();" style="vertical-align: top;" >Update Info</button>
 										</span>
 									</div>
 								</div>
 								
 								<div class="btn-group pull-right" style="vertical-align: top;">
 									<div class="controls">
-					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="">Deactivate</button>
+					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="changeStatus(11);">Watch</button>
 				                  	</div>
-					           </div>
+					           	</div>
+								
+								<div class="btn-group pull-right" style="vertical-align: top;">
+									<div class="controls" >
+										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
+					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="changeStatus(1)">Deactivate</button>
+					                  	</span>
+				                  	</div>
+					           	</div>
 					           
 					           <div class="btn-group pull-right" style="vertical-align: top;">
 									<div class="controls">
@@ -354,46 +389,56 @@
 								<table class="table table-bordered table-hover" id="__grid__">
 									<thead>
 										<tr id="_table_head_">
-											<th >Topicid</th>
-											<th >Interest</th>
+											<th id='_un00_'>Link</th>
 											<th >Name</th>
 											<th >Abbr</th>
+											
 											<th >Total</th>
 											<th >Algo</th>
+											<th >Proof</th>
+											
+											<th >PoW Amount</th>
+											<th >PoW Days</th>
+											<th >PoW Height</th>
+											
 											<th >Premined</th>
 											<th >Percentage</th>
-											<th >Proof</th>
 											
 											<th >BReward</th>
 											<th >BTime</th>
 											<th >HBlocks</th>
 											<th >HDays</th>
-											<th >PoW Days</th>
-											<th >PoW Height</th>
-											<th >PoSAmount</th>
 											<th >Difficulty</th>
+											
+											<th >Interest</th>
+											
 											<th >Launch</th>
-											<th >Publish Date</th>
+											<th >Publish</th>
 										</tr>
 										
 										<tr id="_head_fields_" style="display: none;">
-											<th >topicid</th>
-											<th >interestLevel</th>
+											<th ></th>
 											<th >name</th>
 											<th >abbrName</th>
+											
 											<th >totalAmount</th>
 											<th >algo</th>
+											<th >proof</th>
+											
+											<th >powAmount</th>
+											<th >powDays</th>
+											<th >powHeight</th>
+											
 											<th >preMined</th>
 											<th >minedPercentage</th>
-											<th >proof</th>
+											
 											<th >blockReward</th>
 											<th >blockTime</th>
 											<th >halfBlocks</th>
 											<th >halfDays</th>
-											<th >powDays</th>
-											<th >powHeight</th>
-											<th >posAmount</th>
 											<th >difficultyAdjust</th>
+											
+											<th >interest</th>
 											
 											<th >launchTime</th>
 											<th >publishDate</th>
@@ -402,65 +447,67 @@
 									
 									<tbody>
 										<c:forEach var="ann" items="${anns }">
-											<tr class="odd gradeX" objid="${ann.id }" title="${ann.title }" onclick="showTopicTitle(this, 'rowTitle');">
+											<tr class="odd gradeX" objid="${ann.id }" title="${ann.title }" onclick="showTopicTitle(this);">
 	                                         	
-	                                         	<%-- onclick="clickTopicLink(${ann.topicid });" href="javascript:clickTopicLink(${ann.topicid });" --%>
-	                                         	<td ><a onclick="clickTopicLink(${ann.topicid });" target="_blank" > ${ann.topicid } </a></td>
+	                                         	<td ><a onclick="clickTopicLink(${ann.topicId });" target="_blank" > Ann </a></td>
 	                                         	
 	                                         	<c:if test="${editable }">
-	                                         		<td> <input type="text" id="${ann.id }_interestLevel" value="${ann.interestLevel }" style="width: 18px"> </td>
 	                                         		<td> <input type="text" id="${ann.id }_name" value="${ann.name }" maxlength="15" style="width: 85px" > </td>
 													<td> <input type="text" id="${ann.id }_abbrName" value="${ann.abbrName }" maxlength="5" style="width: 25px"> </td>
+													
 													<td> <input type="text" id="${ann.id }_totalAmount" value="${ann.totalAmountTxt }" style="width: 65px" > </td>
 													<td> <input type="text" id="${ann.id }_algo" value="${ann.algo }" style="width: 65px"> </td>
+													<td> <input type="text" id="${ann.id }_proof" value="${ann.proof }" style="width: 45px"> </td>
+													
+													<td> <input type="text" id="${ann.id }_powAmount" value="${ann.powAmountTxt }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_powDays" value="${ann.powDaysTxt }" style="width: 45px" > </td>
+													<td> <input type="text" id="${ann.id }_powHeight" value="${ann.powHeightTxt }" style="width: 45px" > </td>
 													
 													<td> <input type="text" id="${ann.id }_preMined" value="${ann.preMinedTxt }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_minedPercentage" value="${ann.minedPercentageTxt }" style="width: 45px" > </td>
-													<td> <input type="text" id="${ann.id }_proof" value="${ann.proof }" style="width: 45px"> </td>
 													
 													<td> <input type="text" id="${ann.id }_blockReward" value="${ann.blockRewardTxt }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_blockTime" value="${ann.blockTime }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_halfBlocks" value="${ann.halfBlocksTxt }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_halfDays" value="${ann.halfDaysTxt }" style="width: 45px" > </td>
-													<td> <input type="text" id="${ann.id }_powDays" value="${ann.powDaysTxt }" style="width: 45px" > </td>
-													<td> <input type="text" id="${ann.id }_powHeight" value="${ann.powHeight }" style="width: 45px" > </td>
-													<td> <input type="text" id="${ann.id }_posAmount" value="${ann.posAmountTxt }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_difficultyAdjust" value="${ann.difficultyAdjust }" style="width: 65px" > </td>
 													
-													<td> <input type="text" id="${ann.id }_launchTime" value="${ann.launchTime }" style="width: 65px" > </td>
+													<td> <input type="text" id="${ann.id }_interest" value="${ann.interest }" style="width: 18px"> </td>
+													
+													<td> <input type="text" id="${ann.id }_launchTime" value="${ann.launchTimeTxt }" style="width: 65px" > </td>
 	                                         	</c:if>
 	                                         	<c:if test="${!editable }">
-													<td>${ann.interestLevel }</td>
 													<td>${ann.name }</td>
 													<td>${ann.abbrName }</td>
+													
 													<td>${ann.totalAmountTxt }</td>
 		                                         	<td>${ann.algo }</td>
+		                                         	<td>${ann.proof }</td>
 		                                         	
+		                                         	<td>${ann.powAmountTxt }</td>
+													<td>${ann.powDaysTxt }</td>
+													<td>${ann.powHeightTxt }</td>
+													
 		                                         	<td>${ann.preMinedTxt }</td>
 													<td>${ann.minedPercentageTxt }</td>
-													<td>${ann.proof }</td>
 													
 													<td>${ann.blockRewardTxt }</td>
 													<td>${ann.blockTime }</td>
 													<td>${ann.halfBlocksTxt }</td>
 													<td>${ann.halfDaysTxt }</td>
-													<td>${ann.powDaysTxt }</td>
-													<td>${ann.powHeight }</td>
-													<td>${ann.posAmountTxt }</td>
 													<td>${ann.difficultyAdjust }</td>
 													
-													<td>${ann.launchTime }</td>
+													<td>${ann.interest }</td>
+													
+													<td>${ann.launchTimeTxt }</td>
 	                                         	</c:if>
 	                                         	
 	                                         	<td>${ann.publishDateTxt }</td>
-	                                         	
-<%-- 	                                         	<td>${ann.createTime }</td> --%>
-<%-- 	                                         	<td>${ann.author }</td> --%>
 											</tr>
 										</c:forEach>
 										<c:if test="${empty anns }">
 											<tr>
-												<td colspan="20" class="no-data">No Data</td>
+												<td colspan="19" class="no-data">No Data</td>
 											</tr>
 										</c:if>
 									</tbody>

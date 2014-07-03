@@ -10,6 +10,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -55,7 +57,9 @@ public final class Utils {
 	public static final String DATE_FORMAT_FULL = "yyyyMMddHHmmss";
 	public static final String DATE_FORMAT_SHORT = "yyMMddHH";
 	
+	public static final List<String> SQL_OPERATORS = Arrays.asList("=", ">", "<", "between", "like", "in", "<>", ">=", "<=");
 	
+	private Utils() {}
 	
 	public static boolean isEmpty(String text) {
 		return text == null || text.trim().length() == 0;
@@ -130,16 +134,16 @@ public final class Utils {
 			return null;
 		}
 		String txt = "";
-		double a = n.doubleValue();
+		Double a = n.doubleValue();
 		
 		if (a >= 365) {
-			txt = String.format("%1$.1fy", new Double(a/365.0));
+			txt = isInteger(a) ? a.intValue() + "y" : String.format("%1$.1fy", new Double(a/365.0));
 		} else if (a >= 30) {
-			txt = String.format("%1$.1fm", new Double(a/30.0));
+			txt = isInteger(a) ? a.intValue() + "m" : String.format("%1$.1fm", new Double(a/30.0));
 		} else if (a >= 7) {
-			txt = String.format("%1$.1fw", new Double(a/7.0));
+			txt = isInteger(a) ? a.intValue() + "w" : String.format("%1$.1fw", new Double(a/7.0));
 		} else {
-			txt = String.valueOf(n);
+			txt = isInteger(a) ? a.intValue() + "" : String.format("%1$.1f", n);
 		}
 		
 		return txt;
@@ -269,10 +273,10 @@ public final class Utils {
 				String key = ss[2];
 				String secKey = ss[3];
 				
-				int fromIndex = nhql.indexOf("from ") + 5;
+				int fromIndex = hql.toLowerCase().indexOf("from ") + 5;
 				nhql.insert(fromIndex, entity + ", ");
 				
-				int whereIdx = nhql.indexOf("where ") + 6;
+				int whereIdx = hql.toLowerCase().indexOf("where ") + 6;
 				StringBuilder keyClause = new StringBuilder();
 				if (whereIdx > 6) {
 					keyClause.append(alias).append(secKey).append(" = ").append(key).append(" and (");
@@ -305,7 +309,34 @@ public final class Utils {
 //		System.out.println("Utils.getOrderSql nhql is [" + nhql + "]");
 		
 		return nhql.toString();
-	}	
+	}
+	
+	public static String appendSql(String hql, String condition){
+		StringBuilder nhql = new StringBuilder(hql);
+				
+		int fromIndex = hql.toLowerCase().indexOf("where ");
+		
+		if (fromIndex > 0) {
+			if (existSqlOperator(nhql.toString())) {// there is some condition already
+				nhql.insert(fromIndex+6, " and ");
+			}
+			nhql.insert(fromIndex+6, condition);
+		} else {
+			nhql.append(" where ").append(condition);
+		}
+		
+		return nhql.toString();
+	}
+	
+	public static boolean existSqlOperator(String sql) {
+		sql = sql.toLowerCase();
+		for (String op : SQL_OPERATORS) {
+			if (sql.indexOf(op) > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	public static String getTodayText() {
 		SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_PATTERN2);
@@ -538,8 +569,15 @@ public final class Utils {
 		
 //		System.out.println(fetchPageByUrl("https://bitcointalk.org/index.php?board=159.0"));
 		
-		String html = IOUtils.toString(new FileInputStream("/Users/cook/Downloads/ann_alts.html"));
-		System.out.println(extractTotalPagesNumber(html));
+//		String html = IOUtils.toString(new FileInputStream("/Users/cook/Downloads/ann_alts.html"));
+//		System.out.println(extractTotalPagesNumber(html));
+		
+//		String hql = "ann from AltCoin ann where x = 0 and b = y";
+//		String hql = "ann from AltCoin ann where x like 'x'";
+//		String hql = "ann from AltCoin ann ";
+		String hql = "ann from AltCoin ann order by x";
+		String condition = "status = 0";
+		System.out.println(appendSql(hql, condition));
 		
 		
 	}

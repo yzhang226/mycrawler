@@ -92,7 +92,7 @@ public class AltCoinSpider extends WebCrawler {
 
 								anncoin.setTitle(topicTitle);
 								anncoin.setLink(topicNode.getAttributeByName("href"));
-								anncoin.setTopicid(Utils.getTopicIdByUrl(link));
+								anncoin.setTopicId(Utils.getTopicIdByUrl(link));
 
 								TagNode authorNode = (TagNode) cr.get(3).getChildTagList().get(0);
 								anncoin.setAuthor(authorNode.getText().toString().trim());

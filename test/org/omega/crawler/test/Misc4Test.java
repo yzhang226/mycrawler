@@ -17,6 +17,12 @@ public class Misc4Test {
 //		System.out.println(x3);
 		System.out.println(x4);
 		
+		System.out.println(Byte.MAX_VALUE);
+		System.out.println(Byte.MIN_VALUE);
+		
+		byte bx = (byte) 129;
+		System.out.println(bx);
+		
 	}
 	
 }

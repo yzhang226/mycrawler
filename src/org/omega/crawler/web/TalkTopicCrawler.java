@@ -85,7 +85,7 @@ public class TalkTopicCrawler extends WebCrawler {
 						anncoin.setTitle(topicTitle);
 						anncoin.setLink(topicNode.getAttributeByName("href"));
 						
-						anncoin.setTopicid(Integer.valueOf(link.substring(link.indexOf('=') + 1, link.lastIndexOf('.'))));
+						anncoin.setTopicId(Integer.valueOf(link.substring(link.indexOf('=') + 1, link.lastIndexOf('.'))));
 						
 						TagNode authorNode = (TagNode) cr.get(3).getChildTagList().get(0);
 						anncoin.setAuthor(authorNode.getText().toString().trim());

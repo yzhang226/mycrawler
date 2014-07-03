@@ -143,6 +143,9 @@ public final class ContentMatcher {
 		for (String line : lines) {
 			mlaunch = buildAltLaunch(line);
 			if (mlaunch != null) {
+				if (mlaunch.length() > 50) {
+					mlaunch = mlaunch.substring(0, 50);
+				}
 				alt.setLaunchRaw(mlaunch);
 				break;
 			}

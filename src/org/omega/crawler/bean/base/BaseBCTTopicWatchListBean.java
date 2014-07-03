@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.omega.crawler.bean.BCTTopicBean;
 
 
-public class BaseBCTTopicWatcherBean implements Serializable {
+public class BaseBCTTopicWatchListBean implements Serializable {
 	
 	private static final long serialVersionUID = -5430310744786224042L;
 	

@@ -4,116 +4,109 @@
 
 <hibernate-mapping>
     <class name="org.omega.crawler.bean.AltCoinBean" table="alt_coin" dynamic-insert="true" dynamic-update="true">
-        <id name="id" type="java.lang.Integer">
+        <id name="id" type="integer">
             <column name="id" />
             <generator class="identity" />
         </id>
-        <property name="topicid" type="java.lang.Integer">
+        <property name="topicId" type="integer">
             <column name="topic_id" />
         </property>
+        <property name="status" type="byte">
+            <column name="status" />
+        </property>
+        <property name="interest" type="byte">
+            <column name="interest" />
+        </property>
+        
+        <!-- topic info -->
         <property name="author" type="string">
-            <column name="author" length="60" />
+            <column name="author" />
         </property>
         <property name="title" type="string">
-            <column name="title" length="255" />
+            <column name="title" />
         </property>
-        <!-- <property name="link" type="string">
-            <column name="link" length="180" />
-        </property> -->
-        <property name="publishDate" type="timestamp">
-            <column name="publish_date" length="0"/>
-        </property>
-        <property name="replies" type="java.lang.Integer">
+        <property name="replies" type="integer">
             <column name="replies" />
         </property>
-        <property name="views" type="java.lang.Integer">
+        <property name="views" type="integer">
             <column name="views" />
         </property>
-        <property name="publishContent" type="text">
-            <column name="publish_content" length="16777216" />
-        </property>
-		<property name="isParsed" type="java.lang.Boolean">
-            <column name="is_parsed" />
-        </property>
+        <!-- <property name="publishContent" type="blob">
+            <column name="publish_content" />
+        </property> -->
         
+         <property name="launchTime" type="timestamp">
+            <column name="launch_time" />
+        </property>
+        <property name="lastPostTime" type="timestamp">
+            <column name="last_post_time" />
+        </property>
+        <property name="publishDate" type="timestamp">
+            <column name="publish_date" />
+        </property>
         <property name="createTime" type="timestamp">
-            <column name="create_time" length="0"/>
+            <column name="create_time" />
         </property>
         
+        <!-- coin info -->
+        <property name="name" type="string">
+            <column name="name" />
+        </property>
+         <property name="abbrName" type="string">
+            <column name="abbr_name" />
+        </property>
         <property name="algo" type="string">
             <column name="algo" length="45" />
         </property>
-        <property name="launchTime" type="date">
-            <column name="launch_time" length="0"/>
+        <property name="proof" type="string">
+            <column name="proof" length="45" />
         </property>
         <property name="launchRaw" type="string">
             <column name="launch_raw" length="120" />
         </property>
-         <property name="name" type="string">
-            <column name="name" length="100" />
-        </property>
-         <property name="abbrName" type="string">
-            <column name="abbr_name" length="20" />
-        </property>
-        <property name="interestLevel" type="java.lang.Integer">
-            <column name="interest_level" />
-        </property>
         
-        <property name="proof" type="string">
-            <column name="proof" length="45" />
-        </property>
-        <property name="cpuMinable" type="java.lang.Boolean">
-            <column name="cpu_minable" />
-        </property>
-        <property name="gpuMinable" type="java.lang.Boolean">
-            <column name="gpu_minable" />
-        </property>
-        <property name="asicMinable" type="java.lang.Boolean">
-            <column name="asic_minable" />
-        </property>
-        
-        <property name="totalAmount" type="java.lang.Long">
+        <!-- coin detail -->
+        <property name="totalAmount" type="long">
             <column name="total_amount" />
         </property>
-        <property name="blockTime" type="java.lang.Integer">
+        <property name="blockTime" type="integer">
             <column name="block_time" />
         </property>
-        <property name="halfBlocks" type="java.lang.Integer">
+        <property name="halfBlocks" type="integer">
             <column name="half_blocks" />
         </property>
-        <property name="halfDays" type="java.lang.Integer">
+        <property name="halfDays" type="integer">
             <column name="half_days" />
         </property>
-        <property name="blockReward" type="java.lang.Double">
+        <property name="blockReward" type="double">
             <column name="block_reward" />
         </property>
         <property name="difficultyAdjust" type="string">
             <column name="difficulty_adjust" length="45" />
         </property>
-        <property name="isShow" type="java.lang.Boolean">
-            <column name="is_show" />
-        </property>
-        
-        <property name="preMined" type="java.lang.Long">
+        <property name="preMined" type="long">
             <column name="pre_mined" />
         </property>
-        <property name="minedPercentage" type="java.lang.Double">
+        <property name="minedPercentage" type="double">
             <column name="mined_percentage" />
         </property>
         
-        <property name="powDays" type="java.lang.Integer">
+        <!-- pow info -->
+        <property name="powDays" type="double">
             <column name="pow_days" />
         </property>
-        <property name="powHeight" type="java.lang.Integer">
+        <property name="powHeight" type="integer">
             <column name="pow_height" />
         </property>
-        <property name="posAmount" type="java.lang.Long">
-            <column name="pos_amount" />
+        <property name="powAmount" type="long">
+            <column name="pow_amount" />
         </property>
         
-        <property name="lastPostTime" type="timestamp">
-            <column name="last_post_time" length="0"/>
+        <!--  -->
+        <property name="memo" type="string">
+            <column name="memo" />
         </property>
+        
         
     </class>
 </hibernate-mapping>

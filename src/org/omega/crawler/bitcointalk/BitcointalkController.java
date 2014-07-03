@@ -12,11 +12,13 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.omega.crawler.bean.AltCoinBean;
+import org.omega.crawler.bean.AltCoinWatchListBean;
 import org.omega.crawler.bean.BCTTopicBean;
 import org.omega.crawler.common.Page;
 import org.omega.crawler.common.Utils;
 import org.omega.crawler.service.AltCoinService;
 import org.omega.crawler.service.AltCoinTopicService;
+import org.omega.crawler.service.AltCoinWatchListService;
 import org.omega.crawler.spider.BitcointalkCrawler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,6 +42,9 @@ public class BitcointalkController {
 	@Autowired
 	private AltCoinTopicService altCoinTopicService;
 	
+	@Autowired
+	private AltCoinWatchListService altCoinWatchListService;
+	
 	@RequestMapping("/initannboard.do")
 	@ResponseBody
 	public String initAnnBoard(Model model, HttpServletRequest request, 
@@ -60,7 +65,7 @@ public class BitcointalkController {
 			List<AltCoinBean> undbAnns = new ArrayList<>();
 			List<AltCoinBean> dbedAnns = new ArrayList<>();
 			for (AltCoinBean ann : anns) {
-				if (!parsedTopicids.contains(ann.getTopicid())) {
+				if (!parsedTopicids.contains(ann.getTopicId())) {
 					undbAnns.add(ann);
 				} else {
 					dbedAnns.add(ann);
@@ -74,11 +79,10 @@ public class BitcointalkController {
 				Map<Integer, AltCoinBean> topicIdAltCoinMap = annCrawler.fectchAnnTopicsByUrls(undbAnns);
 
 				for (AltCoinBean alt : undbAnns) {
-					if (topicIdAltCoinMap.containsKey(alt.getTopicid())) {
-						copyProperties(alt, topicIdAltCoinMap.get(alt.getTopicid()));
+					if (topicIdAltCoinMap.containsKey(alt.getTopicId())) {
+						copyProperties(alt, topicIdAltCoinMap.get(alt.getTopicId()));
 						
 						alt.setCreateTime(curr);
-						alt.setIsParsed(Boolean.TRUE);
 						altCoinService.saveOrUpdate(alt);
 					}
 				}
@@ -87,7 +91,7 @@ public class BitcointalkController {
 			
 			if (IS_FIRST_SEEK && Utils.isNotEmpty(dbedAnns)) {
 				for (AltCoinBean ann : dbedAnns) {
-					AltCoinBean alt = altCoinService.getByTopicId(ann.getTopicid());
+					AltCoinBean alt = altCoinService.getByTopicId(ann.getTopicId());
 					alt.setTitle(ann.getTitle());
 					alt.setReplies(ann.getReplies());
 					alt.setViews(ann.getViews());
@@ -148,7 +152,7 @@ public class BitcointalkController {
 			List<AltCoinBean> unNamedAnns = new ArrayList<>();
 			List<AltCoinBean> dbedAnns = new ArrayList<>();
 			for (AltCoinBean ann : anns) {
-				if (parsedTopicids.contains(ann.getTopicid())) {
+				if (parsedTopicids.contains(ann.getTopicId())) {
 					dbedAnns.add(ann);
 				}
 			}
@@ -156,7 +160,7 @@ public class BitcointalkController {
 			
 			if (Utils.isNotEmpty(dbedAnns)) {// update ann info
 				for (AltCoinBean ann : dbedAnns) {
-					AltCoinBean alt = altCoinService.getByTopicId(ann.getTopicid());
+					AltCoinBean alt = altCoinService.getByTopicId(ann.getTopicId());
 					if (Utils.isNotEmpty(alt.getName())) {
 //							alt.setTitle(ann.getTitle());
 //							alt.setReplies(ann.getReplies());
@@ -176,11 +180,10 @@ public class BitcointalkController {
 				Map<Integer, AltCoinBean> topicIdAltCoinMap = annCrawler.fectchAnnTopicsByUrls(unNamedAnns);
 
 				for (AltCoinBean alt : unNamedAnns) {
-					if (topicIdAltCoinMap.containsKey(alt.getTopicid())) {
-						copyProperties(alt, topicIdAltCoinMap.get(alt.getTopicid()));
+					if (topicIdAltCoinMap.containsKey(alt.getTopicId())) {
+						copyProperties(alt, topicIdAltCoinMap.get(alt.getTopicId()));
 						
 						alt.setCreateTime(curr);
-						alt.setIsParsed(Boolean.TRUE);
 						altCoinService.saveOrUpdate(alt);
 					}
 				}
@@ -221,13 +224,10 @@ public class BitcointalkController {
 					attrName = fieldsArr[f];
 					attrValue = row[f];
 					try {
-//						log.debug("Before, set property[" + attrName + "] to value[" + attrValue + "]");
 						BeanUtils.setProperty(alt, attrName, attrValue);
-//						log.debug("After,  get property[" + attrName + "]'s value[" + BeanUtils.getProperty(alt, attrName) + "]");
 					} catch (Exception e) {
 						log.error("Set Property[" + attrName + "] to value[" + row[f] + "] error.", e);
 					}
-					System.out.println("test resync funciton ..");
 				}
 				
 				if (alt.getHalfDays() == null && Utils.isPositive(alt.getHalfBlocks()) && Utils.isPositive(alt.getBlockTime()) ) {
@@ -245,7 +245,7 @@ public class BitcointalkController {
 				}
 				
 				if (alt.getPowDays() == null &&  Utils.isPositive(alt.getBlockTime()) && Utils.isPositive(alt.getPowHeight())) {
-					alt.setPowDays((int) ((alt.getBlockTime() * alt.getPowHeight())/ONE_DAY_SECONDS));
+					alt.setPowDays( ((double) alt.getBlockTime() * alt.getPowHeight())/ONE_DAY_SECONDS );
 				}
 				
 				if (alt.getPowHeight() == null &&  Utils.isPositive(alt.getBlockTime()) && Utils.isPositive(alt.getPowDays())) {
@@ -343,12 +343,9 @@ public class BitcointalkController {
 		
 		Page<AltCoinBean> params = (Page<AltCoinBean>) request.getAttribute("params");
 		
-//		if (Utils.isEmpty(params.getOrderBy())) {
-//			params.setOrderBy("publishDate, launchTime, interestLevel");
-			params.setOrderBy("lastPostTime");
-			params.setOrder(Page.DESC);
-//		}
-		
+		params.setOrderBy("lastPostTime");
+		params.setOrder(Page.DESC);
+	
 		List<AltCoinBean> alts = altCoinService.findAnnCoins(params);
 		
 		// by reply
@@ -372,16 +369,39 @@ public class BitcointalkController {
 		try {
 			params = (Page<AltCoinBean>) request.getAttribute("params");
 			
-//			params.setOrderBy("lastPostTime");
-//			params.setOrder(Page.DESC);
-			
 			altCoinService.findAnnCoins(params);
 		} catch (Throwable e) {
-			log.error("getLastCoins error.", e);
+			log.error("showCoins4Board error.", e);
 		}
 		
 		return params;
 	}
+	
+	@RequestMapping("/changeCoinStatus.do")
+	@ResponseBody
+	public String changeCoinStatus(@RequestParam(required=true) String altIds, 
+								   @RequestParam(required=true) byte targetStatus) {
+		String resp = null;
+		boolean success = true;
+		try {
+			String[] idArr = altIds.split(",");
+			for (String idstr : idArr) {
+				AltCoinBean alt = altCoinService.get(Integer.valueOf(idstr));
+				alt.setStatus(targetStatus);
+				altCoinService.saveOrUpdate(alt);
+			}
+			
+			resp = "Success!";
+		} catch (Throwable e) {
+			resp = "changeCoinStatus error.";
+			log.error(resp, e);
+			
+			success = false;
+		}
+		
+		return Utils.getJsonMessage(success, resp);
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/showanncoins.do")
@@ -430,7 +450,7 @@ public class BitcointalkController {
 		Page<AltCoinBean> params = (Page<AltCoinBean>) request.getAttribute("params");
 		
 		if (Utils.isEmpty(params.getOrderBy())) {
-			params.setOrderBy("launchTime, interestLevel, publishDate, createTime");
+			params.setOrderBy("launchTime, interest, publishDate, createTime");
 			params.setOrder(Page.DESC);
 		}
 		

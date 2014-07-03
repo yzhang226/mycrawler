@@ -3,7 +3,7 @@
 "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="org.omega.crawler.bean.AltCoinWatcherBean" table="alt_coin_watcher_list" dynamic-insert="true" dynamic-update="true">
+    <class name="org.omega.crawler.bean.AltCoinWatchListBean" table="alt_coin_watcher_list" dynamic-insert="true" dynamic-update="true">
         <id name="id" type="java.lang.Integer">
             <column name="id" />
             <generator class="identity" />
@@ -12,6 +12,10 @@
         <many-to-one name="altCoin" class="org.omega.crawler.bean.AltCoinBean" cascade="save-update">
         	<column name="alt_coin_id" />
         </many-to-one>
+        
+        <property name="symbol" type="string">
+            <column name="symbol" />
+        </property>
         
     </class>
 </hibernate-mapping>

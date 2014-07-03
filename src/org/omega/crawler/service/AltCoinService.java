@@ -21,14 +21,15 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 	}
 	
 	public AltCoinBean getByTopicId(int topicId) {
-		String hql = "from AltCoinBean ann where ann.topicid = " + topicId;
+		String hql = "from AltCoinBean ann where ann.topicId = " + topicId;
 		return (AltCoinBean) findUnique(hql);
 	}
 	
 	public List<AltCoinBean> findInterestAnnCoins(Page<AltCoinBean> page, Integer interest) {
 		String hql = "from AltCoinBean ann";
 		
-		hql = hql + " where ann.isShow is true and (ann.interestLevel >= " + interest + " or ann.launchTime >= '" + getPreviousDate() + "')";
+		hql = hql + " where (ann.interest >= " + interest + " or ann.launchTime >= '" + getPreviousDate() + "')";
+		hql = appendActiveStatus(hql, "ann");
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
 		find(page, hql);
@@ -36,10 +37,21 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 		return page.getResult();
 	}
 	
+	private String appendActiveStatus(String hql, String alias) {
+		StringBuilder cond = new StringBuilder();
+		
+		if (Utils.isNotEmpty(alias)) {
+			cond.append(alias).append(".");
+		}
+		cond.append("status <> ").append(AltCoinBean.STATUS_INACTIVE);
+		
+		return Utils.appendSql(hql, cond.toString());
+	}
+	
 	public List<AltCoinBean> findAnnCoins(Page<AltCoinBean> page) {
 		String hql = "from AltCoinBean ann";
 		
-		hql = hql + " where ann.isShow is true";
+		hql = appendActiveStatus(hql, "ann");
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
 		find(page, hql);
@@ -50,7 +62,7 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 	public List<AltCoinBean> findAnnCoinsByReply(Page<AltCoinBean> page) {
 		String hql = "from AltCoinBean ann";
 		
-		hql = hql + " where ann.isShow is true";
+		hql = appendActiveStatus(hql, "ann");
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
 		find(page, hql);
@@ -68,7 +80,7 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 		sqlValue = sqlValue.toUpperCase();
 		
 		hql = hql + " where upper(ann." + searchField + ") like '" + sqlValue + "'";
-		hql = hql + " and ann.isShow is true ";
+		hql = appendActiveStatus(hql, "ann");
 		
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
@@ -87,7 +99,8 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 		sqlValue = sqlValue.toUpperCase();
 		
 		hql = hql + " where upper(ann." + searchField + ") like '" + sqlValue + "'";
-		hql = hql + " and ann.isShow is true and (ann.interestLevel >= " + interest + " or ann.launchTime >= '" + getPreviousDate() + "')";
+		hql = hql + " and (ann.interest >= " + interest + " or ann.launchTime >= '" + getPreviousDate() + "')";
+		hql = appendActiveStatus(hql, "ann");
 		
 		hql = Utils.getOrderHql(page, hql, "ann");
 		
@@ -106,18 +119,10 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 	}
 	
 	public List<Integer> findParsedTopicids() {
-//		String hql = " select new AltCoinBean(ann.topicid) from AltCoinBean ann where ann.isParsed is true";
-		String hql = " from AltCoinBean ann where ann.isParsed is true";
-		List<AltCoinBean> parsedAnns = find(hql);
+		String hql = "select ann.topicId from AltCoinBean ann where ann.publishDate != null";
+		List<Integer> allTopicIds = find(hql);
 		
-		List<Integer> topicids = new ArrayList<>();
-		for (AltCoinBean ann : parsedAnns) {
-			if (ann.getPublishDate() != null) {
-				topicids.add(ann.getTopicid());
-			}
-		}
-		
-		return topicids;
+		return allTopicIds;
 	}
 	
 	

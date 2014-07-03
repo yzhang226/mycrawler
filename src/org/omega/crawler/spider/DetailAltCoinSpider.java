@@ -80,7 +80,7 @@ public class DetailAltCoinSpider extends WebCrawler {
 						topicIdTimeMap.put(topicId, new Timestamp(postDate.getTime()));
 						
 						alt = buildAltCion(node, cleaner);
-						alt.setTopicid(topicId);
+						alt.setTopicId(topicId);
 						alt.setPublishDate(new Timestamp(postDate.getTime()));
 						
 						topicIdAltCoinMap.put(topicId, alt);
@@ -105,7 +105,7 @@ public class DetailAltCoinSpider extends WebCrawler {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String pdate = sdf.format(alt.getPublishDate());
 		
-		File htmlPath = new File(Constants.CRAWL_PAGES_FOLDER + "/" + pdate + "-" + alt.getTopicid() + "-" + alt.getName() + "-" + alt.getAbbrName() + ".html");
+		File htmlPath = new File(Constants.CRAWL_PAGES_FOLDER + "/" + pdate + "-" + alt.getTopicId() + "-" + alt.getName() + "-" + alt.getAbbrName() + ".html");
 		
 		FileOutputStream fos = null;
 		try {

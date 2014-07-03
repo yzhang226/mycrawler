@@ -62,7 +62,7 @@ public class HtmlPageMatcher {
 		
 		File hf = new File(htmlPath);
 		
-		alt.setTopicid(getTopicId(hf.getName()));
+		alt.setTopicId(getTopicId(hf.getName()));
 		
 		System.out.println(hf.getName() + " ---- " + alt.toPrintableTxt());
 		
