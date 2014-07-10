@@ -77,8 +77,12 @@
     	var ids = $('#clickedObjId').val();
 		
 		if (isNullOrUndefined(ids)) {
-			alert("Please select Alt Coin to process!");
-			return;
+			ids = $('#lastRowId').val();// 
+			ids = $('#' + ids).attr('objid');
+			if (isNullOrUndefined(ids)) {
+				alert("Please select Alt Coin to process!");
+				return;
+			}
 		}
 		
 		var idsArr = ids.split(',');
@@ -265,9 +269,17 @@
 		var ids = $('#clickedObjId').val();
 		
 		if (isNullOrUndefined(ids)) {
-			alert("Please select Alt Coin to process!");
-			return;
+			ids = $('#lastRowId').val();// 
+			ids = $('#' + ids).attr('objid');
+			if (isNullOrUndefined(ids)) {
+				alert("Please select Alt Coin to process!");
+				return;
+			}
 		}
+		
+		/* if (!confirm("Are you sure want to change ID[" + ids + "]'s status?")) {
+			return;
+		} */
 		
 		var url = getFullUrl("/jsp/bitcointalk/changeCoinStatus.do");
 		url = url + "?altIds=" + ids + "&targetStatus=" + status;
@@ -340,27 +352,26 @@
 				           		</div>			
 				           		
 								
-								
-					           <div class="btn-group pull-right" style="vertical-align: top;">
-									<div class="controls">
-					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="reInitAnnCoins();">Seek New Coins</button>
-				                  	</div>
-					           </div>
-					           
-								<div class="btn-group pull-right ">
-									<div class="controls" >
-										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
-										<button type="button"  ${editable ? "class='btn blue' " : "class='btn blue'  disabled='disabled'" } onclick="updateSelecedtInfo();" style="vertical-align: top;" >Update Info</button>
-										</span>
-									</div>
-								</div>
-								
+								<!--  -->
 								<div class="btn-group pull-right" style="vertical-align: top;">
 									<div class="controls">
 					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="changeStatus(11);">Watch</button>
 				                  	</div>
 					           	</div>
-								
+					            <div class="btn-group pull-right" style="vertical-align: top;">
+									<div class="controls">
+										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
+					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="reInitAnnCoins();">Seek</button>
+					                  	</span>
+				                  	</div>
+					            </div>
+							    <div class="btn-group pull-right ">
+									<div class="controls" >
+										<!-- <span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; "> -->
+										<button type="button"  ${editable ? "class='btn blue' " : "class='btn blue'  disabled='disabled'" } onclick="updateSelecedtInfo();" style="vertical-align: top;" >Update</button>
+										<!-- </span> -->
+									</div>
+								</div>
 								<div class="btn-group pull-right" style="vertical-align: top;">
 									<div class="controls" >
 										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
@@ -368,14 +379,13 @@
 					                  	</span>
 				                  	</div>
 					           	</div>
-					           
-					           <div class="btn-group pull-right" style="vertical-align: top;">
+					            <!-- <div class="btn-group pull-right" style="vertical-align: top;">
 									<div class="controls">
 										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
 										   <button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="updateCoins();">Update All</button>
 										</span>
 				                  	</div>
-					           </div>
+					            </div> -->
 					           
 							</div>
 							
@@ -447,7 +457,7 @@
 									
 									<tbody>
 										<c:forEach var="ann" items="${anns }">
-											<tr class="odd gradeX" objid="${ann.id }" title="${ann.title }" onclick="showTopicTitle(this);">
+											<tr class="odd gradeX" objid="${ann.id }" title="TID[${ann.topicId }] ${ann.title }" onclick="showTopicTitle(this);">
 	                                         	
 	                                         	<td ><a onclick="clickTopicLink(${ann.topicId });" target="_blank" > Ann </a></td>
 	                                         	
@@ -535,8 +545,6 @@
 										<li><a>Total ${totalCount } Records</a></li>
 									</ul>
 								</div>
-								
-								
                                 
 							</div>
 						</div>

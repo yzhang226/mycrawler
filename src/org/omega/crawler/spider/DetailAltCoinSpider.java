@@ -105,7 +105,9 @@ public class DetailAltCoinSpider extends WebCrawler {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 		String pdate = sdf.format(alt.getPublishDate());
 		
-		File htmlPath = new File(Constants.CRAWL_PAGES_FOLDER + "/" + pdate + "-" + alt.getTopicId() + "-" + alt.getName() + "-" + alt.getAbbrName() + ".html");
+		String fileName = pdate + "-" + alt.getTopicId() + "-" + alt.getName() + "-" + alt.getAbbrName() + ".html";
+		fileName = fileName.replace("/", "").replace("\\", "");
+		File htmlPath = new File(Constants.CRAWL_PAGES_FOLDER + "/" + fileName);
 		
 		FileOutputStream fos = null;
 		try {

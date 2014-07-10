@@ -382,10 +382,7 @@
 											<th >createTime</th>
 											
 											<th >launchTime</th>
-											<th >cpuMinable</th>
-											<th >gpuMinable</th>
-											<th >asicMinable</th>
-											<th >interestLevel</th>
+											<th >interest</th>
 											<c:if test="${editable }">
 												<th >isShow</th>
 											</c:if>
@@ -428,18 +425,9 @@
 															</div>
 														</div>
 													</td>
-													<td minable='1'>
-														<i id="${ann.id }_cpuMinable" class='${ann.cpuMinable ? "icon-check" : "icon-check-empty" }' tValue='${ann.cpuMinable ? 1 : 0 }'></i>
-													</td>
-													<td minable='1'>
-														<i id="${ann.id }_gpuMinable" class='${ann.gpuMinable ? "icon-check" : "icon-check-empty" }' tValue='${ann.gpuMinable ? 1 : 0 }'></i>
-													</td>
-													<td minable='1'>
-														<i id="${ann.id }_asicMinable" class='${ann.asicMinable ? "icon-check" : "icon-check-empty" }' tValue='${ann.asicMinable ? 1 : 0 }'></i>
-													</td>
 													
 	                                         		<td> 
-														<select id="${ann.id }_interestLevel" style="width: 50px" class="span5 m-wrap" data-placeholder="Choose a Category" tabindex="1">
+														<select id="${ann.id }_interest" style="width: 50px" class="span5 m-wrap" data-placeholder="Choose a Category" tabindex="1">
 														<c:forEach begin="0" end="10" var="i">
 															<option value="${i }" ${i == ann.interestLevel ? "selected" : "" }>${i }</option>
 														</c:forEach>

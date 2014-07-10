@@ -2,6 +2,8 @@ package org.omega.crawler.test;
 
 import java.math.BigDecimal;
 
+import org.omega.crawler.common.Utils;
+
 public class Misc4Test {
 
 	public static void main(String[] args) {
@@ -22,6 +24,12 @@ public class Misc4Test {
 		
 		byte bx = (byte) 129;
 		System.out.println(bx);
+		
+		System.out.println(Integer.MAX_VALUE);
+		System.out.println(Long.MAX_VALUE);
+		
+		System.out.println(Utils.UNIT_BILLION);
+		System.out.println(Utils.UNIT_TRILLION);
 		
 	}
 	

@@ -1,16 +1,10 @@
 package org.omega.crawler.common;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -21,7 +15,6 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.htmlcleaner.HtmlCleaner;
@@ -32,8 +25,6 @@ import org.omega.crawler.bean.AltCoinBean;
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.fetcher.PageFetchResult;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
-import edu.uci.ics.crawler4j.parser.HtmlParseData;
-import edu.uci.ics.crawler4j.parser.ParseData;
 import edu.uci.ics.crawler4j.url.URLCanonicalizer;
 import edu.uci.ics.crawler4j.url.WebURL;
 
@@ -56,6 +47,19 @@ public final class Utils {
 	
 	public static final String DATE_FORMAT_FULL = "yyyyMMddHHmmss";
 	public static final String DATE_FORMAT_SHORT = "yyMMddHH";
+	
+	public static final int DAYS_YEAR = 365;
+	public static final int DAYS_MONTH = 30;
+	public static final int DAYS_WEEK = 7;
+	
+	/*
+	 * Integer.MAX_VALUE 2, 147, 483, 647
+	 * Long.MAX_VALUE    9223372036854775807
+	 */
+	public static final int UNIT_KILO = 1000;
+	public static final int UNIT_MILLION = 1000 * UNIT_KILO;
+	public static final int UNIT_BILLION = 1000 * UNIT_MILLION;
+	public static final long UNIT_TRILLION = 1000l * UNIT_BILLION;
 	
 	public static final List<String> SQL_OPERATORS = Arrays.asList("=", ">", "<", "between", "like", "in", "<>", ">=", "<=");
 	
@@ -106,17 +110,17 @@ public final class Utils {
 		}
 		String txt = "";
 		Double a = n.doubleValue();
-		if (a >= 1000000000000l) {
-			Double b = a/1000000000000.0;
+		if (a >= UNIT_TRILLION) {
+			Double b = Arith.divide(a, UNIT_TRILLION);
 			txt = isInteger(b) ? b.intValue() + "T" : String.format("%1$.2fT", b);
-		} else if (a >= 1000000000) {
-			Double b = a/1000000000.0;
+		} else if (a >= UNIT_BILLION) {
+			Double b = Arith.divide(a, UNIT_BILLION);
 			txt = isInteger(b) ? b.intValue() + "B" : String.format("%1$.2fB", b);
-		} else if (a >= 1000000) {
-			Double b = a/1000000.0;
+		} else if (a >= UNIT_MILLION) {
+			Double b = Arith.divide(a, UNIT_MILLION);
 			txt = isInteger(b) ? b.intValue() + "M" : String.format("%1$.2fM", b);
-		} else if (a >= 1000) {
-			Double b = a/1000.0;
+		} else if (a >= UNIT_KILO) {
+			Double b = Arith.divide(a, UNIT_KILO);
 			txt = isInteger(b) ? b.intValue() + "K" : String.format("%1$.2fK", b);
 		} else {
 			txt = isInteger(a) ? a.intValue() + "" : String.format("%1$.2f", a);
@@ -136,14 +140,17 @@ public final class Utils {
 		String txt = "";
 		Double a = n.doubleValue();
 		
-		if (a >= 365) {
-			txt = isInteger(a) ? a.intValue() + "y" : String.format("%1$.1fy", new Double(a/365.0));
-		} else if (a >= 30) {
-			txt = isInteger(a) ? a.intValue() + "m" : String.format("%1$.1fm", new Double(a/30.0));
-		} else if (a >= 7) {
-			txt = isInteger(a) ? a.intValue() + "w" : String.format("%1$.1fw", new Double(a/7.0));
+		if (a >= DAYS_YEAR) {
+			Double b = Arith.divide(a, DAYS_YEAR);
+			txt = isInteger(b) ? b.intValue() + "y" : String.format("%1$.2fy", b);
+		} else if (a >= DAYS_MONTH) {
+			Double b = Arith.divide(a, DAYS_MONTH);
+			txt = isInteger(b) ? b.intValue() + "m" : String.format("%1$.2fm", b);
+		} else if (a >= DAYS_WEEK) {
+			Double b = Arith.divide(a, DAYS_WEEK);
+			txt = isInteger(b) ? b.intValue() + "w" : String.format("%1$.2fw", b);
 		} else {
-			txt = isInteger(a) ? a.intValue() + "" : String.format("%1$.1f", n);
+			txt = isInteger(a) ? a.intValue() + "" : String.format("%1$.2f", n);
 		}
 		
 		return txt;

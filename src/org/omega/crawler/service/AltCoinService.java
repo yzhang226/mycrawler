@@ -59,6 +59,20 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 		return page.getResult();
 	}
 	
+	public List<AltCoinBean> findCoinsInDashboard(Page<AltCoinBean> page, String condition) {
+		String hql = "from AltCoinBean ann";
+		
+		hql = appendActiveStatus(hql, "ann");
+		if (Utils.isNotEmpty(condition)) hql = hql + " and " + condition;
+		hql = Utils.getOrderHql(page, hql, "ann");
+		
+		find(page, hql);
+		
+		return page.getResult();
+	}
+	
+	
+	
 	public List<AltCoinBean> findAnnCoinsByReply(Page<AltCoinBean> page) {
 		String hql = "from AltCoinBean ann";
 		

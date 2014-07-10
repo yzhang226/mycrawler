@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.omega.crawler.bean.AltCoinBean;
 import org.omega.crawler.bean.AltCoinWatchListBean;
 import org.omega.crawler.bean.BCTTopicBean;
+import org.omega.crawler.common.Arith;
 import org.omega.crawler.common.Page;
 import org.omega.crawler.common.Utils;
 import org.omega.crawler.service.AltCoinService;
@@ -225,6 +226,7 @@ public class BitcointalkController {
 					attrValue = row[f];
 					try {
 						BeanUtils.setProperty(alt, attrName, attrValue);
+//						log.info("Set Property[" + attrName + "] to value[" + row[f] + "].");
 					} catch (Exception e) {
 						log.error("Set Property[" + attrName + "] to value[" + row[f] + "] error.", e);
 					}
@@ -237,19 +239,27 @@ public class BitcointalkController {
 				}
 				
 				if (alt.getPreMined() == null && Utils.isPositive(alt.getMinedPercentage()) && Utils.isPositive(alt.getTotalAmount())) {
-					alt.setPreMined((long) (alt.getTotalAmount()*alt.getMinedPercentage()));
+//					alt.setPreMined( (long) (alt.getTotalAmount()*alt.getMinedPercentage()));
+					alt.setPreMined( (long) Arith.multiply(alt.getTotalAmount(), alt.getMinedPercentage()) );
 				}
 				
 				if (alt.getMinedPercentage() == null && Utils.isPositive(alt.getPreMined()) && Utils.isPositive(alt.getTotalAmount())) {
-					alt.setMinedPercentage((double) (alt.getPreMined()/alt.getTotalAmount())); 
+//					alt.setMinedPercentage((double) (alt.getPreMined()/alt.getTotalAmount())); 
+					alt.setMinedPercentage( Arith.divide(alt.getPreMined(), alt.getTotalAmount()) );
 				}
 				
 				if (alt.getPowDays() == null &&  Utils.isPositive(alt.getBlockTime()) && Utils.isPositive(alt.getPowHeight())) {
-					alt.setPowDays( ((double) alt.getBlockTime() * alt.getPowHeight())/ONE_DAY_SECONDS );
+//					alt.setPowDays( ((double) alt.getBlockTime() * alt.getPowHeight())/ONE_DAY_SECONDS );
+					alt.setPowDays( Arith.divide(Arith.multiply(alt.getPowHeight(), alt.getBlockTime()), ONE_DAY_SECONDS) );
 				}
 				
 				if (alt.getPowHeight() == null &&  Utils.isPositive(alt.getBlockTime()) && Utils.isPositive(alt.getPowDays())) {
-					alt.setPowHeight( (int) ((alt.getPowDays()*ONE_DAY_SECONDS)/alt.getBlockTime()) );
+//					alt.setPowHeight( (int) ((alt.getPowDays()*ONE_DAY_SECONDS)/alt.getBlockTime()) );
+					alt.setPowHeight( (int) Arith.divide(Arith.multiply(alt.getPowDays(), ONE_DAY_SECONDS), alt.getBlockTime()) );
+				}
+				
+				if (Utils.isNotEmpty(alt.getAbbrName())) {
+					alt.setAbbrName(alt.getAbbrName().toUpperCase());
 				}
 				
 				altCoinService.saveOrUpdate(alt);
@@ -363,13 +373,13 @@ public class BitcointalkController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/showCoins4Board.do")
 	@ResponseBody
-	public Page<AltCoinBean> showCoins4Board(Model model, HttpServletRequest request, 
-										  HttpServletResponse response) {
+	public Page<AltCoinBean> showCoins4Board(HttpServletRequest request, 
+											 @RequestParam(required=false) String condition) {
 		Page<AltCoinBean> params =  null;
 		try {
 			params = (Page<AltCoinBean>) request.getAttribute("params");
 			
-			altCoinService.findAnnCoins(params);
+			altCoinService.findCoinsInDashboard(params, condition);
 		} catch (Throwable e) {
 			log.error("showCoins4Board error.", e);
 		}
