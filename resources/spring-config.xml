@@ -91,6 +91,7 @@
 
 	<aop:config proxy-target-class="true">
 		<aop:advisor pointcut="execution(* org.omega.crawler.service.*Service.*(..))" advice-ref="txAdvice"/>
+		<aop:advisor pointcut="execution(* org.omega.trade.service.*Service.*(..))" advice-ref="txAdvice"/>
 	</aop:config>
 
 	<tx:advice id="txAdvice"> 
@@ -107,6 +108,9 @@
     
     <!-- auto load the calsses -->
  	<context:component-scan base-package="org.omega.crawler">
+    	<context:include-filter type="regex" expression=".*Service"/>
+	</context:component-scan>
+	<context:component-scan base-package="org.omega.trade">
     	<context:include-filter type="regex" expression=".*Service"/>
 	</context:component-scan>
 

@@ -20,7 +20,10 @@ import org.apache.commons.logging.LogFactory;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.htmlcleaner.XPatherException;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.omega.crawler.bean.AltCoinBean;
+import org.omega.trade.entity.WatchListItem;
 
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.fetcher.PageFetchResult;
@@ -549,6 +552,39 @@ public final class Utils {
 		return 99;
 	}
 	
+	public static DateTime getLastFiveMinuteTime(long milliSecs) {
+		DateTime curr = new DateTime(milliSecs);
+		int currMinute = curr.getMinuteOfHour();
+		int mod = currMinute % 5 ;
+		int left = mod == 0 ? 0 : 5 - mod;
+		return curr.withSecondOfMinute(0).withMillisOfSecond(0).plusMinutes(left);
+	}
+	
+	public static DateTime getSecondFiveMinuteTime(long milliSecs) {
+		DateTime curr = new DateTime(milliSecs);
+		int currMinute = curr.getMinuteOfHour();
+		int mod = currMinute % 5 ;
+		int left = mod == 0 ? 5 : mod;
+		return curr.withSecondOfMinute(0).withMillisOfSecond(0).minusMinutes(left);
+	}
+	
+	public static DateTime getLastFiveMinuteTime() {
+		DateTime curr = new DateTime(DateTimeZone.UTC);
+		return getLastFiveMinuteTime(curr.getMillis());
+	}
+	
+	public static DateTime getSecondFiveMinuteTime() {
+		DateTime curr = new DateTime(DateTimeZone.UTC);
+		return getSecondFiveMinuteTime(curr.getMillis());
+	}
+	
+	public static String getMarketTradeTable(WatchListItem item) {
+		return new StringBuilder("trade_")
+		.append(item.getOperator().toLowerCase()).append("_")
+		.append(item.getExchangeSymbol().toLowerCase()).append("_")
+		.append(item.getWatchedSymbol().toLowerCase()).toString();
+	}
+	
 	public static void main(String[] args) throws ParseException, Exception {
 		System.out.println(encryptWithMd5("ubi6La5z"));
 		String text = "February 17, 2014, 06:16:06 PM";
@@ -586,6 +622,13 @@ public final class Utils {
 		String condition = "status = 0";
 		System.out.println(appendSql(hql, condition));
 		
+		System.out.println(new Date());
+		System.out.println(getLastFiveMinuteTime());
+		System.out.println(getSecondFiveMinuteTime());
+		
+		
+		System.out.println(getLastFiveMinuteTime(1404995649540l));
+		System.out.println(getSecondFiveMinuteTime(1404995649540l));
 		
 	}
 	

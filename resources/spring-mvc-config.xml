@@ -88,6 +88,9 @@
     <context:component-scan base-package="org.omega.crawler">
     	<context:include-filter type="regex" expression=".*Controller"/>
 	</context:component-scan>
+	<context:component-scan base-package="org.omega.trade">
+    	<context:include-filter type="regex" expression=".*Controller"/>
+	</context:component-scan>
 
 <!--     <mvc:annotation-driven conversion-service="conversionService"/> -->
 

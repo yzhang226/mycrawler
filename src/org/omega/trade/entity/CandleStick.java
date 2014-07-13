@@ -7,7 +7,23 @@ public class CandleStick {
 	private double high;
 	private double low;
 	private double close;
-	private double volume;
+	private double watchedVolume;
+	private double exchangeVolume;
+	
+	public CandleStick() {
+		
+	}
+	
+	public CandleStick(long date, double open, double high, double low, double close, double watchedVolume, double exchangeVolume) {
+		this.date = date;
+		this.open = open;
+		this.high = high;
+		this.low = low;
+		this.close = close;
+		this.watchedVolume = watchedVolume;
+		this.exchangeVolume = exchangeVolume;
+	}
+
 	public long getDate() {
 		return date;
 	}
@@ -38,11 +54,21 @@ public class CandleStick {
 	public void setClose(double close) {
 		this.close = close;
 	}
-	public double getVolume() {
-		return volume;
+
+	public double getWatchedVolume() {
+		return watchedVolume;
 	}
-	public void setVolume(double volume) {
-		this.volume = volume;
+
+	public void setWatchedVolume(double watchedVolume) {
+		this.watchedVolume = watchedVolume;
+	}
+
+	public double getExchangeVolume() {
+		return exchangeVolume;
+	}
+
+	public void setExchangeVolume(double exchangeVolume) {
+		this.exchangeVolume = exchangeVolume;
 	}
 	
 }
