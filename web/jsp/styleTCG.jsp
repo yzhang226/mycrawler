@@ -351,7 +351,7 @@
 						<li><a id="bread" href="<%=request.getContextPath()%>/jsp/bitcointalk/showinterestcoins.do">Interest Coins</a> /</li>
 						<li><a id="bread" href="<%=request.getContextPath()%>/jsp/bitcointalk/showanncoins.do">Alt Coins</a> /</li>
 <%-- 						<li><a id="bread" href="<%=request.getContextPath()%>/jsp/bitcointalk/showtalktopics.do">Alt Coins Topic</a></li> --%>
-						<li><a id="bread" href="<%=request.getContextPath()%>/jsp/bitcointalk/toDiagramPage.do">Alt Coins Topic</a></li>
+						<li><a id="bread" href="<%=request.getContextPath()%>/jsp/diagram/toDiagramPage.do">Diagram</a></li>
 					</ul>
 				</div>
 			</div>

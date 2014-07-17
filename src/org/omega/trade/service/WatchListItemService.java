@@ -5,7 +5,7 @@ import org.omega.crawler.common.SimpleHibernateTemplate;
 import org.omega.trade.entity.WatchListItem;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class MarketTradeService extends SimpleHibernateTemplate<WatchListItem, Long> {
+public class WatchListItemService extends SimpleHibernateTemplate<WatchListItem, Integer> {
 
 	@Autowired
 	public void setSessionFactory(SessionFactory sessionFactory) {

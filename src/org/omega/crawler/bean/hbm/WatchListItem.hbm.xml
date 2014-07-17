@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.omega.trade.entity.WatchListItem" table="watch_list_item" dynamic-insert="true" dynamic-update="true">
+        <id name="id" type="integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="status" type="byte">
+            <column name="status" />
+        </property>
+       
+        <property name="operator" type="string">
+            <column name="operator" />
+        </property>
+        <property name="watchedSymbol" type="string">
+            <column name="watched_symbol" />
+        </property>
+        <property name="exchangeSymbol" type="string">
+            <column name="exchange_symbol" />
+        </property>
+        <property name="marketId" type="integer">
+            <column name="market_id" />
+        </property>
+        
+    </class>
+</hibernate-mapping>

@@ -552,30 +552,55 @@ public final class Utils {
 		return 99;
 	}
 	
-	public static DateTime getLastFiveMinuteTime(long milliSecs) {
-		DateTime curr = new DateTime(milliSecs);
-		int currMinute = curr.getMinuteOfHour();
-		int mod = currMinute % 5 ;
-		int left = mod == 0 ? 0 : 5 - mod;
-		return curr.withSecondOfMinute(0).withMillisOfSecond(0).plusMinutes(left);
+
+	public static long getOneMinuteRangeEnd(long baseMillis) {
+		return getRangeEndMillis(baseMillis, 1);
 	}
 	
-	public static DateTime getSecondFiveMinuteTime(long milliSecs) {
-		DateTime curr = new DateTime(milliSecs);
-		int currMinute = curr.getMinuteOfHour();
-		int mod = currMinute % 5 ;
-		int left = mod == 0 ? 5 : mod;
-		return curr.withSecondOfMinute(0).withMillisOfSecond(0).minusMinutes(left);
+	public static long getOneMinuteRangeStart(long baseMillis) {
+		return getRangeStartMillis(baseMillis, 1);
 	}
 	
-	public static DateTime getLastFiveMinuteTime() {
-		DateTime curr = new DateTime(DateTimeZone.UTC);
-		return getLastFiveMinuteTime(curr.getMillis());
+	public static long getRangeEndMillis(long baseMillis, int interval) {
+		DateTime base = new DateTime(baseMillis, DateTimeZone.UTC);// 
+		if (interval == 1) {
+			int baseSec = base.getSecondOfMinute();
+			if (baseSec != 0) {
+				base = base.withMillisOfSecond(0).plusSeconds(60 - baseSec);
+			}
+		} else {
+			int baseMinute = base.getMinuteOfHour();
+			if (baseMinute != 0) {
+				int mod = baseMinute % interval;
+				int left = mod == 0 ? 0 : interval - mod;
+				base = base.withSecondOfMinute(0).withMillisOfSecond(0).plusMinutes(left);
+			}
+		}
+		
+		return base.getMillis();
 	}
 	
-	public static DateTime getSecondFiveMinuteTime() {
-		DateTime curr = new DateTime(DateTimeZone.UTC);
-		return getSecondFiveMinuteTime(curr.getMillis());
+	public static long getRangeStartMillis(long baseMillis, int interval) {
+		DateTime base = new DateTime(baseMillis, DateTimeZone.UTC);// 
+		if (interval == 1) {
+			int baseSec = base.getSecondOfMinute();
+			if (baseSec == 0) {
+				base = base.withMillisOfSecond(0).minusMinutes(1);
+			} else {
+				base = base.withMillisOfSecond(0).minusSeconds(baseSec);
+			}
+		} else {
+			int baseMinute = base.getMinuteOfHour();
+			if (baseMinute == 0) {
+				base = base.withSecondOfMinute(0).withMillisOfSecond(0).minusMinutes(interval);
+			} else {
+				int mod = baseMinute % interval;
+				int left = mod == 0 ? 0 : interval - mod;
+				base = base.withSecondOfMinute(0).withMillisOfSecond(0).minusMinutes(left);
+			}
+		}
+		
+		return base.getMillis();
 	}
 	
 	public static String getMarketTradeTable(WatchListItem item) {
@@ -623,12 +648,12 @@ public final class Utils {
 		System.out.println(appendSql(hql, condition));
 		
 		System.out.println(new Date());
-		System.out.println(getLastFiveMinuteTime());
-		System.out.println(getSecondFiveMinuteTime());
+//		System.out.println(getLastFiveMinuteTime());
+//		System.out.println(getSecondFiveMinuteTime());
 		
 		
-		System.out.println(getLastFiveMinuteTime(1404995649540l));
-		System.out.println(getSecondFiveMinuteTime(1404995649540l));
+//		System.out.println(getLastFiveMinuteTime(1404995649540l));
+//		System.out.println(getSecondFiveMinuteTime(1404995649540l));
 		
 	}
 	

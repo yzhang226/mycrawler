@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.omega.trade.entity.TradeStatistics" table="trade_statistics_one_minute" dynamic-insert="true" dynamic-update="true">
+        
+        <composite-id>
+            <key-property name="itemId" column="item_id" type="integer"></key-property>
+            <key-property name="startTime" column="start_time" type="long"></key-property>
+             <key-property name="endTime" column="end_time" type="long"></key-property>
+        </composite-id>
+        
+        <property name="open" type="double">
+            <column name="open" />
+        </property>
+        <property name="high" type="double">
+            <column name="high" />
+        </property>
+        <property name="low" type="double">
+            <column name="low" />
+        </property>
+        <property name="close" type="double">
+            <column name="close" />
+        </property>
+        <property name="watchedVol" type="double">
+            <column name="watched_vol" />
+        </property>
+        <property name="exchangeVol" type="double">
+            <column name="exchange_vol" />
+        </property>
+        <property name="count" type="integer">
+            <column name="count" />
+        </property>
+        
+    </class>
+</hibernate-mapping>
