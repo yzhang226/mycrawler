@@ -127,12 +127,61 @@
 		});
 	}
 	
-	var selectedOperator = null, selectedSymbol = null, selectedExchange = 'BTC';
+	function contains(arr, obj) {
+		$.each(arr, function(n, value) {
+	           if (value == obj) {
+	        	   return true;
+	           }
+        });
+		return false;
+	}
+	
+	var selectedOperator = null, selectedSymbol = null, selectedExSymbol = 'BTC';
 	function clickOperator(op, divId) {
 		selectedOperator = op;
-		if (selectedSymbol != null) {
-			drawBySymbol(divId);
-		}
+		
+		// 
+		var url = '<%=request.getContextPath() %>/jsp/diagram/getActiveWatchedAndExSymbols.do?operator='+ selectedOperator;
+		
+		$.getJSON(url, function(data) {
+			
+			$('#watchedSymbol').each(function(index, elem){
+				elem = $(elem);
+				if (contains(data, elem.text())) {
+					elem.removeClass("disabled");
+					elem.addClass("active");
+					elem.removeAttr('disabled');
+				} else {
+					elem.removeClass("active");
+					elem.addClass("disabled");
+					//  disabled = 'true' 'disabled'
+					
+					
+					try{
+						alert(elem.attr('disabled'));
+						elem.attr('disabled', 'disabled');
+					}catch(error){
+						alert(error);
+						throw error;
+					}finally{
+					} 
+					
+				}
+			});
+			
+			if (selectedSymbol != null) {
+				if (contains(data, selectedSymbol) && contains(data, selectedExSymbol) ) {
+					drawBySymbol(divId);
+				} else {
+					$('#message01').html('At Operator[' + selectedOperator + '], we do not find Symbol[' + selectedSymbol + '].');
+				}
+			} else {
+				$('#message01').html('At Operator[' + selectedOperator + '], Please select existed Symbol.');
+			}
+			
+		});
+		
+		
 	}
 	
 	function clickSymbol(symbol, divId) {
@@ -143,13 +192,13 @@
 	}
 	
 	function drawBySymbol(divId) {
-		var url = '<%=request.getContextPath() %>/jsp/diagram/getStatisticsBySymbol.do?operator='+ selectedOperator +
-		'&symbol=' + selectedSymbol + '&exchange=' + selectedExchange; 
+		var url = '<%=request.getContextPath() %>/jsp/diagram/getStatisticsBySymbol.do?operator='+ selectedOperator;
+		url = url + '&symbol=' + selectedSymbol + '&exchange=' + selectedExSymbol; 
 		$.getJSON(url, function(data) {
 			if (data.length == 0) {
 				alert("This Item do not exsit!");
 			} else {
-				drawWithOperator(selectedOperator, selectedSymbol, selectedExchange, divId, data);
+				drawWithOperator(selectedOperator, selectedSymbol, selectedExSymbol, divId, data);
 			}
 			
 		});
@@ -186,11 +235,12 @@
 							</ul>
 						</div>
 						<br>
+						
 						<div class="btn-group caption ">
 							<span class="label label-success">Operators: </span>
 							<c:forEach var="op" items="${operators }">
 								 <span class="badge badge-success"> 
-								 	<a href="javascript:clickOperator('${op }', 'container');">${op }</a> 
+								 	<a id='operator' href="javascript:clickOperator('${op }', 'container');">${op }</a>
 								 </span> &nbsp;&nbsp;
 							</c:forEach>
 							<br>
@@ -198,17 +248,24 @@
 							<c:forEach var="sy" items="${wathcedSymbols }"  varStatus="vs">
 								clickSymbol
 								 <span class="badge badge-warning">
-									<a href="javascript:clickSymbol('${sy }', 'container');">${sy }</a> 
+								 <!-- href="javascript:clickSymbol('${sy }', 'container');"  -->
+									<button type="button" class="btn btn-large btn-primary" id='watchedSymbol' onclick="clickSymbol('${sy }', 'container');">${sy }</button>
 								 </span> &nbsp;&nbsp;
 								 <c:if test="${vs.count % 10 == 0 }"> <br> <span class="label" style="background-color: white;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> </c:if>
 							</c:forEach>
 							<br>
 							<span class="label label-success">Exchange: </span>
 							<c:forEach var="ex" items="${exchangeSymbols }" >
-								<span class="badge badge-info">${ex }</span>&nbsp;&nbsp;
+								<span class="badge badge-info">
+									<a id='exSymbol' href="javascript:clickExSymbol('${ex }', 'container');">${ex }</a> 
+								</span>&nbsp;&nbsp;
 							</c:forEach>
 						</div>
+						<br>
 						
+						<div class="btn-group caption ">
+							 <span id="message01" style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; "></span>
+						</div>
 						
 					</div>
 					

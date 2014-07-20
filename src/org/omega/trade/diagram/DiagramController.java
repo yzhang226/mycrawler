@@ -7,12 +7,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.omega.crawler.common.Constants;
 import org.omega.crawler.common.Utils;
-import org.omega.trade.entity.CandleStick;
 import org.omega.trade.entity.WatchListItem;
 import org.omega.trade.service.MarketTradeService;
 import org.omega.trade.service.TradeStatisticsService;
@@ -28,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/jsp/diagram")
 public class DiagramController {
 	
-	private static final Log log = LogFactory.getLog(DiagramController.class);
+//	private static final Log log = LogFactory.getLog(DiagramController.class);
 	
 	@Autowired
 	private MarketTradeService marketTradeService;
@@ -45,11 +43,11 @@ public class DiagramController {
 	public String toDiagramPage(Model model, HttpServletRequest request ) {
 		String jsp = "diagram/diagram";
 		
-		List<WatchListItem> items = watchListItemService.find("from WatchListItem where status = 0");
+		List<WatchListItem> items = watchListItemService.find("from WatchListItem where status = ?", Constants.STATUS_ACTIVE);
 		
 		List<String> operators = watchListItemService.findSql("select distinct operator from market_summary");
-		List<String> wathcedSymbols = watchListItemService.find("select distinct watchedSymbol from WatchListItem where status = 0");
-		List<String> exchangeSymbols = watchListItemService.find("select distinct exchangeSymbol from WatchListItem where status = 0");
+		List<String> wathcedSymbols = watchListItemService.find("select distinct watchedSymbol from WatchListItem where status = ?", Constants.STATUS_ACTIVE);
+		List<String> exchangeSymbols = watchListItemService.find("select distinct exchangeSymbol from WatchListItem where status = ?", Constants.STATUS_ACTIVE);
 		
 		model.addAttribute("its", items);
 		model.addAttribute("operators", operators);
@@ -64,8 +62,6 @@ public class DiagramController {
 	public Object[][] fetchTradeData(@RequestParam String operator, 
 											@RequestParam String watchedSymbol, 
 											@RequestParam String exchangeSymbol) {
-		List<CandleStick> sticks = new ArrayList<>();
-		
 		WatchListItem item = new WatchListItem(operator, watchedSymbol, exchangeSymbol);
 		String table = Utils.getMarketTradeTable(item);
 		
@@ -208,7 +204,6 @@ public class DiagramController {
 	public List<Object> getStatisticsBySymbol(@RequestParam String operator, 
 											  @RequestParam String symbol,
 											  @RequestParam String exchange) {
-		// 20_mintpal_btc_uro
 		String hql = "from WatchListItem where operator = ? and watchedSymbol = ? and exchangeSymbol = ?";
 		WatchListItem item = (WatchListItem) watchListItemService.findUnique(hql, operator, symbol, exchange);
 		if (item == null) {
@@ -220,6 +215,35 @@ public class DiagramController {
 		return resu;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/getActiveOperatorsAndExSymbols.do")
+	@ResponseBody
+	public List<String> getActiveOperatorsAndExSymbols(@RequestParam String symbol) {
+		List<String> operators = watchListItemService.find("select distinct operator from WatchListItem where status = ? and watchedSymbol = ? ", Constants.STATUS_ACTIVE, symbol);
+		List<String> exchangeSymbols = watchListItemService.find("select distinct exchangeSymbol from WatchListItem where status = ? and watchedSymbol = ? ", Constants.STATUS_ACTIVE, symbol);
+		
+		List<String> resu = new ArrayList<>(operators.size()+exchangeSymbols.size());
+		
+		resu.addAll(operators);
+		resu.addAll(exchangeSymbols);
+		
+		return resu;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/getActiveWatchedAndExSymbols.do")
+	@ResponseBody
+	public List<String> getActiveWatchedAndExSymbols(@RequestParam String operator) {
+		List<String> watchedSymbols = watchListItemService.find("select distinct watchedSymbol from WatchListItem where status = ? and operator = ? ", Constants.STATUS_ACTIVE, operator);
+		List<String> exchangeSymbols = watchListItemService.find("select distinct exchangeSymbol from WatchListItem where status = ? and operator = ? ", Constants.STATUS_ACTIVE, operator);
+		
+		List<String> resu = new ArrayList<>(watchedSymbols.size()+exchangeSymbols.size());
+		
+		resu.addAll(watchedSymbols);
+		resu.addAll(exchangeSymbols);
+		
+		return resu;
+	}
 	
 	
 }

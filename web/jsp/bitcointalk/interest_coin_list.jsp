@@ -319,19 +319,6 @@
 									</div>
 								</div>
 								
-								<div class="btn-group pull-right ">
-									<div class="controls" style="font-family: 'Segoe UI',Helvetica,Arial,sans-serif;line-height: 20px;font-size: 14px;  margin-bottom: 0px;">
-									
-						                
-									  	<span style="font-size: 16px;vertical-align: middle; margin-bottom: 0px;"> Interest : </span>
-									  	
-									  	<select id="interest" name=interest class="span5 m-wrap" data-placeholder="Choose a Category"  style="width: 190px;vertical-align: middle; margin-bottom: 0px;" tabindex="1">
-											<c:forEach begin="0" end="10" var="i">
-												<option value="${i }" ${i == interest ? "selected" : "" }>${i }</option>
-											</c:forEach>
-									  	</select>
-				                  	</div>
-								</div>
 								
 								
 							</div>
@@ -344,10 +331,6 @@
 											<th>Create Time</th>
 											
 											<th >Launch</th>
-											<th >CPU</th>
-											<th >GPU</th>
-											<th >ASIC</th>
-											<th >Interest</th>
 											<c:if test="${editable }">
 												<th >Is Show</th>
 											</c:if>
@@ -382,7 +365,6 @@
 											<th >createTime</th>
 											
 											<th >launchTime</th>
-											<th >interest</th>
 											<c:if test="${editable }">
 												<th >isShow</th>
 											</c:if>
@@ -426,13 +408,6 @@
 														</div>
 													</td>
 													
-	                                         		<td> 
-														<select id="${ann.id }_interest" style="width: 50px" class="span5 m-wrap" data-placeholder="Choose a Category" tabindex="1">
-														<c:forEach begin="0" end="10" var="i">
-															<option value="${i }" ${i == ann.interestLevel ? "selected" : "" }>${i }</option>
-														</c:forEach>
-		                                         		</select> 
-													</td>
 													<td isShow='1'>
 														<i id="${ann.id }_isShow" class='${ann.isShow ? "icon-check" : "icon-check-empty" }' tValue='${ann.isShow ? 1 : 0 }'></i>
 													</td>
@@ -484,17 +459,7 @@
 	                                         	</c:if>
 	                                         	<c:if test="${!editable }">
 	                                         	
-										<%-- 
-									var fields = new Array("countDown","cpuMinable","gpuMinable","asicMinable","interestLevel","isShow","algo",
-						   "proof","name","abbrName","totalAmount","blockReward","blockTime","halfBlocks","halfDays",
-						   "difficultyAdjust","preMined","minedPercentage");
-									 --%>
-													
 													<td>${ann.launchTime }</td>
-													<td><i class='${ann.cpuMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
-													<td><i class='${ann.gpuMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
-													<td><i class='${ann.asicMinable ? "icon-check" : "icon-check-empty" }' ></i></td>
-													<td>${ann.interestLevel }</td>
 													
 		                                         	<td>${ann.algo }</td>
 													<td>${ann.proof }</td>

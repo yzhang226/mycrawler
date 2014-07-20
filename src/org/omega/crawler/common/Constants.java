@@ -18,5 +18,9 @@ public final class Constants {
 	
 	public static final String TIMEZONE_SHANGHAI = "Asia/Shanghai";
 	
+	public static final byte STATUS_ACTIVE = 0;
+	public static final byte STATUS_INACTIVE = 1;
+	public static final byte STATUS_WATCHED = 11;
+	
 	
 }
