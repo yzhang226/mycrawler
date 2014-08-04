@@ -1,9 +1,9 @@
 package org.omega.crawler.bean.base;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.omega.crawler.bean.MyTopicBean;
 
 
 public class BaseAltCoinBean implements Serializable {
@@ -23,17 +23,8 @@ public class BaseAltCoinBean implements Serializable {
 	private byte interest;
 	
 	// topic info
-	private String author;
-	private String title;
-	private Integer replies;
-	private Integer views;
-	private String link;
-	private String publishContent;
-	
+	private MyTopicBean myTopic;
 	private Date launchTime;
-	private Timestamp lastPostTime;
-	private Timestamp publishDate;
-	private Timestamp createTime;
 	
 	// coin info
 	private String name;
@@ -59,7 +50,7 @@ public class BaseAltCoinBean implements Serializable {
 	
 	//
 	private String memo;
-	
+
 	public Integer getId() {
 		return id;
 	}
@@ -92,52 +83,12 @@ public class BaseAltCoinBean implements Serializable {
 		this.interest = interest;
 	}
 
-	public String getAuthor() {
-		return author;
+	public MyTopicBean getMyTopic() {
+		return myTopic;
 	}
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
-
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	public Integer getReplies() {
-		return replies;
-	}
-
-	public void setReplies(Integer replies) {
-		this.replies = replies;
-	}
-
-	public Integer getViews() {
-		return views;
-	}
-
-	public void setViews(Integer views) {
-		this.views = views;
-	}
-
-	public String getLink() {
-		return link;
-	}
-
-	public void setLink(String link) {
-		this.link = link;
-	}
-
-	public String getPublishContent() {
-		return publishContent;
-	}
-
-	public void setPublishContent(String publishContent) {
-		this.publishContent = publishContent;
+	public void setMyTopic(MyTopicBean myTopic) {
+		this.myTopic = myTopic;
 	}
 
 	public Date getLaunchTime() {
@@ -146,30 +97,6 @@ public class BaseAltCoinBean implements Serializable {
 
 	public void setLaunchTime(Date launchTime) {
 		this.launchTime = launchTime;
-	}
-
-	public Timestamp getLastPostTime() {
-		return lastPostTime;
-	}
-
-	public void setLastPostTime(Timestamp lastPostTime) {
-		this.lastPostTime = lastPostTime;
-	}
-
-	public Timestamp getPublishDate() {
-		return publishDate;
-	}
-
-	public void setPublishDate(Timestamp publishDate) {
-		this.publishDate = publishDate;
-	}
-
-	public Timestamp getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(Timestamp createTime) {
-		this.createTime = createTime;
 	}
 
 	public String getName() {
@@ -303,21 +230,9 @@ public class BaseAltCoinBean implements Serializable {
 	public String getMemo() {
 		return memo;
 	}
-	
+
 	public void setMemo(String memo) {
 		this.memo = memo;
-	}
-
-	public String toHtml() {
-		StringBuilder sb = new StringBuilder("<tr>");
-		sb.append("<td>").append(null != publishDate ? new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(publishDate) : "").append("</td>");
-		sb.append("<td>").append(title).append("</td>");
-		sb.append("<td>").append(author).append("</td>");
-		sb.append("<td>").append(replies).append("</td>");
-		sb.append("<td>").append(views).append("</td>");
-		sb.append("</tr>\n");
-		
-		return sb.toString();
 	}
 	
 }

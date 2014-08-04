@@ -18,22 +18,29 @@
 	<script src="<%=request.getContextPath() %>/jsp/assets/plugins/highstock/highstock.js"></script>
 	<script src="<%=request.getContextPath() %>/jsp/assets/plugins/highstock/modules/exporting.js"></script>
 	
+	<style type="text/css">
+		.operator {vertical-align: top; margin-bottom: 0px; }
+		.watched-item {vertical-align: top; margin-bottom: 0px; }
+		.ex-symbol {vertical-align: top; margin-bottom: 0px; }
+	</style>
 	
 	<script type="text/javascript">
 	
+	var operators, wathcedSymbols, exSymbols, listedSymbolMap, listedExSymbolMap;
 	jQuery(document).ready(function() {
-		var operator = 'mintpal', watchedSymbol = 'uro', exchangeSymbol = 'btc';
-		<%-- var url = '<%=request.getContextPath() %>/jsp/diagram/fetchTradeData.do?operator='+operator+
-				'&watchedSymbol=' + watchedSymbol + '&exchangeSymbol=' + exchangeSymbol; --%>
 		
-		/* $.getJSON(url, function(data) {
-			drawWithOperator(operator, watchedSymbol, exchangeSymbol, 'container', data);
-		}); */
+		var url = '<%=request.getContextPath() %>/jsp/diagram/getAllInfos.do';
+		$.getJSON(url, function(data) {
+			window.operators = data.operators;
+			window.wathcedSymbols = data.wathcedSymbols;
+			window.exSymbols = data.exSymbols;
+			window.listedSymbolMap = data.listedSymbolMap;
+			window.listedExSymbolMap = data.listedExSymbolMap;
+			
+			var operatorElems = $( "button[class~='operator']" )[0];
+			$(operatorElems).click();
+		});
 		
-		<%-- var url2 = '<%=request.getContextPath() %>/jsp/diagram/getStatisticsByItemId.do?itemId=20'; --%>
-		/* $.getJSON(url2, function(data) {
-			drawWithOperator(operator, watchedSymbol, exchangeSymbol, 'container2', data);
-		}); */
 		
 	});
 	
@@ -43,7 +50,6 @@
 			drawWithOperator(operator, watchedSymbol, exchangeSymbol, divId, data);
 		});
 	}
-	
 	
 	function drawWithOperator(operator, watchedSymbol, exchangeSymbol, divId, data) {
 		var watchedSymbolUp = watchedSymbol.toUpperCase();
@@ -128,11 +134,11 @@
 	}
 	
 	function contains(arr, obj) {
-		$.each(arr, function(n, value) {
-	           if (value == obj) {
-	        	   return true;
-	           }
-        });
+		for (idx in arr) {
+			if (arr[idx] == obj) {
+				return true;
+			}
+		}
 		return false;
 	}
 	
@@ -140,69 +146,92 @@
 	function clickOperator(op, divId) {
 		selectedOperator = op;
 		
-		// 
-		var url = '<%=request.getContextPath() %>/jsp/diagram/getActiveWatchedAndExSymbols.do?operator='+ selectedOperator;
-		
-		$.getJSON(url, function(data) {
-			
-			$('#watchedSymbol').each(function(index, elem){
-				elem = $(elem);
-				if (contains(data, elem.text())) {
-					elem.removeClass("disabled");
-					elem.addClass("active");
-					elem.removeAttr('disabled');
-				} else {
-					elem.removeClass("active");
-					elem.addClass("disabled");
-					//  disabled = 'true' 'disabled'
-					
-					
-					try{
-						alert(elem.attr('disabled'));
-						elem.attr('disabled', 'disabled');
-					}catch(error){
-						alert(error);
-						throw error;
-					}finally{
-					} 
-					
-				}
-			});
-			
-			if (selectedSymbol != null) {
-				if (contains(data, selectedSymbol) && contains(data, selectedExSymbol) ) {
-					drawBySymbol(divId);
-				} else {
-					$('#message01').html('At Operator[' + selectedOperator + '], we do not find Symbol[' + selectedSymbol + '].');
-				}
-			} else {
-				$('#message01').html('At Operator[' + selectedOperator + '], Please select existed Symbol.');
-			}
-			
+		var allWatchedSymbols = $( "button[class~='watched-item']" );// 
+		var watchedSymbols = eval('listedSymbolMap.'+op);// var watchedSymbols = 
+		$.each(allWatchedSymbols, function( index, elem ) {
+			elem = $(elem);
+			var resu = contains(watchedSymbols, elem.text());
+			enableOrDisableButton(resu, elem, 'btn-success');
 		});
 		
+		// if (selectedSymbol == null || !contains(watchedSymbols, selectedSymbol)) {
+			selectedSymbol = watchedSymbols[0];
+		// }
 		
+		// 
+		checkExSymbolButtons();
+		
+		drawBySymbol(divId);
+	}
+	
+	function checkExSymbolButtons() {
+		var allExSymbols = $( "button[class~='ex-symbol']" );// 
+		var exSymbols = eval('listedExSymbolMap.' + selectedOperator + '_' + selectedSymbol);
+		$.each(allExSymbols, function( index, elem ) {
+			elem = $(elem);
+			var resu = contains(exSymbols, elem.text());
+			enableOrDisableButton(resu, elem, 'btn-inverse');
+		});
+		
+		if (!contains(exSymbols, selectedExSymbol)) {
+			selectedExSymbol = exSymbols[0];
+		}
+	}
+	
+	function enableOrDisableButton(resu, elem, cssClz) {
+		if (resu == true) {
+			if (!elem.hasClass(cssClz)) elem.addClass(cssClz);
+			elem.removeClass("disabled");
+			elem.addClass("active");
+			elem.prop("disabled", false );
+		} else {
+			elem.removeClass(cssClz);
+			elem.removeClass("active");
+			elem.addClass("disabled");
+			elem.prop("disabled", true );
+		}
 	}
 	
 	function clickSymbol(symbol, divId) {
 		selectedSymbol = symbol;
+		checkExSymbolButtons();
+		if (selectedOperator != null) {
+			drawBySymbol(divId);
+		}
+	}
+	
+	function clickExSymbol(exSymbol, divId) {
+		selectedExSymbol = exSymbol;
 		if (selectedOperator != null) {
 			drawBySymbol(divId);
 		}
 	}
 	
 	function drawBySymbol(divId) {
-		var url = '<%=request.getContextPath() %>/jsp/diagram/getStatisticsBySymbol.do?operator='+ selectedOperator;
-		url = url + '&symbol=' + selectedSymbol + '&exchange=' + selectedExSymbol; 
+		var url = '<%=request.getContextPath() %>/jsp/diagram/getStatisticsBySymbol.do?';
+		url = url + 'operator='+ selectedOperator + '&symbol=' + selectedSymbol + '&exchange=' + selectedExSymbol; 
 		$.getJSON(url, function(data) {
 			if (data.length == 0) {
-				alert("This Item do not exsit!");
+				alert("The Item[" + selectedSymbol + "_" + selectedExSymbol + "@" + selectedOperator + "] do not exsit!");
 			} else {
 				drawWithOperator(selectedOperator, selectedSymbol, selectedExSymbol, divId, data);
 			}
+		});
+		
+		url = "<%=request.getContextPath() %>/jsp/diagram/getOneDayStatistics.do?";
+		url = url + 'operator='+ selectedOperator + '&symbol=' + selectedSymbol + '&exchange=' + selectedExSymbol; 
+		$.getJSON(url, function(data) {
 			
+			var low24h = new Number(data[2]).toFixed(8);
+			var high24h = new Number(data[1]).toFixed(8);
+			var exSymbolVol = new Number(data[4]).toFixed(8);
+			$('#high24h').html(high24h);
+			$('#low24h').html(low24h);
+			$('#ex_symbol_title').html(selectedExSymbol+' ' + ' Vol: ');
+			$('#ex_symbol_vol').html(exSymbolVol);
 		});
 	}
+	
 	
 	</script>
 </head>
@@ -222,44 +251,59 @@
 					</div>
 					<div class="clearfix">
 						<div class="btn-group caption ">
-							<button class="btn dropdown-toggle" data-toggle="dropdown">Watched Items<i class="icon-angle-down"></i></button>
-							<ul class="dropdown-menu">
-							  <c:forEach var="wat" items="${its }">
-								  <li>
-								  <!-- drawByItemId(itemId, operator, watchedSymbol, exchangeSymbol, divId) -->
-									<a href="javascript:drawByItemId(${wat.id }, '${wat.operator }', '${wat.watchedSymbol }', '${wat.exchangeSymbol }', 'container');">
-										<span class="label label-info" ><i ></i> ${wat.operator }_${wat.watchedSymbol }_${wat.exchangeSymbol } </span>
-									</a>
-								  </li>
-							  </c:forEach>
-							</ul>
-						</div>
-						<br>
-						
-						<div class="btn-group caption ">
 							<span class="label label-success">Operators: </span>
 							<c:forEach var="op" items="${operators }">
-								 <span class="badge badge-success"> 
-								 	<a id='operator' href="javascript:clickOperator('${op }', 'container');">${op }</a>
+								 <span class=""> 
+								 	<button type="button" class="operator btn-small btn-primary" onclick="clickOperator('${op }', 'container');">${op }</button>
 								 </span> &nbsp;&nbsp;
 							</c:forEach>
 							<br>
 							<span class="label label-success">&nbsp;&nbsp;Symbols: </span>
+							<span >
 							<c:forEach var="sy" items="${wathcedSymbols }"  varStatus="vs">
-								clickSymbol
-								 <span class="badge badge-warning">
-								 <!-- href="javascript:clickSymbol('${sy }', 'container');"  -->
-									<button type="button" class="btn btn-large btn-primary" id='watchedSymbol' onclick="clickSymbol('${sy }', 'container');">${sy }</button>
-								 </span> &nbsp;&nbsp;
-								 <c:if test="${vs.count % 10 == 0 }"> <br> <span class="label" style="background-color: white;"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span> </c:if>
+								 <button type="button" class="watched-item btn-mini btn-success" onclick="clickSymbol('${sy }', 'container');">${sy }</button>
+								 <c:if test="${vs.count % 10 == 0 }"> 
+								 <br> 
+								 <span class="label label-success" style="background-color: white;">
+								 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+								 </span>
+								 </c:if>
 							</c:forEach>
+							</span> &nbsp;&nbsp;
 							<br>
 							<span class="label label-success">Exchange: </span>
+							<span class="">
 							<c:forEach var="ex" items="${exchangeSymbols }" >
-								<span class="badge badge-info">
-									<a id='exSymbol' href="javascript:clickExSymbol('${ex }', 'container');">${ex }</a> 
-								</span>&nbsp;&nbsp;
+								<button type="button" class="ex-symbol btn-mini btn-inverse" onclick="clickExSymbol('${ex }', 'container');">${ex }</button>
+								&nbsp;&nbsp;
 							</c:forEach>
+							</span>
+						</div>
+						<br>
+						
+						<div class="">
+						     <div class="row-fluid show-grid">
+				              <div class="span4"> <span class="label label-success">24H High: </span> <span class="label " id="high24h"></span> </div>
+				              <div class="span4"> <span class="label label-success">24H Low: </span> <span class="label " id="low24h"></span> </div>
+				              <div class="span4"> <span class="label label-success" id="ex_symbol_title"></span> <span class="label " id="ex_symbol_vol"></span> </div>
+				             
+				             <!-- 
+				             // last price, max(high), min(low), sum(watched_vol), sum(exchange_vol), sum(count)
+		var sb = new StringBuilder();
+		sb.append("<tr> <td>").append(selectedSymbol).append(" Trade Count</td> <td>").append(arr[5]).append("</td> <td>Last</td> <td>").append(arr[0]).append("</td> </tr> <br>");
+		sb.append("<tr> <td>24H High</td> <td>").append(arr[1]).append("</td> <td>24H Low</td> <td>").append(arr[2]).append("</td> </tr> <br>");
+		sb.append("<tr> <td>BTC Vol</td> <td>").append(arr[4]).append("</td> <td>").append(selectedSymbol).append(" Vol</td> <td>").append(arr[3]).append("</td> </tr> <br>");
+		// sb.append("<tr> <td>BTC Vol</td> <td>").append(arr[3]).append("</td> <td>").append(selectedSymbol).append(" Trade Count</td> <td>").append(arr[5]).append("</td> </tr> <br>");
+		
+				              -->
+				            </div>
+				            
+				             <div class="row-fluid show-grid">
+				              <div class="span4"> <span class="label label-success">24H High: </span> <span class="label ">high</span> </div>
+				              <div class="span4"> <span class="label label-success">24H Low: </span> <span class="label ">low</span> </div>
+				              <div class="span4"> <span class="label label-success">BTC Vol: </span> <span class="label ">btc_vol</span> </div>
+				            </div>
+				            
 						</div>
 						<br>
 						

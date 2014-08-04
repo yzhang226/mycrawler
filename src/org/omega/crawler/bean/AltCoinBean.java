@@ -1,6 +1,6 @@
 package org.omega.crawler.bean;
 
-import java.text.SimpleDateFormat;
+import java.util.concurrent.TimeUnit;
 
 import org.omega.crawler.bean.base.BaseAltCoinBean;
 import org.omega.crawler.common.Utils;
@@ -51,30 +51,18 @@ public class AltCoinBean extends BaseAltCoinBean {
 		return Utils.formatDay(getPowDays());
 	}
 	
-	public String getPublishDateTxt() {
-		if (getPublishDate() != null) {
-//			SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHH");
-			return Utils.formatDate2Short(Utils.convertDateZone(getPublishDate(), Utils.TIME_ZONE_GMT, Utils.TIME_ZONE_LOCAL));
-		}
-		return "";
+	public String getPublishTimeTxt() {
+		return Utils.formatDate2Short(Utils.convertGmtToLocal(TimeUnit.SECONDS.toMillis(getMyTopic().getPublishTime())));
 	}
 	
 	public String getLaunchTimeTxt() {
 		if (getLaunchTime() != null) {
-//			SimpleDateFormat sdf = new SimpleDateFormat("yyMMddHH");
-			return Utils.formatDate2Short(Utils.convertDateZone(getLaunchTime(), Utils.TIME_ZONE_GMT, Utils.TIME_ZONE_LOCAL));
+			return Utils.formatDate2Short(Utils.convertGmtToLocal(getLaunchTime()));
 		}
 		return "";
 	}
 	
 	public String toPrintableTxt() {
-		String pdate = null;
-		if (getPublishDate() != null) {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-			pdate = sdf.format(getPublishDate());
-		}
-		
-		
 		StringBuilder sb = new StringBuilder();
 		sb.append(getName()).append("[").append(getAbbrName()).append("], ")
 		  .append("total: ").append(getTotalAmount()).append(", ")

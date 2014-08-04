@@ -162,11 +162,30 @@ public final class Utils {
 	
 	
 	public static Date convertDateZone(Date sourceDate, String srcTimeZone, String destTimeZone) {
-//		SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT_FULL);
+		return convertDateZone(sourceDate.getTime(), srcTimeZone, destTimeZone);
+	}
+	
+	public static Date convertDateZone(long mills, String srcTimeZone, String destTimeZone) {
 		TimeZone srcZone = TimeZone.getTimeZone(srcTimeZone);
 		TimeZone destZone = TimeZone.getTimeZone(destTimeZone);
-		long targetTime = sourceDate.getTime() - srcZone.getRawOffset() + destZone.getRawOffset();
+		long targetTime = mills - srcZone.getRawOffset() + destZone.getRawOffset();
 		return new Date(targetTime);
+	}
+	
+	public static Date convertDateZone(Date sourceDate, String destTimeZone) {
+		return convertDateZone(sourceDate, TIME_ZONE_LOCAL, destTimeZone);
+	}
+	
+	public static Date convertLocalToGmt(Date sourceDate) {
+		return convertDateZone(sourceDate, TIME_ZONE_LOCAL, TIME_ZONE_GMT);
+	}
+	
+	public static Date convertGmtToLocal(Date sourceDate) {
+		return convertDateZone(sourceDate, TIME_ZONE_GMT, TIME_ZONE_LOCAL);
+	}
+	
+	public static Date convertGmtToLocal(long mills) {
+		return convertDateZone(mills, TIME_ZONE_GMT, TIME_ZONE_LOCAL);
 	}
     
 	public static String formatDate2Short(Date d) {
@@ -463,7 +482,7 @@ public final class Utils {
 		sb.append("\t").append("<td>").append(trimNull(alt.getAlgo())).append("</td>");
 		sb.append("\t").append("<td>").append(trimNull(alt.getTotalAmount())).append("</td><td>").append(trimNull(alt.getBlockTime())).append("</td><td>").append(trimNull(alt.getBlockReward())).append("</td>");
 		sb.append("\t").append("<td>").append(trimNull(alt.getPreMined())).append("</td><td>").append(trimNull(alt.getMinedPercentage())).append("</td><td>").append(trimNull(alt.getLaunchRaw())).append("</td>");
-		sb.append("\t").append("<td>").append(trimNull(alt.getPublishDate())).append("</td><td>").append(alt.getUsedTime()).append("</td>").append("\n");
+		sb.append("\t").append("<td>").append(trimNull(alt.getLaunchTime())).append("</td><td>").append(alt.getUsedTime()).append("</td>").append("\n");
 		
 		sb.append("</tr>").append("\n");;
 		

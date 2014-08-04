@@ -8,9 +8,11 @@
             <column name="id" />
             <generator class="identity" />
         </id>
-        <property name="topicId" type="integer">
-            <column name="topic_id" />
-        </property>
+        
+        <many-to-one name="myTopic"  class="org.omega.crawler.bean.MyTopicBean" cascade="save-update">
+        	<column name="my_topic_id" />
+        </many-to-one>
+        
         <property name="status" type="byte">
             <column name="status" />
         </property>
@@ -19,33 +21,8 @@
         </property>
         
         <!-- topic info -->
-        <property name="author" type="string">
-            <column name="author" />
-        </property>
-        <property name="title" type="string">
-            <column name="title" />
-        </property>
-        <property name="replies" type="integer">
-            <column name="replies" />
-        </property>
-        <property name="views" type="integer">
-            <column name="views" />
-        </property>
-        <!-- <property name="publishContent" type="blob">
-            <column name="publish_content" />
-        </property> -->
-        
          <property name="launchTime" type="timestamp">
             <column name="launch_time" />
-        </property>
-        <property name="lastPostTime" type="timestamp">
-            <column name="last_post_time" />
-        </property>
-        <property name="publishDate" type="timestamp">
-            <column name="publish_date" />
-        </property>
-        <property name="createTime" type="timestamp">
-            <column name="create_time" />
         </property>
         
         <!-- coin info -->
@@ -60,9 +37,6 @@
         </property>
         <property name="proof" type="string">
             <column name="proof" length="45" />
-        </property>
-        <property name="launchRaw" type="string">
-            <column name="launch_raw" length="120" />
         </property>
         
         <!-- coin detail -->

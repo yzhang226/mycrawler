@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
-import org.omega.crawler.bean.BCTTopicBean;
+import org.omega.crawler.bean.MyTopicBean;
 import org.omega.crawler.common.Page;
 import org.omega.crawler.common.SimpleHibernateTemplate;
 import org.omega.crawler.common.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class AltCoinTopicService extends SimpleHibernateTemplate<BCTTopicBean, Integer> {
+public class AltCoinTopicService extends SimpleHibernateTemplate<MyTopicBean, Integer> {
 
 	@Autowired
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-		this.entityClass = BCTTopicBean.class;
+		this.entityClass = MyTopicBean.class;
 	}
 	
-	public List<BCTTopicBean> findTalkTopics(Page<BCTTopicBean> page) {
+	public List<MyTopicBean> findTalkTopics(Page<MyTopicBean> page) {
 		String hql = "from BCTTopicBean ann";
 		
 		hql = Utils.getOrderHql(page, hql, "ann");
@@ -28,7 +28,7 @@ public class AltCoinTopicService extends SimpleHibernateTemplate<BCTTopicBean, I
 		return page.getResult();
 	}
 	
-	public List<BCTTopicBean> searchTalkTopics(Page<BCTTopicBean> page, String searchField, String searchValue) {
+	public List<MyTopicBean> searchTalkTopics(Page<MyTopicBean> page, String searchField, String searchValue) {
 		String hql = "from BCTTopicBean ann ";
 		
 		String sqlValue = Utils.convertToSqlMatchChars(searchValue);

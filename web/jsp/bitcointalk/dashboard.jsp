@@ -110,7 +110,7 @@
         	row.append(createLiLink(1, "First Page", "icon-step-backward", clickFunctionName, anotherParams));
         	row.append(createLiLink(previousPageNo, "Previous Page", "icon-caret-left", clickFunctionName, anotherParams));
         	
-			for (var i=beginPageNo; i<endPageNo; i++) {
+			for (var i=beginPageNo; i<=endPageNo; i++) {
 				row.append("<li class='").append(pageNo == i ? "active" : "").append("'><a id='")
 				.append(i)
 				.append("' onclick='").append(clickFunctionName).append("(").append(i).append(",").append(anotherParams).append(")'>")

@@ -63,6 +63,7 @@
 		if (isNullOrUndefined(searchValue) || searchValue.trim() == '') {
 			// alert('Please input search value!');
 		}
+		
 		var url = combineFullUrlDefault(null);
 		
 		window.location.href = url;
@@ -110,31 +111,24 @@
 					} else {
 						fv = "";
 					}
-					
-					
 					sValues.push(" " + fv);
 				}
 			}
 		}
 		
 		var url = getFullUrl('/jsp/bitcointalk/updatealtcoins.do?altIds=' + sIds.join() + '&altValues=' + sValues.join() + '&attrs=' + fields.join());
-		
 		$.ajax({
 				url : url,
 				success : function(data) {
 					var resp = $.parseJSON(data);
 					alert(resp.message);
-					
 					if (resp.success == 'true') {
 						$('#clickedObjId').val('');
-						
 						var url = combineFullUrlDefault(null);
 						window.location.href=url;
 					}
-					
 				}
 		});
-		
 	}
 	
 	function formatNumber(num) {
@@ -159,7 +153,6 @@
 		} else if (c == "t") {
 			times = 1000000000000;
 		} 
-		
 		return times;
 	}
 	
@@ -183,7 +176,6 @@
 		} else if (c == "y") {
 			times = 365;
 		}
-		
 		return times;
 	}
 	
@@ -191,78 +183,9 @@
 		// alert("changeEditable");
 		if (curr == 1) $('#editable').val('false');
 		else if (curr == 0) $('#editable').val('true');
-		
 		var url = combineFullUrlDefault(null);
 		window.location.href=url;
-		
 		return false;
-	}
-	
-	function checkMinable(id, curr) {
-		var box = $('#' + id);
-		if (curr == 1) {
-			box.attr('class', 'icon-check-empty');
-			box.attr('tvalue', 0);
-		} else if (curr == 0) {
-			box.attr('class', 'icon-check');
-			box.attr('tvalue', 1);
-		}
-	}
-	
-	function checkIsShow(id, curr) {
-		var box = $('#' + id);
-		if (curr == 1) {
-			box.attr('class', 'icon-check-empty');
-			box.attr('tvalue', 0);
-		} else if (curr == 0) {
-			box.attr('class', 'icon-check');
-			box.attr('tvalue', 1);
-		}
-	}
-	
-	var baseSeedUrl = "https://bitcointalk.org/index.php?board=159.";
-	// var baseSeedUrl = "https://bitcointalk.org/index.php?board=67.";
-	var startgroup = 0;
-	var endgroup = 4;
-	
-	function reInitAnnCoins() {
-		var url = getFullUrl("/jsp/bitcointalk/initannboard.do");
-		url = url + "?baseSeedUrl=" + baseSeedUrl;// + "&startgroup=" + startgroup + "&endgroup=" + endgroup;
-		
-		alert('url is ' + url);
-		$.ajax({
-				url : url,
-				success : function(data) {
-					var resp = $.parseJSON(data);
-					alert(resp.message);
-					
-					if (resp.success == 'true') {
-						
-						var url = combineFullUrlDefault(null);
-						window.location.href=url;
-					}
-				}
-		});
-	}
-	
-	function updateCoins() {
-		var url = getFullUrl("/jsp/bitcointalk/updateallcoins.do");
-		url = url + "?baseSeedUrl=" + baseSeedUrl;// + "&startgroup=" + startgroup + "&endgroup=" + endgroup;
-		
-		alert('url is ' + url);
-		$.ajax({
-				url : url,
-				success : function(data) {
-					var resp = $.parseJSON(data);
-					alert(resp.message);
-					
-					if (resp.success == 'true') {
-						
-						var url = combineFullUrlDefault(null);
-						window.location.href=url;
-					}
-				}
-		});
 	}
 	
 	function changeStatus(status) {
@@ -276,10 +199,6 @@
 				return;
 			}
 		}
-		
-		/* if (!confirm("Are you sure want to change ID[" + ids + "]'s status?")) {
-			return;
-		} */
 		
 		var url = getFullUrl("/jsp/bitcointalk/changeCoinStatus.do");
 		url = url + "?altIds=" + ids + "&targetStatus=" + status;
@@ -297,7 +216,6 @@
 					}
 				}
 		});
-		
 	}
 	
 	function showTopicTitle(rowTd) {
@@ -313,8 +231,9 @@
 
 <body class="page-header-fixed">
 		<input type="hidden" id="editable" name="editable" value=${editable }>
-		<input type="hidden" id="_required_params_" value="searchField,searchValue,editable">
+		<input type="hidden" id="_required_params_" value="searchField,searchValue,editable,lastSearchValue">
 		
+		<input type="hidden" id="lastSearchValue" value="${searchValue }">
 		
 		<div class="page-content">
 			<div class="container-fluid">
@@ -336,12 +255,12 @@
 								 <div class="btn-group caption">
 									<div class="controls" style="font-family: 'Segoe UI',Helvetica,Arial,sans-serif;line-height: 20px;font-size: 14px;  margin-bottom: 0px;">
 						                <select id="searchField" name="searchField" class="span5 m-wrap" data-placeholder="Choose a Category"  style="width: 190px;vertical-align: middle; margin-bottom: 0px;" tabindex="1">
-											<option value="title" ${searchField == 'title' ? "selected" : "" }>Title</option>
+											<option value="myTopic.title" ${searchField == 'myTopic.title' ? "selected" : "" }>Title</option>
 											<option value="name" ${searchField == 'name' ? "selected" : "" }>Name</option>
 											<option value="abbrName" ${searchField == 'abbrName' ? "selected" : "" }>Abbr Name</option>
+											<option value="status" ${searchField == 'status' ? "selected" : "" }>Status</option>
 											<option value="totalAmount" ${searchField == 'totalAmount' ? "selected" : "" }>Total Amount</option>
-											
-											<option value="publishContent" ${searchField == 'publishContent' ? "selected" : "" }>Content</option>
+											<option value="content" ${searchField == 'content' ? "selected" : "" }>Content</option>
 									  	</select>
 									  	<span style="font-size: 16px;vertical-align: middle; margin-bottom: 0px;"> : </span>
 									  	<input type="text" id="searchValue" name="searchValue" value="${searchValue }" 
@@ -354,38 +273,31 @@
 								
 								<!--  -->
 								<div class="btn-group pull-right" style="vertical-align: top;">
+									<div class="controls" >
+										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
+					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="changeStatus(0);">UnWatch</button>
+					                  	</span>
+				                  	</div>
+					           	</div>
+								<div class="btn-group pull-right" style="vertical-align: top;">
 									<div class="controls">
 					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="changeStatus(11);">Watch</button>
 				                  	</div>
 					           	</div>
-					            <div class="btn-group pull-right" style="vertical-align: top;">
-									<div class="controls">
-										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
-					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="reInitAnnCoins();">Seek</button>
-					                  	</span>
-				                  	</div>
-					            </div>
 							    <div class="btn-group pull-right ">
 									<div class="controls" >
-										<!-- <span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; "> -->
+										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
 										<button type="button"  ${editable ? "class='btn blue' " : "class='btn blue'  disabled='disabled'" } onclick="updateSelecedtInfo();" style="vertical-align: top;" >Update</button>
-										<!-- </span> -->
+										</span>
 									</div>
 								</div>
 								<div class="btn-group pull-right" style="vertical-align: top;">
 									<div class="controls" >
-										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
+										<!-- <span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; "> -->
 					                  	<button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="changeStatus(1)">Deactivate</button>
-					                  	</span>
+					                  	<!-- </span> -->
 				                  	</div>
 					           	</div>
-					            <!-- <div class="btn-group pull-right" style="vertical-align: top;">
-									<div class="controls">
-										<span style="line-height: 20px;vertical-align: top; font-size: 14px; padding: 7px 14px; ">
-										   <button class="btn blue m-wrap" type="button" style="vertical-align: middle;" onclick="updateCoins();">Update All</button>
-										</span>
-				                  	</div>
-					            </div> -->
 					           
 							</div>
 							
@@ -451,15 +363,15 @@
 											<th >interest</th>
 											
 											<th >launchTime</th>
-											<th >publishDate</th>
+											<th >myTopic.publishTime</th>
 										</tr>
 									</thead>
 									
 									<tbody>
 										<c:forEach var="ann" items="${anns }">
-											<tr class="odd gradeX" objid="${ann.id }" title="TID[${ann.topicId }] ${ann.title }" onclick="showTopicTitle(this);">
+											<tr class="odd gradeX" objid="${ann.id }" title="TID[${ann.myTopic.topicId }] ${ann.myTopic.title }" onclick="showTopicTitle(this);">
 	                                         	
-	                                         	<td ><a onclick="clickTopicLink(${ann.topicId });" target="_blank" > Ann </a></td>
+	                                         	<td ><a onclick="clickTopicLink(${ann.myTopic.topicId });" target="_blank" > Ann </a></td>
 	                                         	
 	                                         	<c:if test="${editable }">
 	                                         		<td> <input type="text" id="${ann.id }_name" value="${ann.name }" maxlength="15" style="width: 85px" > </td>
@@ -512,7 +424,7 @@
 													<td>${ann.launchTimeTxt }</td>
 	                                         	</c:if>
 	                                         	
-	                                         	<td>${ann.publishDateTxt }</td>
+	                                         	<td>${ann.publishTimeTxt }</td>
 											</tr>
 										</c:forEach>
 										<c:if test="${empty anns }">

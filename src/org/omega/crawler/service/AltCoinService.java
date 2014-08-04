@@ -85,9 +85,6 @@ public class AltCoinService extends SimpleHibernateTemplate<AltCoinBean, Integer
 	}
 	
 	public List<AltCoinBean> searchAnnCoins(Page<AltCoinBean> page, String searchField, String searchValue) {
-		
-		page.setPageNo(0);
-		
 		String hql = "from AltCoinBean ann ";
 		
 		String sqlValue = Utils.convertToSqlMatchChars(searchValue);

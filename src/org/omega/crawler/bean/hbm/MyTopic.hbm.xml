@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="org.omega.crawler.bean.MyTopicBean" table="my_topic" dynamic-insert="true" dynamic-update="true">
+    
+        <id name="id" type="java.lang.Integer">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        
+        <property name="boardId" type="short">
+            <column name="board_id" />
+        </property>
+        <property name="topicId" type="integer">
+            <column name="topic_id" />
+        </property>
+        <property name="author" type="string">
+            <column name="author" />
+        </property>
+        <property name="title" type="string">
+            <column name="title" />
+        </property>
+        <property name="replies" type="integer">
+            <column name="replies" />
+        </property>
+        <property name="views" type="integer">
+            <column name="views" />
+        </property>
+        <property name="content" type="blob">
+            <column name="content" />
+        </property>
+        <property name="lastPostTime" type="integer">
+            <column name="last_post_time"/>
+        </property>
+        <property name="publishTime" type="integer">
+            <column name="publish_time"/>
+        </property>
+        <property name="createTime" type="integer">
+            <column name="create_time"/>
+        </property>
+    </class>
+</hibernate-mapping>

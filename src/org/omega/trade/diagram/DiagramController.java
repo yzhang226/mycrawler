@@ -3,7 +3,14 @@ package org.omega.trade.diagram;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -45,14 +52,19 @@ public class DiagramController {
 		
 		List<WatchListItem> items = watchListItemService.find("from WatchListItem where status = ?", Constants.STATUS_ACTIVE);
 		
-		List<String> operators = watchListItemService.findSql("select distinct operator from market_summary");
-		List<String> wathcedSymbols = watchListItemService.find("select distinct watchedSymbol from WatchListItem where status = ?", Constants.STATUS_ACTIVE);
-		List<String> exchangeSymbols = watchListItemService.find("select distinct exchangeSymbol from WatchListItem where status = ?", Constants.STATUS_ACTIVE);
+		Set<String> operators = new TreeSet<>();
+		Set<String> wathcedSymbols = new TreeSet<>();
+		Set<String> exSymbols = new TreeSet<>();
+		for (WatchListItem wi : items) {
+			operators.add(wi.getOperator());
+			wathcedSymbols.add(wi.getWatchedSymbol());
+			exSymbols.add(wi.getExchangeSymbol());
+		}
 		
 		model.addAttribute("its", items);
 		model.addAttribute("operators", operators);
 		model.addAttribute("wathcedSymbols", wathcedSymbols);
-		model.addAttribute("exchangeSymbols", exchangeSymbols);
+		model.addAttribute("exchangeSymbols", exSymbols);
 		
 		return jsp;
 	}
@@ -166,21 +178,26 @@ public class DiagramController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/getOneDayStatistics.do")
 	@ResponseBody
-	public Object[] getOneDayStatistics(@RequestParam Integer itemId,
-											@RequestParam(required=false) Integer nthDay) {
+	public Object[] getOneDayStatistics(@RequestParam String operator, 
+			  @RequestParam String symbol,
+			  @RequestParam String exchange, 
+			  @RequestParam(required=false) Integer nthDay) {
 		// 20_mintpal_btc_uro
-		if (nthDay == null) {
-			nthDay = 0;
+		if (nthDay == null || nthDay <= 0) {
+			nthDay = 1;
 		}
-		nthDay = nthDay  -1;
+		nthDay = nthDay  - 1;
 		
-		DateTime curr = new DateTime(DateTimeZone.UTC);
-		curr = curr.withSecondOfMinute(0).withMillisOfSecond(0);
-		
-		curr.minusDays(nthDay);
+//		DateTime curr = new DateTime(DateTimeZone.UTC);
 		
 		
-		WatchListItem item = watchListItemService.get(itemId);
+		Date gmtCurr = Utils.convertDateZone(new Date(), Utils.TIME_ZONE_GMT);
+		DateTime gmtdt = new DateTime(gmtCurr);
+		gmtdt = gmtdt.withSecondOfMinute(0).withMillisOfSecond(0).minusDays(nthDay);
+		
+		String hql = "from WatchListItem where operator = ? and watchedSymbol = ? and exchangeSymbol = ?";
+		WatchListItem item = (WatchListItem) watchListItemService.findUnique(hql, operator, symbol, exchange);
+//		WatchListItem item = watchListItemService.get(itemId);
 		
 		Object[] stat = new Object[6];
 		
@@ -189,8 +206,9 @@ public class DiagramController {
 		stat[0] = resu.get(0);
 		
 		String sql = "select max(high), min(low), sum(watched_vol), sum(exchange_vol), sum(count) from trade_statistics_one_minute "
-						+ "where item_id = ? and start_time >= ? and end_time < ? order by start_time asc";
-		resu = tradeStatisticsService.findSql(sql, itemId, curr.minusDays(1).getMillis(), curr.getMillis());
+						+ "where item_id = ? and start_time >= ? and end_time < ? order by start_time desc";
+		System.out.println("" + gmtdt.minusDays(1).getMillis() + ", " + gmtdt.getMillis());
+		resu = tradeStatisticsService.findSql(sql, item.getId(), gmtdt.minusDays(1).getMillis(), gmtdt.getMillis());
 		
 		System.arraycopy(resu.get(0), 0, stat, 1, 5);
 		
@@ -213,6 +231,57 @@ public class DiagramController {
 		List<Object> resu = tradeStatisticsService.findSql(sql, item.getId());
 		
 		return resu;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/getAllInfos.do")
+	@ResponseBody
+	public Map<String, Object> getAllInfos() {
+		
+		
+		String hql = "from WatchListItem where status = ? order by operator, watchedSymbol, exchangeSymbol";
+		List<WatchListItem> activeItems = watchListItemService.find(hql, Constants.STATUS_ACTIVE);
+		
+		Set<String> operators = new TreeSet<>();
+		Set<String> wathcedSymbols = new TreeSet<>();
+		Set<String> exSymbols = new TreeSet<>();
+		
+		Map<String, Set<String>> listedSymbolMap = new LinkedHashMap<>();
+		Set<String> listedSymbols = new TreeSet<>();
+		
+		Map<String, Set<String>> listedExSymbolMap = new LinkedHashMap<>();
+		Set<String> listedExSymbols = null;
+		
+		String key = null;
+		for (WatchListItem wi : activeItems) {
+			operators.add(wi.getOperator());
+			wathcedSymbols.add(wi.getWatchedSymbol());
+			exSymbols.add(wi.getExchangeSymbol());
+			
+			listedSymbols = listedSymbolMap.get(wi.getOperator());
+			if (listedSymbols == null) {
+				listedSymbols = new TreeSet<>();
+				listedSymbolMap.put(wi.getOperator(), listedSymbols);
+			}
+			listedSymbols.add(wi.getWatchedSymbol());
+			
+			key = wi.getOperator() + "_" + wi.getWatchedSymbol();
+			listedExSymbols = listedExSymbolMap.get(key);
+			if (listedExSymbols == null) {
+				listedExSymbols = new TreeSet<>();
+				listedExSymbolMap.put(key, listedExSymbols);
+			}
+			listedExSymbols.add(wi.getExchangeSymbol());
+		}
+		
+		Map<String, Object> infos = new LinkedHashMap<String, Object>();
+		infos.put("operators", operators);
+		infos.put("wathcedSymbols", wathcedSymbols);
+		infos.put("exSymbols", exSymbols);
+		infos.put("listedSymbolMap", listedSymbolMap);
+		infos.put("listedExSymbolMap", listedExSymbolMap);
+		
+		return infos;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -244,6 +313,8 @@ public class DiagramController {
 		
 		return resu;
 	}
+	
+	
 	
 	
 }
