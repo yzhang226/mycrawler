@@ -129,7 +129,6 @@ public class BitcointalkController {
 		return rows;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@RequestMapping("/showdashboard.do")
 	public String showDashboard(Model model, HttpServletRequest request, 
 							@RequestParam(required=false) String searchField, 
@@ -137,21 +136,21 @@ public class BitcointalkController {
 							@RequestParam(required=false) Boolean editable ) {
 		String jsp = "bitcointalk/dashboard";
 		
-		Page<AltCoinBean> params = (Page<AltCoinBean>) request.getAttribute("params");
-		
-		params.setOrderBy("lastPostTime");
-		params.setOrder(Page.DESC);
-	
-		List<AltCoinBean> alts = altCoinService.findAnnCoins(params);
-		
-		// by reply
-		params.setOrderBy("replies, views");
-		params.setOrder(Page.DESC);
-		List<AltCoinBean> altsByReply = altCoinService.findAnnCoins(params);
-		
-		model.addAttribute("alts", alts);
-		model.addAttribute("altsByReply", altsByReply);
-		model.addAttribute("params", params);
+//		Page<AltCoinBean> params = (Page<AltCoinBean>) request.getAttribute("params");
+//		
+//		params.setOrderBy("myTopic.lastPostTime");
+//		params.setOrder(Page.DESC);
+//	
+//		List<AltCoinBean> alts = altCoinService.findAnnCoins(params);
+//		
+//		// by reply
+//		params.setOrderBy("myTopic.replies, myTopic.views");
+//		params.setOrder(Page.DESC);
+//		List<AltCoinBean> altsByReply = altCoinService.findAnnCoins(params);
+//		
+//		model.addAttribute("alts", alts);
+//		model.addAttribute("altsByReply", altsByReply);
+//		model.addAttribute("params", params);
 		
 		return jsp;
 	}

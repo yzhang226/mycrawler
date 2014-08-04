@@ -20,13 +20,13 @@
 	var editable = <%=request.getAttribute("editable") %>;
 	
 	jQuery(document).ready(function() {
-		loadLastCoins(1, "lastPostTime", "desc", "lastCoinsDiv", 7, "");
+		loadLastCoins(1, "myTopic.lastPostTime", "desc", "lastCoinsDiv", 7, "");
 		
 		// $('#__grid2__').tcgtable({rowSelect : "single"});
-		loadLastCoins(1, "publishDate", "desc", "watchedCoinsDiv", 8, "ann.status=11");
+		loadLastCoins(1, "myTopic.publishTime", "desc", "watchedCoinsDiv", 8, "ann.status=11");
 	});
 	
-	var txtFields = new Array("totalAmount", "launchTime", "publishDate");
+	var txtFields = new Array("totalAmount", "launchTime", "myTopic.publishTime");
 	function loadLastCoins(targetPageNo, orderBy, order, divId, colspan, condition) {// lastCoinsDivTBody
 		if (targetPageNo <= 0) {
 			return;
@@ -85,7 +85,8 @@
 	
 	function createRowContent(ann, fieldArr, divId) {
 		var row = new StringBuilder();
-		row.append("<tr class='odd gradeX' objid='").append(ann.id).append("' title='").append(ann.topicId).append(" - ").append(ann.title).append("' onclick='showTopicTitle(this, \"" + divId + "\");'>");
+		row.append("<tr class='odd gradeX' objid='").append(ann.id).append("' title='").append(ann.myTopic.topicId).append(" - ")
+		.append(ann.myTopic.title).append("' onclick='showTopicTitle(this, \"" + divId + "\");'>");
 		row.append("<td><a onclick='clickTopicLink(").append(ann.topicId).append(");' target='_blank'>").append(ann.name).append("</a></td>");
 		for (var i=1; i<fieldArr.length; i++) {
 			row.append("<td>");
@@ -200,7 +201,7 @@
 								<th >Algo</th>
 								<th >Interest</th>
 								<th>Launch</th>
-								<th>Publish Date</th>
+								<th>Publish Time</th>
 							</tr>
 							<tr id='_head_fields_' style='display: none;'>
 								<th >name</th>
@@ -209,7 +210,7 @@
 								<th >algo</th>
 								<th >interest</th>
 								<th >launchTime</th>
-								<th >publishDate</th>
+								<th >myTopic.publishTime</th>
 							</tr>
 						</thead>
 						<tbody id="lastCoinsDivTBody">
@@ -242,7 +243,7 @@
 								<th >Interest</th>
 								<th >Replies</th>
 								<th >Views</th>
-								<th>Publish Date</th>
+								<th>Publish Time</th>
 							</tr>
 							<tr id="_head_fields_" style="display: none;">
 								<th >name</th>
@@ -250,9 +251,9 @@
 								<th >totalAmount</th>
 								<th >algo</th>
 								<th >interest</th>
-								<th >replies</th>
-								<th >views</th>
-								<th >publishDate</th>
+								<th >myTopic.replies</th>
+								<th >myTopic.views</th>
+								<th >myTopic.publishTime</th>
 							</tr>
 						</thead>
 						<tbody>

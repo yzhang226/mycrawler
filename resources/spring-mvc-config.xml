@@ -17,8 +17,20 @@
    <!--  <import resource="mvc-view-config.xml"/> -->
    
 <!--    <mvc:default-servlet-handler/>   -->
- 	<mvc:annotation-driven />
-
+ 	<mvc:annotation-driven >
+		<mvc:message-converters>
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="objectMapper">
+					<bean class="org.omega.crawler.common.HibernateAwareObjectMapper" />
+				</property>
+			</bean>
+			<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
+			<bean class="org.springframework.http.converter.BufferedImageHttpMessageConverter" />
+			<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
+			<bean class="org.springframework.http.converter.ResourceHttpMessageConverter" />
+		</mvc:message-converters>
+	</mvc:annotation-driven>
 	<!--
 		- This bean processes annotated handler methods, applying PetClinic-specific PropertyEditors
 		- for request parameter binding. It overrides the default AnnotationMethodHandlerAdapter.
@@ -28,7 +40,17 @@
 		<property name="webBindingInitializer">
 			<bean class="org.omega.crawler.common.web.editor.BindingInitializer"/>
 		</property>
+		<!-- <property name="messageConverters">
+			<array>
+				<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+					<property name="objectMapper">
+						<bean class="org.omega.crawler.common.HibernateAwareObjectMapper" />
+					</property>
+				</bean>
+			</array>
+		</property> -->
 	</bean>
+	
 
 <!-- 	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"> -->
 <!-- 		<property name="webBindingInitializer"> -->

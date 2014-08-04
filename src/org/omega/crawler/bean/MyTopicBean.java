@@ -1,6 +1,9 @@
 package org.omega.crawler.bean;
 
+import java.util.concurrent.TimeUnit;
+
 import org.omega.crawler.bean.base.BaseMyTopicBean;
+import org.omega.crawler.common.Utils;
 
 public class MyTopicBean extends BaseMyTopicBean {
 
@@ -11,5 +14,10 @@ public class MyTopicBean extends BaseMyTopicBean {
 	public MyTopicBean(Integer topicId) {
 		setTopicId(topicId);
 	}
+	
+	public String getPublishTimeTxt() {
+		return Utils.formatDate2Short(Utils.convertGmtToLocal(TimeUnit.SECONDS.toMillis(getPublishTime())));
+	}
+	
 	
 }
