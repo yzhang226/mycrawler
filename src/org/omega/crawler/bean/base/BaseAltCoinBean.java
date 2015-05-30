@@ -24,6 +24,7 @@ public class BaseAltCoinBean implements Serializable {
 	
 	// topic info
 	private MyTopicBean myTopic;
+	private Date publishDate;
 	private Date launchTime;
 	
 	// coin info
@@ -89,6 +90,14 @@ public class BaseAltCoinBean implements Serializable {
 
 	public void setMyTopic(MyTopicBean myTopic) {
 		this.myTopic = myTopic;
+	}
+
+	public Date getPublishDate() {
+		return publishDate;
+	}
+
+	public void setPublishDate(Date publishDate) {
+		this.publishDate = publishDate;
 	}
 
 	public Date getLaunchTime() {

@@ -21,7 +21,10 @@
         </property>
         
         <!-- topic info -->
-         <property name="launchTime" type="timestamp">
+        <property name="publishDate" type="timestamp">
+            <column name="publish_date" />
+        </property>
+        <property name="launchTime" type="timestamp">
             <column name="launch_time" />
         </property>
         
@@ -79,6 +82,10 @@
         <!--  -->
         <property name="memo" type="string">
             <column name="memo" />
+        </property>
+        
+        <property name="createTime" type="timestamp">
+            <column name="create_time" />
         </property>
         
         
