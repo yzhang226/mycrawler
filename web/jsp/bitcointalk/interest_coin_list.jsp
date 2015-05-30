@@ -269,11 +269,11 @@
 <!-- 						<h3 class="page-title"> -->
 <!-- 							<img src="../assets/img/logo_admin.png"> -->
 <!-- 						</h3> -->
-						<ul class="breadcrumb">
-							<li><i class="icon-home"></i> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showinterestcoins.do" class="active">Interest Coins</a> / </li>
-								<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" >Alt Coins</a> / </li>
-								<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showtalktopics.do">Alt Coins Topic</a> </li>
-						</ul>
+<!-- 						<ul class="breadcrumb"> -->
+<%-- 							<li><i class="icon-home"></i> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showinterestcoins.do" class="active">Interest Coins</a> / </li> --%>
+<%-- 								<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showanncoins.do" >Alt Coins</a> / </li> --%>
+<%-- 								<li> <a id="bread" href="<%=request.getContextPath() %>/jsp/bitcointalk/showtalktopics.do">Alt Coins Topic</a> </li> --%>
+<!-- 						</ul> -->
 				</div>
 				</div>
 				<div class="row-fluid">

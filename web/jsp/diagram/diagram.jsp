@@ -301,7 +301,7 @@
 				             <div class="row-fluid show-grid">
 				              <div class="span4"> <span class="label label-success">24H High: </span> <span class="label ">high</span> </div>
 				              <div class="span4"> <span class="label label-success">24H Low: </span> <span class="label ">low</span> </div>
-				              <div class="span4"> <span class="label label-success">BTC Vol: </span> <span class="label ">btc_vol</span> </div>
+				              <div class="span4"> <span class="label label-success">trade Vol: </span> <span class="label ">trade_vol</span> </div>
 				            </div>
 				            
 						</div>

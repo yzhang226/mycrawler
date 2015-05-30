@@ -182,7 +182,7 @@
 			<div class="row-fluid">
 				<div class="span6">
 					<div class="portlet-title">
-						<div class="caption">coins in last 30 days</div>
+						<div class="caption">Stocks in last 30 days</div>
 						<div class="tools"></div>
 					</div>
 					<div class="clearfix">
@@ -224,7 +224,7 @@
 				</div>
 				<div class="span6">
 					<div class="portlet-title">
-						<div class="caption">Watched Coins</div>
+						<div class="caption">Watched Stocks</div>
 						<div class="tools"></div>
 					</div>
 					<div class="clearfix">
@@ -239,7 +239,7 @@
 								<th >Name</th>
 								<th >Abbr</th>
 								<th >Total</th>
-								<th >Algo</th>
+<!-- 								<th >Algo</th> -->
 								<th >Interest</th>
 								<th >Replies</th>
 								<th >Views</th>
@@ -249,7 +249,7 @@
 								<th >name</th>
 								<th >abbrName</th>
 								<th >totalAmount</th>
-								<th >algo</th>
+<!-- 								<th >algo</th> -->
 								<th >interest</th>
 								<th >myTopic.replies</th>
 								<th >myTopic.views</th>

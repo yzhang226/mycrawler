@@ -81,7 +81,7 @@
 			ids = $('#lastRowId').val();// 
 			ids = $('#' + ids).attr('objid');
 			if (isNullOrUndefined(ids)) {
-				alert("Please select Alt Coin to process!");
+				alert("Please select Alt Stock to process!");
 				return;
 			}
 		}
@@ -195,7 +195,7 @@
 			ids = $('#lastRowId').val();// 
 			ids = $('#' + ids).attr('objid');
 			if (isNullOrUndefined(ids)) {
-				alert("Please select Alt Coin to process!");
+				alert("Please select Alt Stock to process!");
 				return;
 			}
 		}

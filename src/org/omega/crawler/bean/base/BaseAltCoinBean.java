@@ -51,7 +51,8 @@ public class BaseAltCoinBean implements Serializable {
 	
 	//
 	private String memo;
-
+	private Date createTime;
+	
 	public Integer getId() {
 		return id;
 	}
@@ -242,6 +243,14 @@ public class BaseAltCoinBean implements Serializable {
 
 	public void setMemo(String memo) {
 		this.memo = memo;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 	
 }
