@@ -319,17 +319,17 @@
 											<th >Algo</th>
 											<th >Proof</th>
 											
-											<th >PoW Amount</th>
-											<th >PoW Days</th>
-											<th >PoW Height</th>
+<!-- 											<th >PoW Amount</th> -->
+<!-- 											<th >PoW Days</th> -->
+<!-- 											<th >PoW Height</th> -->
 											
 											<th >Premined</th>
 											<th >Percentage</th>
 											
 											<th >BReward</th>
 											<th >BTime</th>
-											<th >HBlocks</th>
-											<th >HDays</th>
+<!-- 											<th >HBlocks</th> -->
+<!-- 											<th >HDays</th> -->
 											<th >Difficulty</th>
 											
 											<th >Interest</th>
@@ -347,17 +347,17 @@
 											<th >algo</th>
 											<th >proof</th>
 											
-											<th >powAmount</th>
-											<th >powDays</th>
-											<th >powHeight</th>
+<!-- 											<th >powAmount</th> -->
+<!-- 											<th >powDays</th> -->
+<!-- 											<th >powHeight</th> -->
 											
 											<th >preMined</th>
 											<th >minedPercentage</th>
 											
 											<th >blockReward</th>
 											<th >blockTime</th>
-											<th >halfBlocks</th>
-											<th >halfDays</th>
+<!-- 											<th >halfBlocks</th> -->
+<!-- 											<th >halfDays</th> -->
 											<th >difficultyAdjust</th>
 											
 											<th >interest</th>
@@ -406,17 +406,17 @@
 		                                         	<td>${ann.algo }</td>
 		                                         	<td>${ann.proof }</td>
 		                                         	
-		                                         	<td>${ann.powAmountTxt }</td>
-													<td>${ann.powDaysTxt }</td>
-													<td>${ann.powHeightTxt }</td>
+<%-- 		                                         	<td>${ann.powAmountTxt }</td> --%>
+<%-- 													<td>${ann.powDaysTxt }</td> --%>
+<%-- 													<td>${ann.powHeightTxt }</td> --%>
 													
 		                                         	<td>${ann.preMinedTxt }</td>
 													<td>${ann.minedPercentageTxt }</td>
 													
 													<td>${ann.blockRewardTxt }</td>
 													<td>${ann.blockTime }</td>
-													<td>${ann.halfBlocksTxt }</td>
-													<td>${ann.halfDaysTxt }</td>
+<%-- 													<td>${ann.halfBlocksTxt }</td> --%>
+<%-- 													<td>${ann.halfDaysTxt }</td> --%>
 													<td>${ann.difficultyAdjust }</td>
 													
 													<td>${ann.interest }</td>

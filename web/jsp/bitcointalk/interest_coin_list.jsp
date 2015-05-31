@@ -343,12 +343,12 @@
 											<th >Total</th>
 											<th >BReward</th>
 											<th >BTime</th>
-											<th >HBlocks</th>
-											<th >HDays</th>
+<!-- 											<th >HBlocks</th> -->
+<!-- 											<th >HDays</th> -->
 											
 											<th >DAdjust</th>
 											
-											<th >Pre Mined</th>
+<!-- 											<th >Pre Mined</th> -->
 											<th >Percentage</th>
 											
 											
@@ -377,11 +377,11 @@
 											<th >totalAmount</th>
 											<th >blockReward</th>
 											<th >blockTime</th>
-											<th >halfBlocks</th>
-											<th >halfDays</th>
+<!-- 											<th >halfBlocks</th> -->
+<!-- 											<th >halfDays</th> -->
 											
 											<th >difficultyAdjust</th>
-											<th >preMined</th>
+<!-- 											<th >preMined</th> -->
 											<th >minedPercentage</th>
 											
 											<th >title</th>
@@ -450,10 +450,10 @@
 													<td> <input type="text" id="${ann.id }_totalAmount" value="${ann.totalAmountTxt }" style="width: 65px" > </td>
 													<td> <input type="text" id="${ann.id }_blockReward" value="${ann.blockRewardTxt }" style="width: 45px" > </td>
 													<td> <input type="text" id="${ann.id }_blockTime" value="${ann.blockTime }" style="width: 45px" > </td>
-													<td> <input type="text" id="${ann.id }_halfBlocks" value="${ann.halfBlocksTxt }" style="width: 45px" > </td>
-													<td> <input type="text" id="${ann.id }_halfDays" value="${ann.halfDaysTxt }" style="width: 45px" > </td>
+<%-- 													<td> <input type="text" id="${ann.id }_halfBlocks" value="${ann.halfBlocksTxt }" style="width: 45px" > </td> --%>
+<%-- 													<td> <input type="text" id="${ann.id }_halfDays" value="${ann.halfDaysTxt }" style="width: 45px" > </td> --%>
 													<td> <input type="text" id="${ann.id }_difficultyAdjust" value="${ann.difficultyAdjust }" style="width: 65px" > </td>
-													<td> <input type="text" id="${ann.id }_preMined" value="${ann.preMinedTxt }" style="width: 45px" > </td>
+<%-- 													<td> <input type="text" id="${ann.id }_preMined" value="${ann.preMinedTxt }" style="width: 45px" > </td> --%>
 													<td> <input type="text" id="${ann.id }_minedPercentage" value="${ann.minedPercentageTxt }" style="width: 45px" > </td>
 													
 	                                         	</c:if>
